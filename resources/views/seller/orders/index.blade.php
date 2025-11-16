@@ -268,11 +268,14 @@
                 <div class="order-items">
                     <div>{{ $order->items->count() }} item</div>
                     <div class="text-muted">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</div>
+<<<<<<< HEAD
                     <div style="margin-top:0.5rem; font-size:0.85rem; color:#666;">
                         <strong>Mode:</strong> {{ $order->getShippingModeLabel() ?? ucfirst($order->shipping_mode) }}
                         &nbsp;•&nbsp;
                         <strong>Ongkir:</strong> Rp{{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}
                     </div>
+=======
+>>>>>>> 81f0d06 (First Up|)
                 </div>
 
                 <div>

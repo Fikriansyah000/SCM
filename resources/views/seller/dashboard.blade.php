@@ -121,6 +121,7 @@
         font-weight: 600;
         font-size: 0.9rem;
     }
+<<<<<<< HEAD
 
     .chart-container {
         position: relative;
@@ -137,6 +138,8 @@
         color: inherit;
         display: block;
     }
+=======
+>>>>>>> 81f0d06 (First Up|)
 </style>
 
 <div class="dashboard-header">
@@ -149,6 +152,7 @@
 </div>
 
 <div class="container my-4">
+<<<<<<< HEAD
     
     <!-- Revenue Chart -->
     <div class="section-card">
@@ -224,6 +228,47 @@
         </div>
     </div>
 
+=======
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-value">{{ $totalProducts }}</div>
+                <div class="stat-label">Total Produk</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-value">{{ $totalOrders }}</div>
+                <div class="stat-label">Total Pesanan</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value">{{ $pendingOrders }}</div>
+                <div class="stat-label">Pesanan Pending</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+    </div>
+>>>>>>> 81f0d06 (First Up|)
     
     <!-- Shop Info -->
     <div class="section-card">
@@ -276,6 +321,7 @@
             <a href="{{ route('seller.orders') }}" class="action-btn">
                 <i class="fas fa-clipboard-list"></i>
                 <span>Kelola Pesanan</span>
+<<<<<<< HEAD
             </a>
         </div>
     </div>
@@ -367,4 +413,10 @@
         }
     });
 </script>
+=======
+              </a>
+        </div>
+    </div>
+</div>
+>>>>>>> 81f0d06 (First Up|)
 @endsection

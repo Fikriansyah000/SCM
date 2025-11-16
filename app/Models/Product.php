@@ -38,9 +38,12 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+<<<<<<< HEAD
 
     public function reviews()
     {
         return $this->hasMany(\App\Models\ProductReview::class);
     }
+=======
+>>>>>>> 81f0d06 (First Up|)
 }

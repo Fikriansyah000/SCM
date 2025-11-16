@@ -5,11 +5,18 @@
 @section('content')
 <style>
     .cart-container {
+<<<<<<< HEAD
         background: #faf6f1;
         border-radius: 0.75rem;
         padding: 2rem;
         box-shadow: 0 10px 28px rgba(7,18,46,0.04);
         border: 1px solid rgba(139,113,89,0.08);
+=======
+        background: white;
+        border-radius: 0.75rem;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .cart-item {
@@ -27,13 +34,20 @@
     .cart-image {
         width: 100px;
         height: 100px;
+<<<<<<< HEAD
         background: #f0ede8;
+=======
+        background: #f0f0f0;
+>>>>>>> 81f0d06 (First Up|)
         border-radius: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+<<<<<<< HEAD
         border: 1px solid rgba(139,113,89,0.1);
+=======
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .cart-image img {
@@ -81,15 +95,24 @@
         display: flex;
         align-items: center;
         justify-content: center;
+<<<<<<< HEAD
         background: #f0ede8;
         border: 1px solid rgba(139,113,89,0.1);
+=======
+        background: #f0f0f0;
+        border: none;
+>>>>>>> 81f0d06 (First Up|)
         border-radius: 0.25rem;
         cursor: pointer;
         transition: all 0.3s ease;
     }
     
     .quantity-btn:hover {
+<<<<<<< HEAD
         background: #a87d68;
+=======
+        background: #667eea;
+>>>>>>> 81f0d06 (First Up|)
         color: white;
     }
     
@@ -225,6 +248,7 @@
                                     <i class="fas fa-store me-1"></i>{{ $cart->product->shop->shop_name }}
                                 </div>
                                 <div class="cart-price">
+<<<<<<< HEAD
                                     @php
                                         $isFlash = in_array($cart->product_id, session('flash_sale_ids', []));
                                         $unitPrice = $cart->product->price;
@@ -239,6 +263,12 @@
                                     @endif
                                 </div>
                             </div>                            
+=======
+                                    Rp{{ number_format($cart->product->price, 0, ',', '.') }} x {{ $cart->quantity }}
+                                </div>
+                            </div>
+                            
+>>>>>>> 81f0d06 (First Up|)
                             <div class="quantity-control">
                                 <form method="PUT" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
                                     @csrf
@@ -279,6 +309,7 @@
                     
                     <div class="summary-row">
                         <span>Subtotal:</span>
+<<<<<<< HEAD
                         <span>Rp{{ number_format($subtotal ?? $total, 0, ',', '.') }}</span>
                     </div>
 
@@ -292,6 +323,14 @@
                     <div class="summary-row">
                         <span>Ongkos Kirim:</span>
                         <span>{{ (isset($shipping) && $shipping === 0) ? 'Gratis' : (isset($shipping) ? 'Rp' . number_format($shipping,0,',','.') : 'Gratis') }}</span>
+=======
+                        <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Ongkos Kirim:</span>
+                        <span>Gratis</span>
+>>>>>>> 81f0d06 (First Up|)
                     </div>
                     
                     <div class="summary-row total">

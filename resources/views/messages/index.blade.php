@@ -25,15 +25,24 @@
     }
     
     .conversation-item {
+<<<<<<< HEAD
         padding: 1rem;
+=======
+        padding: 1.25rem;
+>>>>>>> 81f0d06 (First Up|)
         border-bottom: 1px solid #f0f0f0;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
+<<<<<<< HEAD
         display: flex;
         align-items: stretch;
         color: inherit;
         gap: 1rem;
+=======
+        display: block;
+        color: inherit;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .conversation-item:last-child {
@@ -42,6 +51,7 @@
     
     .conversation-item:hover {
         background: #f8f9fa;
+<<<<<<< HEAD
         padding-left: 1.5rem;
     }
     
@@ -54,12 +64,27 @@
     .conversation-avatar {
         width: 56px;
         height: 56px;
+=======
+    }
+    
+    .conversation-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .conversation-avatar {
+        width: 50px;
+        height: 50px;
+>>>>>>> 81f0d06 (First Up|)
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
+<<<<<<< HEAD
         font-weight: 700;
         font-size: 1.2rem;
         flex-shrink: 0;
@@ -84,20 +109,41 @@
         align-items: baseline;
         justify-content: space-between;
         gap: 1rem;
+=======
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+    
+    .conversation-info {
+        flex-grow: 1;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .conversation-name {
         font-weight: 600;
         color: #333;
+<<<<<<< HEAD
         font-size: 0.95rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         flex-shrink: 0;
+=======
+        margin-bottom: 0.25rem;
+    }
+    
+    .conversation-message {
+        color: #999;
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .conversation-time {
         color: #999;
+<<<<<<< HEAD
         font-size: 0.8rem;
         text-align: right;
         white-space: nowrap;
@@ -128,6 +174,10 @@
         font-size: 0.7rem;
         font-weight: 600;
         margin-top: 0.25rem;
+=======
+        font-size: 0.85rem;
+        text-align: right;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .empty-messages {
@@ -140,6 +190,7 @@
         color: #ddd;
         margin-bottom: 1rem;
     }
+<<<<<<< HEAD
 
     .empty-messages h4 {
         color: #333;
@@ -200,6 +251,8 @@
             font-size: 0.7rem;
         }
     }
+=======
+>>>>>>> 81f0d06 (First Up|)
 </style>
 
 <div class="messages-header">
@@ -222,6 +275,7 @@
                         $otherUser = $conversation->sender_id == auth()->id() 
                             ? $conversation->receiver 
                             : $conversation->sender;
+<<<<<<< HEAD
                         $displayName = $otherUser->name;
                         $isShopChat = false;
                         if ($conversation->shop) {
@@ -252,6 +306,22 @@
                                     <i class="fas fa-store me-1"></i>Shop Chat
                                 </span>
                             @endif
+=======
+                    @endphp
+                    
+                    <a href="{{ route('messages.show', $otherUserId) }}" class="conversation-item">
+                        <div class="conversation-header">
+                            <div class="conversation-avatar">
+                                {{ strtoupper(substr($otherUser->name, 0, 1)) }}
+                            </div>
+                            <div class="conversation-info">
+                                <div class="conversation-name">{{ $otherUser->name }}</div>
+                                <div class="conversation-message">{{ Str::limit($conversation->message, 40) }}</div>
+                            </div>
+                            <div class="conversation-time">
+                                {{ $conversation->created_at->format('H:i') }}
+                            </div>
+>>>>>>> 81f0d06 (First Up|)
                         </div>
                     </a>
                 @endforeach

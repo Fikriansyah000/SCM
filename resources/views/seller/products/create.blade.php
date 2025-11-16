@@ -246,6 +246,12 @@
                         <option value="Jasa & Layanan" {{ old('category') == 'Jasa & Layanan' ? 'selected' : '' }}>
                             Jasa & Layanan (Print, fotocopy, les privat, jasa lainnya)
                         </option>
+<<<<<<< HEAD
+=======
+                        <option value="Barang & Produk" {{ old('category') == 'Barang & Produk' ? 'selected' : '' }}>
+                            Barang & Produk (Tas, aksesoris, elektronik, fashion)
+                        </option>
+>>>>>>> 81f0d06 (First Up|)
                     </select>
                     @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

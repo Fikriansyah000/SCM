@@ -5,14 +5,21 @@
 @section('content')
 <style>
     .hero-banner {
+<<<<<<< HEAD
         background: linear-gradient(90deg, rgba(166,189,213,0.95) 0%, rgba(230,240,250,0.9) 100%);
+=======
+        background: rgba(166, 189, 213, 0.95);
+>>>>>>> 81f0d06 (First Up|)
         color: #0a4c8c;
         padding: 2rem 0;
         margin-bottom: 2rem;
         border-radius: 0.75rem;
         overflow: hidden;
+<<<<<<< HEAD
         border: 1px solid rgba(10,76,140,0.04);
         box-shadow: 0 4px 18px rgba(10,76,140,0.035);
+=======
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .hero-content {
@@ -96,12 +103,17 @@
     
     .categories-grid {
         display: grid;
+<<<<<<< HEAD
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+=======
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+>>>>>>> 81f0d06 (First Up|)
         gap: 1rem;
         margin-bottom: 2rem;
     }
     
     .category-card {
+<<<<<<< HEAD
         background: linear-gradient(180deg, #faf6f1 0%, #f5f0eb 100%);
         border-radius: 0.75rem;
         padding: 1.25rem;
@@ -110,15 +122,31 @@
         transition: transform 0.25s ease, box-shadow 0.25s ease;
         box-shadow: 0 8px 20px rgba(139,113,89,0.06);
         border: 1px solid rgba(139,113,89,0.08);
+=======
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+>>>>>>> 81f0d06 (First Up|)
         text-decoration: none;
         color: #333;
     }
     
     .category-card:hover {
+<<<<<<< HEAD
         transform: translateY(-6px);
         box-shadow: 0 12px 30px rgba(7,18,46,0.08);
         text-decoration: none;
         color: #4f6ed9;
+=======
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        text-decoration: none;
+        color: #667eea;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .category-icon {
@@ -154,11 +182,16 @@
     .product-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+<<<<<<< HEAD
         gap: 1.25rem;
+=======
+        gap: 1.5rem;
+>>>>>>> 81f0d06 (First Up|)
         margin-bottom: 2rem;
     }
     
     .product-card {
+<<<<<<< HEAD
         border-radius: 0.75rem;
         overflow: hidden;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -173,17 +206,39 @@
     .product-card:hover {
         transform: translateY(-6px);
         box-shadow: 0 18px 46px rgba(7,18,46,0.06);
+=======
+        border: none;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .product-image {
         height: 180px;
+<<<<<<< HEAD
         background: linear-gradient(180deg, #f0ede8 0%, #e8e2da 100%);
+=======
+        background: #f0f0f0;
+>>>>>>> 81f0d06 (First Up|)
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         position: relative;
+<<<<<<< HEAD
         border-bottom: 1px solid rgba(139,113,89,0.08);
+=======
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .product-image img {
@@ -211,6 +266,7 @@
         font-size: 0.95rem;
     }
     
+<<<<<<< HEAD
     .product-rating {
         display: flex;
         align-items: center;
@@ -239,6 +295,8 @@
         font-size: 0.8rem;
     }
     
+=======
+>>>>>>> 81f0d06 (First Up|)
     .product-shop {
         font-size: 0.8rem;
         color: #999;
@@ -260,6 +318,7 @@
     
     .btn-add-cart {
         width: 100%;
+<<<<<<< HEAD
         padding: 0.65rem;
         background: linear-gradient(90deg, rgba(166,189,213,0.98) 0%, rgba(120,160,210,0.95) 100%);
         color: #06385f;
@@ -270,12 +329,24 @@
         transition: transform 0.15s ease, box-shadow 0.15s ease;
         margin-top: auto;
         box-shadow: 0 6px 16px rgba(102,126,234,0.09);
+=======
+        padding: 0.75rem;
+        background: rgba(166, 189, 213, 0.95);
+        color: #0a4c8c;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: auto;
+>>>>>>> 81f0d06 (First Up|)
     }
     
     .btn-add-cart:hover {
         transform: translateY(-2px);
         text-decoration: none;
         color: white;
+<<<<<<< HEAD
         box-shadow: 0 10px 30px rgba(102,126,234,0.12);
     }
 
@@ -297,6 +368,8 @@
         .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
         .hero-content { margin-left: 0; padding: 0 1rem; }
         .hero-banner { padding: 1.25rem 0; }
+=======
+>>>>>>> 81f0d06 (First Up|)
     }
 </style>
 
@@ -325,12 +398,17 @@
         </form>
     </div>
     
+<<<<<<< HEAD
     <!-- Categories / Filters Section -->
+=======
+    <!-- Categories Section -->
+>>>>>>> 81f0d06 (First Up|)
     <div class="category-section">
         <div class="section-header">
             <h3 class="section-title">
                 <i class="fas fa-th me-2"></i>Kategori
             </h3>
+<<<<<<< HEAD
             <div>
                 <a href="#" class="see-all-link me-3">Lihat Semua</a>
                 <!-- Filter buttons: Semua / Makanan / Jasa -->
@@ -350,10 +428,40 @@
             <a href="#" class="category-card" onclick="filterProducts('jasa'); return false;">
                 <div class="category-icon">🛠️</div>
                 <div class="category-name">Jasa</div>
+=======
+            <a href="#" class="see-all-link">Lihat Semua</a>
+        </div>
+        
+        <div class="categories-grid">
+            <a href="#" class="category-card">
+                <div class="category-icon">🍜</div>
+                <div class="category-name">Makanan & Minuman</div>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-icon">🖨️</div>
+                <div class="category-name">Jasa Print & Fotocopy</div>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-icon">📚</div>
+                <div class="category-name">Buku & Alat Tulis</div>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-icon">💻</div>
+                <div class="category-name">Elektronik & Gadget</div>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-icon">👕</div>
+                <div class="category-name">Fashion</div>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-icon">🎓</div>
+                <div class="category-name">Jasa Akademik</div>
+>>>>>>> 81f0d06 (First Up|)
             </a>
         </div>
     </div>
     
+<<<<<<< HEAD
     <!-- Flash Sale Section -->
     <div class="category-section">
         <div class="section-header">
@@ -413,6 +521,46 @@
             @else
                 <div class="category-card">Tidak ada flash sale saat ini</div>
             @endif
+=======
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+        <div class="promo-title">
+            <i class="fas fa-shipping-fast me-2"></i>Gratis Ongkir Kampus!
+        </div>
+        <div class="promo-subtitle">Minimal pembelian Rp 50.000 untuk area kampus</div>
+    </div>
+    
+    <!-- Services Section -->
+    <div class="category-section">
+        <div class="section-header">
+            <h3 class="section-title">
+                <i class="fas fa-concierge-bell me-2"></i>Layanan Kampus
+            </h3>
+            <a href="#" class="see-all-link">Lihat Semua</a>
+        </div>
+        
+        <div class="categories-grid">
+            <div class="category-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="category-icon">🖨️</div>
+                <div class="category-name">Print & Fotocopy</div>
+                <small>Print dokumen dengan harga murah</small>
+            </div>
+            <div class="category-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <div class="category-icon">✍️</div>
+                <div class="category-name">Joki Tugas</div>
+                <small>Bantuan mengerjakan tugas kuliah</small>
+            </div>
+            <div class="category-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <div class="category-icon">🎯</div>
+                <div class="category-name">Les Privat</div>
+                <small>Bimbingan belajar mata kuliah</small>
+            </div>
+            <div class="category-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                <div class="category-icon">📷</div>
+                <div class="category-name">Jasa Fotografi</div>
+                <small>Foto untuk kebutuhan akademik</small>
+            </div>
+>>>>>>> 81f0d06 (First Up|)
         </div>
     </div>
     
@@ -431,6 +579,7 @@
         @if($products->count() > 0)
             <div class="product-grid">
                 @foreach($products as $product)
+<<<<<<< HEAD
                 @php
                     // determine coarse type for client-side filtering
                     $prodType = 'other';
@@ -441,6 +590,9 @@
                     }
                 @endphp
                 <div class="product-card" data-type="{{ $prodType }}">
+=======
+                <div class="product-card">
+>>>>>>> 81f0d06 (First Up|)
                     <div class="product-image">
                         @if($product->image)
                             <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
@@ -450,6 +602,7 @@
                     </div>
                     <div class="product-body">
                         <h5 class="product-name">{{ $product->name }}</h5>
+<<<<<<< HEAD
                         <div class="product-rating">
                             <div class="stars">
                                 <i class="fas fa-star"></i>
@@ -461,6 +614,8 @@
                             <span class="rating-value">4.5</span>
                             <span class="rating-count">({{ rand(50, 300) }})</span>
                         </div>
+=======
+>>>>>>> 81f0d06 (First Up|)
                         <a href="{{ route('buyer.shop.visit', $product->shop->id) }}" class="product-shop">
                             <i class="fas fa-store me-1"></i>{{ Str::limit($product->shop->shop_name, 15) }}
                         </a>
@@ -500,6 +655,7 @@
         @endif
     </div>
 </div>
+<<<<<<< HEAD
 <script>
 function filterProducts(type) {
     const grid = document.querySelectorAll('.product-card');
@@ -560,4 +716,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 });
 </script>
+=======
+>>>>>>> 81f0d06 (First Up|)
 @endsection
