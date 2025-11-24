@@ -469,21 +469,7 @@
     </div>
   </section>
 
-  <!-- About Section -->
-  <section class="about-section">
-    <div class="about-container">
-      <div class="about-text">
-        <h3>Tentang PestiMart</h3>
-        <p><strong>PestiMart</strong> adalah solusi e-commerce khusus mahasiswa yang dirancang untuk memudahkan jual beli kebutuhan kampus. Mulai dari buku, alat tulis, hingga perlengkapan kos, semuanya tersedia dalam satu platform yang praktis, cepat, dan hemat.</p>
-        <p>Dengan sistem verifikasi mahasiswa menggunakan NIM dan E-KTM, kami memastikan setiap transaksi berlangsung aman dan terpercaya. PestiMart bukan hanya tempat berbelanja, tapi juga komunitas mahasiswa yang saling membantu dalam memenuhi kebutuhan kampus.</p>
-      </div>
-      <div class="about-image">
-        <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'">
-      </div>
-    </div>
-  </section>
-
-  <!-- Products Showcase Section -->
+    <!-- Products Showcase Section -->
   <section style="padding: 60px 5%; background: white;">
     <div class="features-title">
       <h3>Produk Unggulan</h3>
@@ -504,6 +490,22 @@
       </div>
     </div>
   </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-container">
+      <div class="about-text">
+        <h3>Tentang PestiMart</h3>
+        <p><strong>PestiMart</strong> adalah solusi e-commerce khusus mahasiswa yang dirancang untuk memudahkan jual beli kebutuhan kampus. Mulai dari buku, alat tulis, hingga perlengkapan kos, semuanya tersedia dalam satu platform yang praktis, cepat, dan hemat.</p>
+        <p>Dengan sistem verifikasi mahasiswa menggunakan NIM dan E-KTM, kami memastikan setiap transaksi berlangsung aman dan terpercaya. PestiMart bukan hanya tempat berbelanja, tapi juga komunitas mahasiswa yang saling membantu dalam memenuhi kebutuhan kampus.</p>
+      </div>
+      <div class="about-image">
+        <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'">
+      </div>
+    </div>
+  </section>
+
+
 
   <!-- Features Section -->
   <section class="features-section">

@@ -121,6 +121,22 @@
         font-weight: 600;
         font-size: 0.9rem;
     }
+
+    .chart-container {
+        position: relative;
+        height: 400px;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .chart-wrapper {
+        padding: 1rem;
+    }
+    .stat-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
 </style>
 
 <div class="dashboard-header">
@@ -133,45 +149,81 @@
 </div>
 
 <div class="container my-4">
-    <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon primary">
-                    <i class="fas fa-box"></i>
-                </div>
-                <div class="stat-value">{{ $totalProducts }}</div>
-                <div class="stat-label">Total Produk</div>
-            </div>
+    
+    <!-- Revenue Chart -->
+    <div class="section-card">
+        <div class="section-title">
+            <i class="fas fa-chart-line me-2"></i>Revenue 12 Bulan Terakhir
         </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon warning">
-                    <i class="fas fa-shopping-bag"></i>
-                </div>
-                <div class="stat-value">{{ $totalOrders }}</div>
-                <div class="stat-label">Total Pesanan</div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon danger">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-value">{{ $pendingOrders }}</div>
-                <div class="stat-label">Pesanan Pending</div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <div class="stat-card">
-                <div class="stat-icon success">
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
-                <div class="stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
-                <div class="stat-label">Total Revenue</div>
+        <div class="chart-wrapper">
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
     </div>
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{{ route('seller.products.index') }}" class="stat-link">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-value">{{ $totalProducts }}</div>
+                    <div class="stat-label">Total Produk</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{{ route('seller.orders') }}" class="stat-link">
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-value">{{ $totalOrders }}</div>
+                    <div class="stat-label">Total Pesanan</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{{ route('seller.orders') }}?status=pending" class="stat-link">
+                <div class="stat-card">
+                    <div class="stat-icon danger">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value">{{ $pendingOrders }}</div>
+                    <div class="stat-label">Pesanan Pending</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{{ route('seller.orders') }}?return_status=requested" class="stat-link">
+                <div class="stat-card">
+                    <div class="stat-icon danger">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="stat-value">{{ $returnRequests ?? 0 }}</div>
+                    <div class="stat-label">Pesanan Retur</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{{ route('seller.orders') }}" class="stat-link">
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     
     <!-- Shop Info -->
     <div class="section-card">
@@ -224,8 +276,95 @@
             <a href="{{ route('seller.orders') }}" class="action-btn">
                 <i class="fas fa-clipboard-list"></i>
                 <span>Kelola Pesanan</span>
-              </a>
+            </a>
         </div>
     </div>
 </div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    // Revenue Chart Configuration
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($labels) !!},
+            datasets: [{
+                label: 'Revenue (Rp)',
+                data: {!! json_encode($revenueData) !!},
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 6,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: '#764ba2',
+                hoverBackgroundColor: 'rgba(102, 126, 234, 0.2)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#333',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#667eea',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.parsed.y;
+                            return 'Revenue: Rp' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#999',
+                        callback: function(value) {
+                            return 'Rp' + (value / 1000).toFixed(0) + 'K';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#999'
+                    },
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    }
+                }
+            }
+        }
+    });
+</script>
 @endsection

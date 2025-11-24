@@ -20,8 +20,26 @@ class SellerController extends Controller
         $totalOrders = $shop->orders()->count();
         $totalRevenue = $shop->orders()->where('status', 'completed')->sum('total_amount');
         $pendingOrders = $shop->orders()->where('status', 'pending')->count();
+        // Count orders which have return requests (only those requested by buyer)
+        $returnRequests = $shop->orders()->where('return_status', 'requested')->count();
 
-        return view('seller.dashboard', compact('shop', 'totalProducts', 'totalOrders', 'totalRevenue', 'pendingOrders'));
+        // Get revenue data for the last 12 months
+        $revenueData = [];
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $month = $date->format('M Y');
+            $revenue = $shop->orders()
+                ->where('status', 'completed')
+                ->whereYear('updated_at', $date->year)
+                ->whereMonth('updated_at', $date->month)
+                ->sum('total_amount');
+            
+            $labels[] = $month;
+            $revenueData[] = (int)$revenue;
+        }
+
+        return view('seller.dashboard', compact('shop', 'totalProducts', 'totalOrders', 'totalRevenue', 'pendingOrders', 'returnRequests', 'labels', 'revenueData'));
     }
 
     public function showCreateShop()

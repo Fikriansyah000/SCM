@@ -176,7 +176,18 @@
     <div class="notifications-container">
         @if($notifications->count() > 0)
             @foreach($notifications as $notification)
-            <div class="notification-card {{ !$notification->is_read ? 'unread' : '' }} is-{{ getNotificationType($notification->type) }}">
+            @php
+                $orderLink = null;
+                if (isset($notification->data['order_id'])) {
+                    if (auth()->user()->isSeller()) {
+                        $orderLink = route('seller.orders.show', $notification->data['order_id']);
+                    } else {
+                        $orderLink = route('buyer.orders.show', $notification->data['order_id']);
+                    }
+                }
+            @endphp
+
+            <div data-href="{{ $orderLink }}" class="notification-card {{ !$notification->is_read ? 'unread' : '' }} is-{{ getNotificationType($notification->type) }}" @if($orderLink) style="cursor:pointer;" @endif>
                 <div style="display: flex; gap: 1rem;">
                     <div class="notification-icon">
                         {!! getNotificationIcon($notification->type) !!}
@@ -206,7 +217,7 @@
                             </a>
                             @endif
 
-                            <form method="POST" action="{{ route('notifications.read', $notification) }}" style="flex: 1;">
+                            <form method="POST" action="{{ route('notifications.read', $notification) }}" style="flex: 1;" onsubmit="event.stopPropagation();">
                                 @csrf
                                 <button type="submit" class="btn-notif-action btn-secondary w-100">
                                     <i class="fas fa-check me-1"></i>Sudah Dibaca
@@ -217,6 +228,20 @@
                 </div>
             </div>
             @endforeach
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.notification-card[data-href]').forEach(function(card) {
+                    const href = card.getAttribute('data-href');
+                    if (!href) return;
+                    card.addEventListener('click', function(e) {
+                        // If click originated from a button or link, ignore
+                        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('form')) return;
+                        window.location.href = href;
+                    });
+                });
+            });
+        </script>
 
             <div class="mt-4">
                 {{ $notifications->links('pagination::bootstrap-5') }}

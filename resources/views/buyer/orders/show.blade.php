@@ -282,6 +282,60 @@
                         Rp{{ number_format($item->price * $item->quantity, 0, ',', '.') }}
                     </div>
                 </div>
+                {{-- Review block per item --}}
+                @php
+                    $existingReview = \App\Models\ProductReview::where('product_id', $item->product_id)
+                        ->where('user_id', auth()->id())
+                        ->where('order_id', $order->id)
+                        ->first();
+                @endphp
+
+                <div style="padding: 0.75rem 1rem 1.5rem; border-bottom: 1px dashed #eee;">
+                    @if($existingReview)
+                        <div><strong>Ulasan Anda:</strong></div>
+                        <div style="margin-top:6px;">
+                            <div>
+                                @for($s=1;$s<=5;$s++)
+                                    <i class="fas fa-star" style="color: {{ $s <= $existingReview->rating ? '#f6ad55' : '#ddd' }};"></i>
+                                @endfor
+                            </div>
+                            @if($existingReview->title)
+                                <div style="font-weight:700; margin-top:6px;">{{ $existingReview->title }}</div>
+                            @endif
+                            @if($existingReview->review)
+                                <div class="text-muted" style="margin-top:6px;">{{ $existingReview->review }}</div>
+                            @endif
+                        </div>
+                    @else
+                        @if(in_array($order->status, ['delivered','completed']))
+                            <form method="POST" action="{{ route('reviews.store') }}" style="display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $item->product_id }}">
+                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                <input type="hidden" name="rating" id="rating-{{ $item->id }}" value="5">
+                                <div style="flex: 0 0 220px;">
+                                    <div style="font-weight:700; margin-bottom:6px;">Berikan Rating</div>
+                                    <div class="stars-input" data-target="#rating-{{ $item->id }}">
+                                        @for($s=1;$s<=5;$s++)
+                                            <i class="fas fa-star star-clickable" data-value="{{ $s }}" style="font-size:20px; color: #f0f0f0; cursor:pointer; margin-right:4px;"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <div style="flex:1; min-width:240px;">
+                                    <div class="form-group">
+                                        <input name="title" class="form-control" placeholder="Judul ulasan (opsional)" />
+                                    </div>
+                                    <div class="form-group" style="margin-top:6px;">
+                                        <textarea name="review" class="form-control" rows="2" placeholder="Tulis ulasan Anda... (opsional)"></textarea>
+                                    </div>
+                                </div>
+                                <div style="flex:0 0 140px; display:flex; align-items:center;">
+                                    <button class="btn btn-primary" type="submit">Kirim Ulasan</button>
+                                </div>
+                            </form>
+                        @endif
+                    @endif
+                </div>
                 @endforeach
 
                 <!-- Shipping Address -->
@@ -554,4 +608,45 @@ function closeShipReturnModal() {
     });
 });
 </script>
+// Star rating interaction
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.stars-input').forEach(function(container) {
+        const targetSelector = container.getAttribute('data-target');
+        const target = document.querySelector(targetSelector);
+        const stars = container.querySelectorAll('.star-clickable');
+        const setRating = (value) => {
+            stars.forEach(s => {
+                const v = parseInt(s.getAttribute('data-value'));
+                s.style.color = v <= value ? '#f6ad55' : '#ddd';
+            });
+            if (target) target.value = value;
+        };
+
+        stars.forEach(function(star) {
+            star.addEventListener('click', function() {
+                const v = parseInt(this.getAttribute('data-value'));
+                setRating(v);
+            });
+            star.addEventListener('mouseover', function() {
+                const v = parseInt(this.getAttribute('data-value'));
+                stars.forEach(s => {
+                    const sv = parseInt(s.getAttribute('data-value'));
+                    s.style.color = sv <= v ? '#f6ad55' : '#ddd';
+                });
+            });
+            star.addEventListener('mouseout', function() {
+                const current = parseInt(target ? target.value : 0) || 0;
+                stars.forEach(s => {
+                    const sv = parseInt(s.getAttribute('data-value'));
+                    s.style.color = sv <= current ? '#f6ad55' : '#ddd';
+                });
+            });
+        });
+
+        // initialize default
+        if (target) setRating(parseInt(target.value) || 5);
+    });
+});
+</script>
+
 @endsection
