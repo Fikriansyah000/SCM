@@ -92,4 +92,95 @@ class OrderController extends Controller
 
         return back()->with('success', 'Pesanan dikirim! Pembeli akan menerima notifikasi.');
     }
+
+    // Seller approve return request
+    public function approveReturn(Request $request, Order $order)
+    {
+        $shop = Shop::where('user_id', auth()->id())->first();
+
+        if (!$shop || $order->shop_id !== $shop->id) {
+            abort(403);
+        }
+
+        if ($order->return_status !== 'requested') {
+            return back()->with('error', 'Tidak ada permintaan retur yang perlu disetujui');
+        }
+
+        $order->update([
+            'return_status' => 'approved'
+        ]);
+
+        // Notify buyer
+        \App\Models\Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Retur Disetujui',
+            'message' => 'Penjual menyetujui permintaan retur untuk Pesanan #' . $order->order_number,
+            'type' => 'return_approved',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Permintaan retur disetujui. Mohon pembeli mengirimkan barang kembali.');
+    }
+
+    // Seller reject return request
+    public function rejectReturn(Request $request, Order $order)
+    {
+        $shop = Shop::where('user_id', auth()->id())->first();
+
+        if (!$shop || $order->shop_id !== $shop->id) {
+            abort(403);
+        }
+
+        if ($order->return_status !== 'requested') {
+            return back()->with('error', 'Tidak ada permintaan retur yang perlu ditolak');
+        }
+
+        $order->update([
+            'return_status' => 'rejected'
+        ]);
+
+        \App\Models\Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Retur Ditolak',
+            'message' => 'Penjual menolak permintaan retur untuk Pesanan #' . $order->order_number,
+            'type' => 'return_rejected',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Permintaan retur ditolak.');
+    }
+
+    // Seller confirm they received returned item from buyer
+    public function confirmReturnReceived(Request $request, Order $order)
+    {
+        $shop = Shop::where('user_id', auth()->id())->first();
+
+        if (!$shop || $order->shop_id !== $shop->id) {
+            abort(403);
+        }
+
+        if ($order->return_status !== 'shipped') {
+            return back()->with('error', 'Status retur tidak valid untuk konfirmasi');
+        }
+
+        $order->update([
+            'return_status' => 'received',
+            'return_received_at' => now()
+        ]);
+
+        // Optional: process refund / restock here
+        foreach ($order->items as $item) {
+            $item->product->increment('stock', $item->quantity);
+        }
+
+        \App\Models\Notification::create([
+            'user_id' => $order->user_id,
+            'title' => 'Retur Diterima',
+            'message' => 'Penjual telah menerima retur untuk Pesanan #' . $order->order_number,
+            'type' => 'return_received',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Retur telah diterima. Stok dikembalikan.');
+    }
 }

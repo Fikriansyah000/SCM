@@ -250,6 +250,142 @@
         color: #333;
     }
 
+    /* Return Section Styles */
+    .return-section {
+        background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+        border-left: 4px solid #ff9800;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .return-status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .return-status-requested {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .return-status-approved {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .return-status-shipped {
+        background: #cfe2ff;
+        color: #084298;
+    }
+
+    .return-status-received {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .return-status-rejected {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .return-info {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .return-info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .return-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .return-info-label {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .return-info-value {
+        color: #333;
+    }
+
+    .return-timeline {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 152, 0, 0.3);
+    }
+
+    .return-timeline-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .return-timeline-dot {
+        width: 12px;
+        height: 12px;
+        background: #ff9800;
+        border-radius: 50%;
+        margin-top: 0.4rem;
+        flex-shrink: 0;
+    }
+
+    .return-timeline-content {
+        font-size: 0.85rem;
+    }
+
+    .return-timeline-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .return-timeline-date {
+        color: #999;
+        font-size: 0.8rem;
+    }
+
+    .return-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .btn-approve {
+        background: #28a745 !important;
+    }
+
+    .btn-approve:hover {
+        background: #218838 !important;
+    }
+
+    .btn-reject {
+        background: #dc3545 !important;
+    }
+
+    .btn-reject:hover {
+        background: #c82333 !important;
+    }
+
+    .btn-confirm-return {
+        background: #17a2b8 !important;
+    }
+
+    .btn-confirm-return:hover {
+        background: #138496 !important;
+    }
+
     @media (max-width: 768px) {
         .order-detail-container {
             grid-template-columns: 1fr;
@@ -338,6 +474,136 @@
                     </div>
                 </div>
                 @endforeach
+
+                <!-- Return Request from Buyer -->
+                @if($order->return_status)
+                <div class="section-title mt-4">
+                    <i class="fas fa-undo"></i>Status Pengajuan Retur
+                </div>
+                <div class="return-section">
+                    <span class="return-status-badge return-status-{{ $order->return_status }}">
+                        @switch($order->return_status)
+                            @case('requested')
+                                <i class="fas fa-clock me-1"></i>Retur Diminta
+                                @break
+                            @case('approved')
+                                <i class="fas fa-check-circle me-1"></i>Retur Disetujui
+                                @break
+                            @case('shipped')
+                                <i class="fas fa-truck me-1"></i>Retur Dikirim
+                                @break
+                            @case('received')
+                                <i class="fas fa-check-double me-1"></i>Retur Diterima
+                                @break
+                            @case('rejected')
+                                <i class="fas fa-times-circle me-1"></i>Retur Ditolak
+                                @break
+                            @default
+                                {{ ucfirst($order->return_status) }}
+                        @endswitch
+                    </span>
+
+                    <div class="return-info">
+                        <div class="return-info-item">
+                            <span class="return-info-label">Alasan Retur:</span>
+                            <span class="return-info-value">
+                                {{ $order->return_reason ?? '-' }}
+                            </span>
+                        </div>
+
+                        @if($order->return_requested_at)
+                        <div class="return-info-item">
+                            <span class="return-info-label">Tanggal Permintaan:</span>
+                            <span class="return-info-value">
+                                {{ $order->return_requested_at ? (is_string($order->return_requested_at) ? \Carbon\Carbon::parse($order->return_requested_at)->format('d M Y H:i') : $order->return_requested_at->format('d M Y H:i')) : '-' }}
+                            </span>
+                        </div>
+                        @endif
+
+                        @if($order->return_tracking_number)
+                        <div class="return-info-item">
+                            <span class="return-info-label">Nomor Resi Retur:</span>
+                            <span class="return-info-value">
+                                <strong>{{ $order->return_tracking_number }}</strong>
+                            </span>
+                        </div>
+                        @endif
+
+                        @if($order->return_shipped_at)
+                        <div class="return-info-item">
+                            <span class="return-info-label">Tanggal Pengiriman Retur:</span>
+                            <span class="return-info-value">
+                                {{ $order->return_shipped_at ? (is_string($order->return_shipped_at) ? \Carbon\Carbon::parse($order->return_shipped_at)->format('d M Y H:i') : $order->return_shipped_at->format('d M Y H:i')) : '-' }}
+                            </span>
+                        </div>
+                        @endif
+
+                        @if($order->return_received_at)
+                        <div class="return-info-item">
+                            <span class="return-info-label">Tanggal Penerimaan Retur:</span>
+                            <span class="return-info-value">
+                                {{ $order->return_received_at ? (is_string($order->return_received_at) ? \Carbon\Carbon::parse($order->return_received_at)->format('d M Y H:i') : $order->return_received_at->format('d M Y H:i')) : '-' }}
+                            </span>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Timeline Retur -->
+                    <div class="return-timeline">
+                        <div class="return-timeline-item">
+                            <div class="return-timeline-dot"></div>
+                            <div class="return-timeline-content">
+                                <div class="return-timeline-label">
+                                    <i class="fas fa-clock text-warning"></i> Retur Diminta
+                                </div>
+                                <div class="return-timeline-date">
+                                    {{ $order->return_requested_at ? (is_string($order->return_requested_at) ? \Carbon\Carbon::parse($order->return_requested_at)->format('d M Y H:i') : $order->return_requested_at->format('d M Y H:i')) : '-' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="return-timeline-item">
+                            <div class="return-timeline-dot"></div>
+                            <div class="return-timeline-content">
+                                <div class="return-timeline-label">
+                                    <i class="fas fa-check text-info"></i> Disetujui Penjual
+                                </div>
+                                <div class="return-timeline-date">
+                                    @if(in_array($order->return_status, ['approved', 'shipped', 'received']))
+                                        Telah Disetujui
+                                    @else
+                                        Menunggu...
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="return-timeline-item">
+                            <div class="return-timeline-dot"></div>
+                            <div class="return-timeline-content">
+                                <div class="return-timeline-label">
+                                    <i class="fas fa-truck text-info"></i> Dikirim Kembali
+                                </div>
+                                <div class="return-timeline-date">
+                                    {{ $order->return_shipped_at ? (is_string($order->return_shipped_at) ? \Carbon\Carbon::parse($order->return_shipped_at)->format('d M Y H:i') : $order->return_shipped_at->format('d M Y H:i')) : 'Menunggu...' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="return-timeline-item">
+                            <div class="return-timeline-dot"></div>
+                            <div class="return-timeline-content">
+                                <div class="return-timeline-label">
+                                    <i class="fas fa-check-double text-success"></i> Diterima Penjual
+                                </div>
+                                <div class="return-timeline-date">
+                                    {{ $order->return_received_at ? (is_string($order->return_received_at) ? \Carbon\Carbon::parse($order->return_received_at)->format('d M Y H:i') : $order->return_received_at->format('d M Y H:i')) : 'Menunggu...' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
 
@@ -383,6 +649,97 @@
                         <i class="fas fa-truck me-1"></i>Kirim Pesanan
                     </button>
 
+                    @endif
+
+                    {{-- Return management actions --}}
+                    @if($order->return_status === 'requested')
+                        <div style="background:#e3f2fd;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
+                            <div style="margin-bottom:0.75rem;color:#1976d2;">
+                                <strong><i class="fas fa-info-circle me-1"></i>Pengajuan Retur Baru</strong>
+                            </div>
+                            <p style="font-size:0.85rem;color:#666;margin-bottom:1rem;">
+                                Pembeli telah mengajukan retur dengan alasan: <br>
+                                <em>"{{ $order->return_reason }}"</em>
+                            </p>
+                        </div>
+
+                        <form method="POST" action="{{ route('seller.orders.return.approve', $order) }}" style="margin-bottom:0.75rem;">
+                            @csrf
+                            <button type="submit" class="btn-action btn-approve">
+                                <i class="fas fa-check me-1"></i>Setujui Retur
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('seller.orders.return.reject', $order) }}">
+                            @csrf
+                            <button type="submit" class="btn-action btn-reject">
+                                <i class="fas fa-times me-1"></i>Tolak Retur
+                            </button>
+                        </form>
+
+                    @elseif($order->return_status === 'approved')
+                        <div style="background:#e8f5e9;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
+                            <div style="margin-bottom:0.75rem;color:#388e3c;">
+                                <strong><i class="fas fa-check-circle me-1"></i>Retur Telah Disetujui</strong>
+                            </div>
+                            <p style="font-size:0.85rem;color:#666;">
+                                Menunggu pembeli mengirimkan barang kembali dengan nomor resi retur.
+                            </p>
+                        </div>
+
+                        <a href="{{ route('seller.orders') }}" class="btn-action btn-back">
+                            <i class="fas fa-arrow-left me-1"></i>Kembali
+                        </a>
+
+                    @elseif($order->return_status === 'shipped')
+                        <div style="background:#e1f5fe;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
+                            <div style="margin-bottom:0.75rem;color:#0277bd;">
+                                <strong><i class="fas fa-truck me-1"></i>Barang Dalam Pengiriman</strong>
+                            </div>
+                            <p style="font-size:0.85rem;color:#666;">
+                                Nomor Resi: <strong>{{ $order->return_tracking_number }}</strong> <br>
+                                Harap konfirmasi ketika barang retur telah diterima.
+                            </p>
+                        </div>
+
+                        <form method="POST" action="{{ route('seller.orders.return.confirm-received', $order) }}" style="margin-bottom:0.75rem;">
+                            @csrf
+                            <button type="submit" class="btn-action btn-confirm-return">
+                                <i class="fas fa-check-double me-1"></i>Konfirmasi Retur Diterima
+                            </button>
+                        </form>
+
+                        <a href="{{ route('seller.orders') }}" class="btn-action btn-back">
+                            <i class="fas fa-arrow-left me-1"></i>Kembali
+                        </a>
+
+                    @elseif($order->return_status === 'received')
+                        <div style="background:#f3e5f5;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
+                            <div style="margin-bottom:0.75rem;color:#7b1fa2;">
+                                <strong><i class="fas fa-check-double me-1"></i>Retur Selesai</strong>
+                            </div>
+                            <p style="font-size:0.85rem;color:#666;">
+                                Proses retur telah selesai. Stok produk telah dikembalikan ke inventory.
+                            </p>
+                        </div>
+
+                        <a href="{{ route('seller.orders') }}" class="btn-action btn-back">
+                            <i class="fas fa-arrow-left me-1"></i>Kembali
+                        </a>
+
+                    @elseif($order->return_status === 'rejected')
+                        <div style="background:#ffebee;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
+                            <div style="margin-bottom:0.75rem;color:#c62828;">
+                                <strong><i class="fas fa-times-circle me-1"></i>Retur Ditolak</strong>
+                            </div>
+                            <p style="font-size:0.85rem;color:#666;">
+                                Permintaan retur telah ditolak. Transaksi pesanan tetap valid.
+                            </p>
+                        </div>
+
+                        <a href="{{ route('seller.orders') }}" class="btn-action btn-back">
+                            <i class="fas fa-arrow-left me-1"></i>Kembali
+                        </a>
                     @endif
 
                     <a href="{{ route('seller.orders') }}" class="btn-action btn-back">

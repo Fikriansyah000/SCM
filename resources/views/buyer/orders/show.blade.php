@@ -204,6 +204,51 @@
             gap: 1rem;
         }
     }
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        max-width: 520px;
+        width: 95%;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .modal-header { font-weight:700; margin-bottom:0.75rem; }
+
+    .btn-confirm {
+        padding: 0.6rem 1rem;
+        border-radius: 0.4rem;
+        background: #667eea;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        padding: 0.6rem 1rem;
+        border-radius: 0.4rem;
+        background: #f0f0f0;
+        color: #333;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+    }
 </style>
 
 <div class="container my-4">
@@ -275,6 +320,33 @@
     </form>
 @endif
 
+                {{-- Return flow: request return when delivered/completed and no active return --}}
+                @if(in_array($order->status, ['delivered','completed']) && !$order->return_status)
+                    <button type="button" class="btn btn-warning" onclick="openReturnModal()">
+                        <i class="fas fa-undo"></i> Ajukan Retur
+                    </button>
+                @endif
+
+                {{-- If return is approved, buyer can ship return --}}
+                @if($order->return_status === 'approved')
+                    <button type="button" class="btn btn-outline-primary" onclick="openShipReturnModal()">
+                        <i class="fas fa-truck"></i> Kirim Retur
+                    </button>
+                @endif
+
+                {{-- Show status note for return states --}}
+                @if($order->return_status)
+                    <div style="margin-top:8px;">
+                        <small class="text-muted">Status Retur: <strong>{{ ucfirst($order->return_status) }}</strong></small>
+                        @if($order->return_reason)
+                            <div><small>Alasan: {{ $order->return_reason }}</small></div>
+                        @endif
+                        @if($order->return_tracking_number)
+                            <div><small>Resi Retur: {{ $order->return_tracking_number }}</small></div>
+                        @endif
+                    </div>
+                @endif
+
                 </div>
             </div>
 
@@ -328,6 +400,55 @@
             </div>
         </div>
 
+        <!-- Return Request Modal -->
+        <div id="returnModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-undo me-2"></i>Ajukan Retur
+                </div>
+
+                <form method="POST" action="{{ route('buyer.orders.request-return', $order) }}">
+                    @csrf
+                    <div class="form-group">
+                        <label for="reason" class="form-label">Alasan Retur</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="4" required placeholder="Jelaskan alasan retur..."></textarea>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-confirm">
+                            <i class="fas fa-paper-plane me-1"></i>Kirim Permintaan
+                        </button>
+                        <button type="button" class="btn-cancel" onclick="closeReturnModal()">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ship Return Modal -->
+        <div id="shipReturnModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-truck me-2"></i>Kirim Retur
+                </div>
+
+                <form method="POST" action="{{ route('buyer.orders.ship-return', $order) }}">
+                    @csrf
+                    <div class="form-group">
+                        <label for="return_tracking_number" class="form-label">Nomor Resi (Opsional)</label>
+                        <input type="text" class="form-control" id="return_tracking_number" name="return_tracking_number" placeholder="Nomor resi pengembalian">
+                        <small class="text-muted">Jika ada resi, masukkan di sini.</small>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-confirm">
+                            <i class="fas fa-check me-1"></i>Kirim Retur
+                        </button>
+                        <button type="button" class="btn-cancel" onclick="closeShipReturnModal()">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Sidebar -->
         <div>
             <div class="order-summary">
@@ -371,4 +492,36 @@
         </div>
     </div>
 </div>
+<script>
+function openReturnModal() {
+    const el = document.getElementById('returnModal');
+    if (el) el.classList.add('show');
+}
+
+function closeReturnModal() {
+    const el = document.getElementById('returnModal');
+    if (el) el.classList.remove('show');
+}
+
+function openShipReturnModal() {
+    const el = document.getElementById('shipReturnModal');
+    if (el) el.classList.add('show');
+}
+
+function closeShipReturnModal() {
+    const el = document.getElementById('shipReturnModal');
+    if (el) el.classList.remove('show');
+}
+
+// Close modals when clicking outside the content
+['returnModal', 'shipReturnModal'].forEach(id => {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+});
+</script>
 @endsection

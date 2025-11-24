@@ -51,6 +51,9 @@ Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->grou
     Route::post('/orders/{order}/confirm-delivery', [BuyerOrderController::class, 'confirmDelivery'])->name('orders.confirm-delivery');
     Route::post('/orders/{order}/complete', [BuyerOrderController::class, 'complete'])->name('orders.complete');
     Route::post('/orders/{order}/cancel', [BuyerOrderController::class, 'cancel'])->name('orders.cancel');
+    // Returns
+    Route::post('/orders/{order}/request-return', [BuyerOrderController::class, 'requestReturn'])->name('orders.request-return');
+    Route::post('/orders/{order}/ship-return', [BuyerOrderController::class, 'shipReturn'])->name('orders.ship-return');
 }); 
 
 // Seller Routes
@@ -71,6 +74,10 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::get('/orders/{order}', [SellerOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/confirm', [SellerOrderController::class, 'confirm'])->name('orders.confirm');
     Route::post('/orders/{order}/ship', [SellerOrderController::class, 'ship'])->name('orders.ship');
+    // Return management
+    Route::post('/orders/{order}/return/approve', [SellerOrderController::class, 'approveReturn'])->name('orders.return.approve');
+    Route::post('/orders/{order}/return/reject', [SellerOrderController::class, 'rejectReturn'])->name('orders.return.reject');
+    Route::post('/orders/{order}/return/confirm-received', [SellerOrderController::class, 'confirmReturnReceived'])->name('orders.return.confirm-received');
 });
 
 // Shared Routes (Both Buyer and Seller)

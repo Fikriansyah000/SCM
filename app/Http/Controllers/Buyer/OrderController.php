@@ -139,6 +139,63 @@ public function complete(Order $order)
     return back()->with('success', 'Pesanan telah selesai.');
 }
 
+    // Buyer request return (only when delivered or completed)
+    public function requestReturn(Request $request, Order $order)
+    {
+        if ($order->user_id !== auth()->id() || !in_array($order->status, ['delivered', 'completed'])) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'reason' => 'required|string|min:5|max:1000'
+        ]);
+
+        $order->update([
+            'return_status' => 'requested',
+            'return_reason' => $validated['reason'],
+            'return_requested_at' => now()
+        ]);
+
+        // Notify seller
+        Notification::create([
+            'user_id' => $order->shop->user_id,
+            'title' => 'Permintaan Retur Pesanan',
+            'message' => 'Pembeli mengajukan retur untuk Pesanan #' . $order->order_number,
+            'type' => 'return_requested',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Permintaan retur berhasil diajukan. Menunggu konfirmasi penjual.');
+    }
+
+    // Buyer ships the return after seller approves
+    public function shipReturn(Request $request, Order $order)
+    {
+        if ($order->user_id !== auth()->id() || $order->return_status !== 'approved') {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'return_tracking_number' => 'nullable|string|max:100'
+        ]);
+
+        $order->update([
+            'return_tracking_number' => $validated['return_tracking_number'] ?? null,
+            'return_shipped_at' => now(),
+            'return_status' => 'shipped'
+        ]);
+
+        Notification::create([
+            'user_id' => $order->shop->user_id,
+            'title' => 'Retur Sedang Dikirim',
+            'message' => 'Pembeli telah mengirim retur untuk Pesanan #' . $order->order_number,
+            'type' => 'return_shipped',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Retur telah dikirim. Tunggu konfirmasi penjual saat menerima.');
+    }
+
     // Batalkan pesanan
     public function cancel(Request $request, Order $order)
     {

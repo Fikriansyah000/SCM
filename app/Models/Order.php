@@ -14,6 +14,9 @@ class Order extends Model
         'delivered_at',
         'completed_at',
         'cancelled_at',
+        'return_requested_at',
+        'return_shipped_at',
+        'return_received_at',
         'created_at',
         'updated_at'
     ];
@@ -22,7 +25,8 @@ class Order extends Model
         'user_id', 'shop_id', 'order_number', 'status',
         'total_amount', 'shipping_address', 'shipping_method',
         'tracking_number', 'notes', 'confirmed_at', 'shipped_at',
-        'delivered_at', 'completed_at', 'cancelled_at'
+        'delivered_at', 'completed_at', 'cancelled_at',
+        'return_status', 'return_reason', 'return_requested_at', 'return_tracking_number', 'return_shipped_at', 'return_received_at'
     ];
 
     // Relationships
