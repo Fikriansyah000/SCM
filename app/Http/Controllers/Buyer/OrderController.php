@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ShippingController;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -41,12 +43,14 @@ class OrderController extends Controller
         return view('buyer.checkout', compact('cart', 'subtotal', 'discount', 'shipping', 'total'));
     }
 
-    // Simpan order
+    // Simpan order dengan shipping mode
     public function store(Request $request)
     {
         $validated = $request->validate([
             'shipping_address' => 'required|string|min:10',
-            'shipping_method' => 'required|in:pickup,delivery'
+            'shipping_method' => 'required|in:pickup,delivery',
+            'shipping_mode' => 'required|in:reguler,same_day,instant',
+            'shipping_cost' => 'required|numeric|min:0'
         ]);
 
         $cart = Cart::where('user_id', auth()->id())->with('product')->get();
@@ -60,6 +64,35 @@ class OrderController extends Controller
         
         if ($shops->count() > 1) {
             return back()->with('error', 'Semua produk harus dari toko yang sama');
+        }
+
+        // Hitung total weight
+        $totalWeight = $cart->sum('quantity'); // sebagai proxy untuk berat
+
+        // Validasi weight limit berdasarkan shipping mode
+        $maxWeights = [
+            'reguler' => 50,
+            'same_day' => 5,
+            'instant' => 3
+        ];
+
+        if ($totalWeight > $maxWeights[$validated['shipping_mode']]) {
+            return back()->withErrors([
+                'shipping_mode' => "Berat paket ({$totalWeight}kg) melebihi batas untuk mode {$validated['shipping_mode']} (maks {$maxWeights[$validated['shipping_mode']]}kg)"
+            ]);
+        }
+
+        // Validasi cutoff time untuk same_day dan instant
+        if ($validated['shipping_mode'] === 'same_day' && Carbon::now() >= Carbon::today()->setHour(14)) {
+            return back()->withErrors([
+                'shipping_mode' => 'Sudah melewati cutoff time untuk Same Day (sebelum pukul 14:00)'
+            ]);
+        }
+
+        if ($validated['shipping_mode'] === 'instant' && Carbon::now() >= Carbon::today()->setHour(12)) {
+            return back()->withErrors([
+                'shipping_mode' => 'Sudah melewati cutoff time untuk Instant (sebelum pukul 12:00)'
+            ]);
         }
 
         // Hitung total dengan memperhitungkan flash sale
@@ -77,10 +110,23 @@ class OrderController extends Controller
         }
 
         $hasFlash = $cart->contains(fn($c) => in_array($c->product_id, $flashIds));
-        $shipping = ($validated['shipping_method'] === 'delivery' && !$hasFlash) ? 10000 : 0;
-        $total = $subtotal - $discount + $shipping;
+        
+        // Jika flash sale atau pickup, ongkir bisa gratis
+        $shippingCost = $validated['shipping_cost'];
+        if ($validated['shipping_method'] === 'pickup') {
+            $shippingCost = 0;
+        } elseif ($hasFlash && $validated['shipping_mode'] === 'reguler') {
+            // Flash sale dengan reguler = gratis ongkir
+            $shippingCost = 0;
+        }
 
-        // Buat order
+        $total = $subtotal - $discount + $shippingCost;
+
+        // Calculate estimated delivery
+        $shippingController = new ShippingController();
+        $estimatedDelivery = $shippingController->getEstimatedDelivery($validated['shipping_mode']);
+
+        // Buat order dengan shipping details
         $order = Order::create([
             'user_id' => auth()->id(),
             'shop_id' => $cart->first()->product->shop_id,
@@ -89,6 +135,12 @@ class OrderController extends Controller
             'total_amount' => $total,
             'shipping_address' => $validated['shipping_address'],
             'shipping_method' => $validated['shipping_method'],
+            'shipping_mode' => $validated['shipping_mode'],
+            'shipping_cost' => $shippingCost,
+            'total_weight' => $totalWeight,
+            'estimated_delivery' => $estimatedDelivery,
+            'shipping_status' => 'pending',
+            'cutoff_exceeded' => false
         ]);
 
         // Buat order items (simpan harga setelah diskon jika flash sale)
@@ -111,14 +163,14 @@ class OrderController extends Controller
         // Hapus cart
         Cart::where('user_id', auth()->id())->delete();
 
-        // Buat notifikasi untuk seller (update bagian ini)
-    Notification::create([
-        'user_id' => $order->shop->user_id,
-        'title' => 'Pesanan Baru! 📦',
-        'message' => 'Pesanan #' . $order->order_number . ' dari ' . auth()->user()->name,
-        'type' => 'new_order',
-        'data' => ['order_id' => $order->id]  // ← TAMBAHKAN INI
-    ]);
+        // Buat notifikasi untuk seller
+        Notification::create([
+            'user_id' => $order->shop->user_id,
+            'title' => 'Pesanan Baru! 📦',
+            'message' => 'Pesanan #' . $order->order_number . ' dari ' . auth()->user()->name . ' via ' . $order->getShippingModeLabel(),
+            'type' => 'new_order',
+            'data' => ['order_id' => $order->id]
+        ]);
 
         return redirect()->route('buyer.orders.show', $order)
             ->with('success', 'Pesanan berhasil dibuat! Silakan tunggu konfirmasi dari penjual.');
@@ -147,32 +199,63 @@ class OrderController extends Controller
     }
 
     // Buyer menerima barang (SHIPPED → DELIVERED)
-public function confirmDelivery(Order $order)
-{
-    if ($order->user_id !== auth()->id() || $order->status !== 'shipped') {
-        abort(403);
-    }
-    $order->update([
-        'status' => 'delivered',
-        'delivered_at' => now(),
-    ]);
-    // Optional: Notifikasi ke seller
-    return back()->with('success', 'Barang dikonfirmasi diterima.');
-}
+    public function confirmDelivery(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
 
-// Buyer menyelesaikan pesanan (DELIVERED → COMPLETED)
-public function complete(Order $order)
-{
-    if ($order->user_id !== auth()->id() || $order->status !== 'delivered') {
-        abort(403);
+        // Allow confirmation if status is 'shipped' or already 'delivered' (idempotent)
+        if (!in_array($order->status, ['shipped', 'delivered'])) {
+            return back()->with('error', 'Pesanan tidak dapat dikonfirmasi pada status ini');
+        }
+
+        // Only update if not already delivered
+        if ($order->status !== 'delivered') {
+            $order->update([
+                'status' => 'delivered',
+                'delivered_at' => now(),
+                'shipping_status' => 'delivered',
+                'actual_delivery' => now()
+            ]);
+            
+            // Notifikasi ke seller
+            Notification::create([
+                'user_id' => $order->shop->user_id,
+                'title' => 'Pesanan Diterima Pembeli',
+                'message' => 'Pesanan #' . $order->order_number . ' telah diterima pembeli',
+                'type' => 'order_delivered',
+                'data' => ['order_id' => $order->id]
+            ]);
+
+            return back()->with('success', 'Barang dikonfirmasi diterima.');
+        }
+
+        return back()->with('info', 'Pesanan sudah dikonfirmasi diterima sebelumnya.');
     }
-    $order->update([
-        'status' => 'completed',
-        'completed_at' => now(),
-    ]);
-    // Optional: Notifikasi ke seller
-    return back()->with('success', 'Pesanan telah selesai.');
-}
+
+    // Buyer menyelesaikan pesanan (DELIVERED → COMPLETED)
+    public function complete(Order $order)
+    {
+        if ($order->user_id !== auth()->id() || $order->status !== 'delivered') {
+            abort(403);
+        }
+        $order->update([
+            'status' => 'completed',
+            'completed_at' => now()
+        ]);
+
+        // Notifikasi ke seller
+        Notification::create([
+            'user_id' => $order->shop->user_id,
+            'title' => 'Pesanan Selesai',
+            'message' => 'Pesanan #' . $order->order_number . ' telah selesai',
+            'type' => 'order_completed',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Pesanan telah selesai.');
+    }
 
     // Buyer request return (only when delivered or completed)
     public function requestReturn(Request $request, Order $order)
@@ -251,6 +334,14 @@ public function complete(Order $order)
             $item->product->increment('stock', $item->quantity);
         }
 
-        return back()->with('success', 'Pesanan dibatalkan');
+        Notification::create([
+            'user_id' => $order->shop->user_id,
+            'title' => 'Pesanan Dibatalkan',
+            'message' => 'Pembeli membatalkan Pesanan #' . $order->order_number,
+            'type' => 'order_cancelled',
+            'data' => ['order_id' => $order->id]
+        ]);
+
+        return back()->with('success', 'Pesanan berhasil dibatalkan');
     }
 }

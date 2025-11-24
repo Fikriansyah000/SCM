@@ -52,6 +52,122 @@
         outline: none;
     }
 
+    /* Shipping Mode Selection */
+    .shipping-modes-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .shipping-option {
+        position: relative;
+        padding: 1.25rem;
+        border: 2px solid #ddd;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .shipping-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .shipping-option input[type="radio"]:checked + .shipping-content {
+        opacity: 1;
+    }
+
+    .shipping-option input[type="radio"]:checked ~ .shipping-badge {
+        background: #667eea;
+        color: white;
+    }
+
+    .shipping-option:has(input:checked) {
+        background: #f0f4ff;
+        border-color: #667eea;
+    }
+
+    .shipping-option:hover {
+        border-color: #667eea;
+    }
+
+    .shipping-badge {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #e0e0e0;
+        color: #666;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .shipping-content h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .shipping-estimate {
+        font-size: 0.85rem;
+        color: #667eea;
+        font-weight: 500;
+        margin-bottom: 0.35rem;
+    }
+
+    .shipping-cost {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #28a745;
+        margin-bottom: 0.35rem;
+    }
+
+    .shipping-weight {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .shipping-unavailable {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .shipping-warning {
+        display: none;
+        padding: 0.75rem;
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .shipping-warning.show {
+        display: block;
+    }
+
+    .cutoff-alert {
+        background: #ffe4e1;
+        color: #c41c3b;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        text-align: center;
+        font-weight: 500;
+    }
+
     .radio-group {
         display: flex;
         gap: 1rem;
@@ -156,6 +272,10 @@
         .checkout-container {
             grid-template-columns: 1fr;
         }
+
+        .shipping-modes-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -164,7 +284,7 @@
         <i class="fas fa-shopping-cart me-2"></i>Checkout
     </h2>
 
-    <form method="POST" action="{{ route('buyer.checkout.store') }}" class="checkout-container">
+    <form method="POST" action="{{ route('buyer.checkout.store') }}" class="checkout-container" id="checkoutForm">
         @csrf
 
         <!-- Form -->
@@ -186,10 +306,33 @@
                 </div>
             </div>
 
-            <!-- Metode Pengiriman -->
+            <!-- Mode Transportasi -->
             <div class="checkout-card">
                 <h3 class="section-title">
-                    <i class="fas fa-truck me-2"></i>Metode Pengiriman
+                    <i class="fas fa-truck me-2"></i>Mode Transportasi
+                </h3>
+
+                <div class="shipping-warning" id="shippingWarning"></div>
+
+                <div class="shipping-modes-grid" id="shippingModesGrid">
+                    <!-- Will be populated by JavaScript -->
+                    <div style="text-align: center; padding: 2rem; color: #999;">
+                        <i class="fas fa-spinner fa-spin me-2"></i>Memuat opsi pengiriman...
+                    </div>
+                </div>
+
+                <input type="hidden" name="shipping_mode" id="shipping_mode" value="reguler">
+                <input type="hidden" name="shipping_cost" id="shipping_cost" value="0">
+
+                @error('shipping_mode')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Metode Pengiriman (Legacy - kept for compatibility) -->
+            <div class="checkout-card">
+                <h3 class="section-title">
+                    <i class="fas fa-cog me-2"></i>Pengaturan Pengiriman
                 </h3>
 
                 <div class="form-group">
@@ -205,13 +348,10 @@
                             <input type="radio" name="shipping_method" value="delivery" checked required>
                             <div>
                                 <strong>Diantar</strong><br>
-                                <small>Rp 10.000</small>
+                                <small>Lihat opsi di atas</small>
                             </div>
                         </label>
                     </div>
-                    @error('shipping_method')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
                 </div>
             </div>
         </div>
@@ -255,17 +395,17 @@
 
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <strong>Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
+                    <strong id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Diskon</span>
-                    <strong>-Rp{{ number_format($discount, 0, ',', '.') }}</strong>
+                    <strong id="discount-display">-Rp{{ number_format($discount, 0, ',', '.') }}</strong>
                 </div>
 
                 <div class="summary-row" id="shipping-fee">
                     <span>Ongkir</span>
-                    <strong>{{ $shipping === 0 ? 'Gratis' : 'Rp ' . number_format($shipping,0,',','.') }}</strong>
+                    <strong id="shipping-display">Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
                 </div>
 
                 <div class="summary-total">
@@ -273,7 +413,7 @@
                     <span id="total-amount">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
-                <button type="submit" class="btn-checkout">
+                <button type="submit" class="btn-checkout" id="checkoutBtn">
                     <i class="fas fa-check me-2"></i>Lanjutkan Pembayaran
                 </button>
             </div>
@@ -282,20 +422,98 @@
 </div>
 
 <script>
-document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        const shippingFee = this.value === 'pickup' ? 0 : {{ $shipping }};
-        const subtotal = {{ $subtotal }} - {{ $discount }};
-        const total = subtotal + shippingFee;
+    const subtotal = {{ $subtotal }};
+    const discount = {{ $discount }};
+    const flashHasDiscount = {{ $discount > 0 ? 'true' : 'false' }};
 
-        document.getElementById('shipping-fee').innerHTML = `
-            <span>Ongkir</span>
-            <strong>Rp${shippingFee.toLocaleString('id-ID')}</strong>
-        `;
+    // Perkiraan jarak (dalam praktik ini dihitung dari geolocation atau database)
+    const estimatedDistance = 10; // km (default)
+    const totalWeight = {{ $cart->sum(fn($c) => $c->quantity) }}; // total quantity as proxy for weight
 
-        document.getElementById('total-amount').textContent = 
-            'Rp' + total.toLocaleString('id-ID');
+    async function loadShippingModes() {
+        try {
+            const response = await fetch(`/api/shipping/modes?distance=${estimatedDistance}&weight=${totalWeight}`);
+            if (!response.ok) {
+                const txt = await response.text();
+                console.error('Shipping API error:', response.status, txt);
+                throw new Error('Error memuat opsi pengiriman (server returned ' + response.status + ')');
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                const txt = await response.text();
+                console.error('Shipping API returned non-JSON response:', txt);
+                throw new Error('Error memuat opsi pengiriman (invalid response)');
+            }
+
+            const data = await response.json();
+
+            const gridHtml = data.modes.map((mode, idx) => `
+                <label class="shipping-option ${!mode.available ? 'shipping-unavailable' : ''}">
+                    <input type="radio" name="shipping_mode_select" value="${mode.mode}" 
+                        ${mode.available ? 'required' : 'disabled'}
+                        ${idx === 0 ? 'checked' : ''}
+                        onchange="updateShippingMode('${mode.mode}', ${mode.cost})">
+                    <div class="shipping-badge"></div>
+                    <div class="shipping-content">
+                        <h4>${mode.label}</h4>
+                        <div class="shipping-estimate">
+                            <i class="fas fa-clock me-1"></i>${mode.estimatedDays}
+                        </div>
+                        <div class="shipping-cost">
+                            Rp${mode.cost.toLocaleString('id-ID')}
+                        </div>
+                        <div class="shipping-weight">
+                            Maks ${mode.maxWeight}kg
+                        </div>
+                        ${!mode.available && mode.reason ? `<div class="cutoff-alert">${mode.reason}</div>` : ''}
+                    </div>
+                </label>
+            `).join('');
+
+            document.getElementById('shippingModesGrid').innerHTML = gridHtml;
+
+            // Set default to first available mode
+            const firstAvailable = data.modes.find(m => m.available);
+            if (firstAvailable) {
+                updateShippingMode(firstAvailable.mode, firstAvailable.cost);
+            }
+        } catch (error) {
+            console.error('Error loading shipping modes:', error);
+            document.getElementById('shippingModesGrid').innerHTML = 
+                '<div style="color: #c00;">Error memuat opsi pengiriman</div>';
+        }
+    }
+
+    function updateShippingMode(mode, cost) {
+        document.getElementById('shipping_mode').value = mode;
+        document.getElementById('shipping_cost').value = cost;
+
+        // Update display
+        const shippingDisplay = document.getElementById('shipping-display');
+        const totalAmountDisplay = document.getElementById('total-amount');
+        
+        let baseTotal = subtotal - discount;
+        
+        // Jika ada flash sale, ongkir gratis
+        let finalShippingCost = flashHasDiscount ? 0 : cost;
+        let finalTotal = baseTotal + finalShippingCost;
+
+        shippingDisplay.textContent = `Rp${finalShippingCost.toLocaleString('id-ID')}`;
+        totalAmountDisplay.textContent = `Rp${finalTotal.toLocaleString('id-ID')}`;
+    }
+
+    // Load modes on page load
+    document.addEventListener('DOMContentLoaded', loadShippingModes);
+
+    // Form submission
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const selectedMode = document.querySelector('input[name="shipping_mode_select"]:checked');
+        if (!selectedMode) {
+            e.preventDefault();
+            alert('Pilih mode transportasi terlebih dahulu');
+            return false;
+        }
     });
-});
 </script>
 @endsection

@@ -291,11 +291,30 @@
                 <p>{{ $order->shipping_address }}</p>
 
                 <!-- Tracking Number -->
+                <div class="section-title">
+                    <i class="fas fa-shipping-fast"></i>Informasi Pengiriman
+                </div>
+                <p>
+                    <strong>Mode:</strong> {{ $order->getShippingModeLabel() ?? ucfirst($order->shipping_mode) }}<br>
+                    <strong>Biaya Ongkir:</strong> Rp{{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}<br>
+                    <strong>Estimasi Tiba:</strong>
+                    @if($order->estimated_delivery)
+                        {{ is_string($order->estimated_delivery) ? \Carbon\Carbon::parse($order->estimated_delivery)->format('d M Y H:i') : $order->estimated_delivery->format('d M Y H:i') }}
+                    @else
+                        -
+                    @endif
+                    <br>
+                    <strong>Status Pengiriman:</strong> {{ $order->getShippingStatusLabel() ?? ucfirst($order->shipping_status) }}
+                </p>
+
                 @if($order->tracking_number)
                 <div class="section-title">
                     <i class="fas fa-barcode"></i>Nomor Resi
                 </div>
                 <p><strong>{{ $order->tracking_number }}</strong></p>
+                    @if($order->live_tracking_url)
+                        <p><a href="{{ $order->live_tracking_url }}" target="_blank" class="btn btn-outline-primary btn-sm">Lacak Pengiriman</a></p>
+                    @endif
                 @endif
 
                 <!-- Order Actions -->
@@ -458,7 +477,7 @@
 
                 @php
                     $subtotal = $order->items->sum(fn($item) => $item->price * $item->quantity);
-                    $shipping = $order->shipping_method === 'delivery' ? 10000 : 0;
+                    $shipping = $order->shipping_cost ?? 0;
                     $total = $subtotal + $shipping;
                 @endphp
 
@@ -468,8 +487,19 @@
                 </div>
 
                 <div class="summary-item">
-                    <span>Ongkir</span>
+                    <span>Ongkir <small class="text-muted">({{ $order->getShippingModeLabel() }})</small></span>
                     <strong>Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Estimasi Tiba</span>
+                    <strong>
+                        @if($order->estimated_delivery)
+                            {{ is_string($order->estimated_delivery) ? \Carbon\Carbon::parse($order->estimated_delivery)->format('d M Y') : $order->estimated_delivery->format('d M Y') }}
+                        @else
+                            -
+                        @endif
+                    </strong>
                 </div>
 
                 <div class="summary-total">

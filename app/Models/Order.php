@@ -17,6 +17,9 @@ class Order extends Model
         'return_requested_at',
         'return_shipped_at',
         'return_received_at',
+        'estimated_delivery',
+        'actual_delivery',
+        'cutoff_time',
         'created_at',
         'updated_at'
     ];
@@ -24,9 +27,20 @@ class Order extends Model
     protected $fillable = [
         'user_id', 'shop_id', 'order_number', 'status',
         'total_amount', 'shipping_address', 'shipping_method',
-        'tracking_number', 'notes', 'confirmed_at', 'shipped_at',
+        'shipping_mode', 'shipping_cost', 'total_weight',
+        'estimated_delivery', 'actual_delivery', 'tracking_url',
+        'tracking_number', 'shipping_status', 'courier_name', 
+        'courier_phone', 'live_tracking_url', 'cutoff_exceeded',
+        'cutoff_time', 'notes', 'confirmed_at', 'shipped_at',
         'delivered_at', 'completed_at', 'cancelled_at',
-        'return_status', 'return_reason', 'return_requested_at', 'return_tracking_number', 'return_shipped_at', 'return_received_at'
+        'return_status', 'return_reason', 'return_requested_at', 
+        'return_tracking_number', 'return_shipped_at', 'return_received_at'
+    ];
+
+    protected $casts = [
+        'cutoff_exceeded' => 'boolean',
+        'shipping_cost' => 'decimal:2',
+        'total_weight' => 'decimal:2',
     ];
 
     // Relationships
@@ -43,6 +57,52 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    // Shipping Mode Methods
+    public function isReguler()
+    {
+        return $this->shipping_mode === 'reguler';
+    }
+
+    public function isSameDay()
+    {
+        return $this->shipping_mode === 'same_day';
+    }
+
+    public function isInstant()
+    {
+        return $this->shipping_mode === 'instant';
+    }
+
+    public function getShippingModeLabel()
+    {
+        return match($this->shipping_mode) {
+            'reguler' => 'Reguler (1-3 hari)',
+            'same_day' => 'Same Day (6-12 jam)',
+            'instant' => 'Instant (1-3 jam)',
+            default => 'Unknown'
+        };
+    }
+
+    public function getMaxWeight()
+    {
+        return match($this->shipping_mode) {
+            'reguler' => 50,      // kg
+            'same_day' => 5,      // kg
+            'instant' => 3,       // kg
+            default => 0
+        };
+    }
+
+    public function getCutoffTime()
+    {
+        return match($this->shipping_mode) {
+            'same_day' => now()->setHour(14)->setMinute(0)->setSecond(0),  // 14:00
+            'instant' => now()->setHour(12)->setMinute(0)->setSecond(0),   // 12:00
+            'reguler' => null,
+            default => null
+        };
     }
 
     // Status Checking Methods
@@ -98,7 +158,8 @@ class Order extends Model
         $this->update([
             'status' => 'shipped',
             'shipped_at' => now(),
-            'tracking_number' => $trackingNumber
+            'tracking_number' => $trackingNumber,
+            'shipping_status' => 'picked_up'
         ]);
 
         // Buat notifikasi untuk buyer
@@ -111,11 +172,28 @@ class Order extends Model
         ]);
     }
 
+    public function updateShippingStatus($status)
+    {
+        $this->update(['shipping_status' => $status]);
+
+        // Notify based on status
+        if ($status === 'out_for_delivery') {
+            Notification::create([
+                'user_id' => $this->user_id,
+                'title' => 'Paket Sedang Diantar',
+                'message' => 'Pesanan #' . $this->order_number . ' sedang dalam perjalanan ke alamat Anda',
+                'type' => 'shipping_update'
+            ]);
+        }
+    }
+
     public function deliverOrder()
     {
         $this->update([
             'status' => 'delivered',
-            'delivered_at' => now()
+            'delivered_at' => now(),
+            'shipping_status' => 'delivered',
+            'actual_delivery' => now()
         ]);
 
         // Buat notifikasi untuk buyer
@@ -197,5 +275,19 @@ class Order extends Model
             default => 'Unknown'
         };
     }
-    
+
+    // Get shipping status label
+    public function getShippingStatusLabel()
+    {
+        return match($this->shipping_status) {
+            'pending' => 'Menunggu Pickup',
+            'picked_up' => 'Sudah Diambil Kurir',
+            'in_transit' => 'Dalam Perjalanan',
+            'at_delivery_hub' => 'Di Hub Lokal',
+            'out_for_delivery' => 'Sedang Diantar',
+            'delivered' => 'Sudah Diterima',
+            'failed_delivery' => 'Gagal Kirim',
+            default => 'Unknown'
+        };
+    }
 }

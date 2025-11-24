@@ -276,6 +276,106 @@
       line-height: 1.6;
     }
 
+    /* Product Card Styles */
+    .product-showcase-card {
+      flex: 0 0 calc(25% - 1.125rem);
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      min-width: 200px;
+    }
+
+    .product-showcase-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(10, 76, 140, 0.15);
+    }
+
+    .product-image-showcase {
+      width: 100%;
+      height: 180px;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-image-showcase img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .product-showcase-card:hover .product-image-showcase img {
+      transform: scale(1.05);
+    }
+
+    .product-info-showcase {
+      padding: 1rem;
+    }
+
+    .product-name-showcase {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-shop-showcase {
+      color: #999;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .product-price-showcase {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-rating-showcase {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .product-rating-showcase i {
+      color: #ffc107;
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 1024px) {
+      .product-showcase-card {
+        flex: 0 0 calc(33.333% - 1rem);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .product-showcase-card {
+        flex: 0 0 calc(50% - 0.75rem);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-showcase-card {
+        flex: 0 0 calc(100% - 0.5rem);
+      }
+    }
+
     /* CTA Section */
     .cta-section {
       background: linear-gradient(135deg, #5273a1 0%, #0a4c8c 100%);
@@ -383,6 +483,28 @@
     </div>
   </section>
 
+  <!-- Products Showcase Section -->
+  <section style="padding: 60px 5%; background: white;">
+    <div class="features-title">
+      <h3>Produk Unggulan</h3>
+      <p>Jelajahi koleksi produk terpopuler dari seller terpercaya</p>
+    </div>
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="position: relative; overflow: hidden;">
+        <div id="productCarousel" style="display: flex; gap: 1.5rem; overflow-x: auto; scroll-behavior: smooth; padding: 1rem 0; -webkit-overflow-scrolling: touch;">
+          <!-- Products will be populated here -->
+        </div>
+        <!-- Navigation arrows -->
+        <button onclick="scrollCarousel(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid #667eea; color: #667eea; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
+          ❮
+        </button>
+        <button onclick="scrollCarousel(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid #667eea; color: #667eea; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
+          ❯
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- Features Section -->
   <section class="features-section">
     <div class="features-title">
@@ -439,6 +561,79 @@
     function toggleMenu() {
       alert('Mobile menu akan muncul di sini');
     }
+
+    // Product Carousel
+    const carousel = document.getElementById('productCarousel');
+    let products = [];
+    let currentIndex = 0;
+
+    // Fetch products from API
+    async function loadProducts() {
+      try {
+        const response = await fetch('/api/products');
+        const data = await response.json();
+        products = data.slice(0, 12); // Get first 12 products
+        renderCarousel();
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    }
+
+    function renderCarousel() {
+      if (carousel && products.length > 0) {
+        carousel.innerHTML = products.map(product => `
+          <div class="product-showcase-card">
+            <div class="product-image-showcase">
+              ${product.image 
+                ? `<img src="/storage/${product.image}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22180%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22200%22 height=%22180%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2214%22 fill=%22%23ccc%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">`
+                : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#f5f5f5;"><i class="fas fa-image" style="font-size:2rem; color:#ddd;"></i></div>`
+              }
+            </div>
+            <div class="product-info-showcase">
+              <div class="product-name-showcase">${product.name}</div>
+              <div class="product-shop-showcase">
+                <i class="fas fa-store" style="font-size:0.7rem;"></i>
+                ${product.shop?.shop_name || 'Unknown Shop'}
+              </div>
+              <div class="product-price-showcase">
+                Rp${parseInt(product.price).toLocaleString('id-ID')}
+              </div>
+              <div class="product-rating-showcase">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span>(4.5)</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function scrollCarousel(direction) {
+      if (carousel) {
+        const scrollAmount = 400;
+        carousel.scrollBy({
+          left: direction * scrollAmount,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Auto-rotate carousel every 5 seconds
+    function autoRotateCarousel() {
+      setInterval(() => {
+        scrollCarousel(1);
+      }, 5000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      autoRotateCarousel();
+    });
   </script>
 </div>
 @endsection

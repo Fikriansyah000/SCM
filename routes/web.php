@@ -11,11 +11,27 @@ use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ShippingController;
 
 // Landing Page
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
+
+// Public API Routes
+Route::get('/api/products', function () {
+    $products = \App\Models\Product::with('shop')
+        ->where('status', 'available')
+        ->orderBy('created_at', 'desc')
+        ->limit(12)
+        ->get();
+    return response()->json($products);
+});
+
+// Shipping API (Public - for checkout)
+Route::get('/api/shipping/modes', [\App\Http\Controllers\ShippingController::class, 'getAvailableModes']);
+Route::post('/api/shipping/calculate', [\App\Http\Controllers\ShippingController::class, 'calculateShipping']);
+Route::get('/api/shipping/check-availability', [\App\Http\Controllers\ShippingController::class, 'checkAvailability']);
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -99,4 +115,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages/{user}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/{user}', [MessageController::class, 'send'])->name('messages.send');
 });
+
+
 
