@@ -60,24 +60,35 @@
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.75rem;
+        background: #fafbfc;
     }
     
     .message {
         display: flex;
-        margin-bottom: 0.5rem;
+        flex-direction: column;
+        margin-bottom: 0;
     }
     
     .message.sent {
-        justify-content: flex-end;
+        align-items: flex-end;
+    }
+    
+    .message.received {
+        align-items: flex-start;
     }
     
     .message-bubble {
-        padding: 0.75rem 1rem;
-        border-radius: 1rem;
-        max-width: 70%;
+        padding: 0.875rem 1.125rem;
+        border-radius: 1.125rem;
+        max-width: 75%;
         word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
         animation: fadeIn 0.3s ease;
+        line-height: 1.4;
+        font-size: 0.95rem;
     }
     
     .message.received .message-bubble {
@@ -93,8 +104,25 @@
     .message-time {
         font-size: 0.75rem;
         color: #999;
-        margin-top: 0.25rem;
+        margin-top: 0.375rem;
         padding: 0 0.5rem;
+        opacity: 0.8;
+    }
+    
+    @media (max-width: 768px) {
+        .message-bubble {
+            max-width: 85%;
+            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .message-bubble {
+            max-width: 90%;
+            font-size: 0.85rem;
+            padding: 0.7rem 0.9rem;
+        }
     }
     
     @keyframes fadeIn {
@@ -197,10 +225,14 @@
                 <div class="user-details">
                     <h5>{{ $otherUser->name }}</h5>
                     <div class="user-status">
-                        @if($otherUser->role === 'seller')
-                            <i class="fas fa-store me-1"></i>Penjual
+                        @if($shop)
+                            <i class="fas fa-store me-1"></i>{{ $shop->shop_name }}
                         @else
-                            <i class="fas fa-shopping-cart me-1"></i>Pembeli
+                            @if($otherUser->role === 'seller')
+                                <i class="fas fa-store me-1"></i>Penjual
+                            @else
+                                <i class="fas fa-shopping-cart me-1"></i>Pembeli
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -227,6 +259,9 @@
         <div class="chat-input-area">
             <form method="POST" action="{{ route('messages.send', $otherUser->id) }}" id="messageForm">
                 @csrf
+                @if($shop)
+                    <input type="hidden" name="shop_id" value="{{ $shop->id }}">
+                @endif
                 <div class="input-group">
                     <textarea class="message-input" name="message" placeholder="Tulis pesan..." required></textarea>
                     <button type="submit" class="send-button" title="Kirim">

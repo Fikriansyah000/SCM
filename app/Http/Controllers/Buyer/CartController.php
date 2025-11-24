@@ -15,11 +15,27 @@ class CartController extends Controller
             ->where('user_id', auth()->id())
             ->get();
 
-        $total = $carts->sum(function($cart) {
-            return $cart->product->price * $cart->quantity;
-        });
+        $flashIds = session('flash_sale_ids', []);
 
-        return view('buyer.cart', compact('carts', 'total'));
+        $subtotal = 0;
+        $discount = 0;
+
+        foreach ($carts as $cart) {
+            $line = $cart->product->price * $cart->quantity;
+            $subtotal += $line;
+
+            if (in_array($cart->product_id, $flashIds)) {
+                $discount += ($cart->product->price * 0.10) * $cart->quantity;
+            }
+        }
+
+        // Shipping: free if any flash sale item exists (business decision)
+        $hasFlash = $carts->contains(fn($c) => in_array($c->product_id, $flashIds));
+        $shipping = $hasFlash ? 0 : 10000;
+
+        $total = $subtotal - $discount + $shipping;
+
+        return view('buyer.cart', compact('carts', 'subtotal', 'discount', 'shipping', 'total'));
     }
 
     public function add(Request $request, $productId)

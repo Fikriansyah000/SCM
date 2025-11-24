@@ -247,6 +247,12 @@
                         {{ $shop->description }}
                     </div>
                     @endif
+
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                        <a href="{{ route('messages.show', ['user' => $shop->user_id, 'shop_id' => $shop->id]) }}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; font-weight: 600; border: none;">
+                            <i class="fas fa-comments"></i>Chat dengan Toko
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

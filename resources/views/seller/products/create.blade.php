@@ -246,9 +246,6 @@
                         <option value="Jasa & Layanan" {{ old('category') == 'Jasa & Layanan' ? 'selected' : '' }}>
                             Jasa & Layanan (Print, fotocopy, les privat, jasa lainnya)
                         </option>
-                        <option value="Barang & Produk" {{ old('category') == 'Barang & Produk' ? 'selected' : '' }}>
-                            Barang & Produk (Tas, aksesoris, elektronik, fashion)
-                        </option>
                     </select>
                     @error('category')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

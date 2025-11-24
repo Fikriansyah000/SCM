@@ -19,9 +19,26 @@ class OrderController extends Controller
             return redirect()->route('buyer.cart')->with('error', 'Keranjang kosong');
         }
 
-        $total = $cart->sum(fn($item) => $item->product->price * $item->quantity);
+        $flashIds = session('flash_sale_ids', []);
 
-        return view('buyer.checkout', compact('cart', 'total'));
+        $subtotal = 0;
+        $discount = 0;
+
+        foreach ($cart as $item) {
+            $line = $item->product->price * $item->quantity;
+            $subtotal += $line;
+
+            if (in_array($item->product_id, $flashIds)) {
+                $discount += ($item->product->price * 0.10) * $item->quantity;
+            }
+        }
+
+        $hasFlash = $cart->contains(fn($c) => in_array($c->product_id, $flashIds));
+        $shipping = $hasFlash ? 0 : 10000;
+
+        $total = $subtotal - $discount + $shipping;
+
+        return view('buyer.checkout', compact('cart', 'subtotal', 'discount', 'shipping', 'total'));
     }
 
     // Simpan order
@@ -45,10 +62,23 @@ class OrderController extends Controller
             return back()->with('error', 'Semua produk harus dari toko yang sama');
         }
 
-        // Hitung total
-        $subtotal = $cart->sum(fn($item) => $item->product->price * $item->quantity);
-        $shipping = $validated['shipping_method'] === 'delivery' ? 10000 : 0;
-        $total = $subtotal + $shipping;
+        // Hitung total dengan memperhitungkan flash sale
+        $flashIds = session('flash_sale_ids', []);
+
+        $subtotal = 0;
+        $discount = 0;
+
+        foreach ($cart as $item) {
+            $line = $item->product->price * $item->quantity;
+            $subtotal += $line;
+            if (in_array($item->product_id, $flashIds)) {
+                $discount += ($item->product->price * 0.10) * $item->quantity;
+            }
+        }
+
+        $hasFlash = $cart->contains(fn($c) => in_array($c->product_id, $flashIds));
+        $shipping = ($validated['shipping_method'] === 'delivery' && !$hasFlash) ? 10000 : 0;
+        $total = $subtotal - $discount + $shipping;
 
         // Buat order
         $order = Order::create([
@@ -61,12 +91,17 @@ class OrderController extends Controller
             'shipping_method' => $validated['shipping_method'],
         ]);
 
-        // Buat order items
+        // Buat order items (simpan harga setelah diskon jika flash sale)
         foreach ($cart as $item) {
+            $price = $item->product->price;
+            if (in_array($item->product_id, $flashIds)) {
+                $price = round($price * 0.90); // 10% off, rounded
+            }
+
             $order->items()->create([
                 'product_id' => $item->product_id,
                 'quantity' => $item->quantity,
-                'price' => $item->product->price
+                'price' => $price
             ]);
 
             // Kurangi stok produk

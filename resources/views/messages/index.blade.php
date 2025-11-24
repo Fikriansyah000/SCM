@@ -118,15 +118,22 @@
                         $otherUser = $conversation->sender_id == auth()->id() 
                             ? $conversation->receiver 
                             : $conversation->sender;
+                        $displayName = $otherUser->name;
+                        if ($conversation->shop) {
+                            $displayName = $conversation->shop->shop_name;
+                        }
+                        $chatUrl = $conversation->shop 
+                            ? route('messages.show', ['user' => $otherUserId, 'shop_id' => $conversation->shop->id])
+                            : route('messages.show', $otherUserId);
                     @endphp
                     
-                    <a href="{{ route('messages.show', $otherUserId) }}" class="conversation-item">
+                    <a href="{{ $chatUrl }}" class="conversation-item">
                         <div class="conversation-header">
                             <div class="conversation-avatar">
-                                {{ strtoupper(substr($otherUser->name, 0, 1)) }}
+                                {{ strtoupper(substr($displayName, 0, 1)) }}
                             </div>
                             <div class="conversation-info">
-                                <div class="conversation-name">{{ $otherUser->name }}</div>
+                                <div class="conversation-name">{{ $displayName }}</div>
                                 <div class="conversation-message">{{ Str::limit($conversation->message, 40) }}</div>
                             </div>
                             <div class="conversation-time">

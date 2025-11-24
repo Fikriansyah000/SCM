@@ -225,15 +225,23 @@
                 </h3>
 
                 @foreach($cart as $item)
+                @php
+                    $isFlash = in_array($item->product_id, session('flash_sale_ids', []));
+                    $unitPrice = $item->product->price;
+                    $displayPrice = $isFlash ? round($unitPrice * 0.90) : $unitPrice;
+                @endphp
                 <div class="cart-item">
                     <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : asset('images/no-product.png') }}" 
                          alt="{{ $item->product->name }}">
                     <div class="item-details">
                         <div class="item-name">{{ $item->product->name }}</div>
                         <div class="item-qty">{{ $item->quantity }}x</div>
+                        @if($isFlash)
+                            <div style="font-size:0.85rem; color:#28a745;">Flash Sale: 10% off + Gratis Ongkir</div>
+                        @endif
                     </div>
                     <div class="item-price">
-                        Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}
+                        Rp{{ number_format($displayPrice * $item->quantity, 0, ',', '.') }}
                     </div>
                 </div>
                 @endforeach
@@ -245,23 +253,24 @@
                     <i class="fas fa-receipt me-2"></i>Ringkasan
                 </h3>
 
-                @php
-                    $subtotal = $cart->sum(fn($item) => $item->product->price * $item->quantity);
-                @endphp
-
                 <div class="summary-row">
                     <span>Subtotal</span>
                     <strong>Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
                 </div>
 
+                <div class="summary-row">
+                    <span>Diskon</span>
+                    <strong>-Rp{{ number_format($discount, 0, ',', '.') }}</strong>
+                </div>
+
                 <div class="summary-row" id="shipping-fee">
                     <span>Ongkir</span>
-                    <strong>Rp 10.000</strong>
+                    <strong>{{ $shipping === 0 ? 'Gratis' : 'Rp ' . number_format($shipping,0,',','.') }}</strong>
                 </div>
 
                 <div class="summary-total">
                     <span>Total</span>
-                    <span id="total-amount">Rp{{ number_format($subtotal + 10000, 0, ',', '.') }}</span>
+                    <span id="total-amount">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
                 <button type="submit" class="btn-checkout">
@@ -275,8 +284,8 @@
 <script>
 document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
     radio.addEventListener('change', function() {
-        const shippingFee = this.value === 'pickup' ? 0 : 10000;
-        const subtotal = {{ $subtotal }};
+        const shippingFee = this.value === 'pickup' ? 0 : {{ $shipping }};
+        const subtotal = {{ $subtotal }} - {{ $discount }};
         const total = subtotal + shippingFee;
 
         document.getElementById('shipping-fee').innerHTML = `

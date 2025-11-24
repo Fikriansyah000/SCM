@@ -5,10 +5,11 @@
 @section('content')
 <style>
     .cart-container {
-        background: white;
+        background: #faf6f1;
         border-radius: 0.75rem;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 28px rgba(7,18,46,0.04);
+        border: 1px solid rgba(139,113,89,0.08);
     }
     
     .cart-item {
@@ -26,12 +27,13 @@
     .cart-image {
         width: 100px;
         height: 100px;
-        background: #f0f0f0;
+        background: #f0ede8;
         border-radius: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        border: 1px solid rgba(139,113,89,0.1);
     }
     
     .cart-image img {
@@ -79,15 +81,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f0f0f0;
-        border: none;
+        background: #f0ede8;
+        border: 1px solid rgba(139,113,89,0.1);
         border-radius: 0.25rem;
         cursor: pointer;
         transition: all 0.3s ease;
     }
     
     .quantity-btn:hover {
-        background: #667eea;
+        background: #a87d68;
         color: white;
     }
     
@@ -223,10 +225,20 @@
                                     <i class="fas fa-store me-1"></i>{{ $cart->product->shop->shop_name }}
                                 </div>
                                 <div class="cart-price">
-                                    Rp{{ number_format($cart->product->price, 0, ',', '.') }} x {{ $cart->quantity }}
+                                    @php
+                                        $isFlash = in_array($cart->product_id, session('flash_sale_ids', []));
+                                        $unitPrice = $cart->product->price;
+                                        $displayPrice = $unitPrice;
+                                        if ($isFlash) {
+                                            $displayPrice = round($unitPrice * 0.90);
+                                        }
+                                    @endphp
+                                    Rp{{ number_format($displayPrice, 0, ',', '.') }} x {{ $cart->quantity }}
+                                    @if($isFlash)
+                                        <div style="font-size:0.8rem; color:#28a745;">(Flash Sale: 10% off + Gratis Ongkir)</div>
+                                    @endif
                                 </div>
-                            </div>
-                            
+                            </div>                            
                             <div class="quantity-control">
                                 <form method="PUT" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
                                     @csrf
@@ -267,12 +279,19 @@
                     
                     <div class="summary-row">
                         <span>Subtotal:</span>
-                        <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
+                        <span>Rp{{ number_format($subtotal ?? $total, 0, ',', '.') }}</span>
                     </div>
-                    
+
+                    @if(isset($discount) && $discount > 0)
+                    <div class="summary-row">
+                        <span>Diskon:</span>
+                        <span>-Rp{{ number_format($discount, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+
                     <div class="summary-row">
                         <span>Ongkos Kirim:</span>
-                        <span>Gratis</span>
+                        <span>{{ (isset($shipping) && $shipping === 0) ? 'Gratis' : (isset($shipping) ? 'Rp' . number_format($shipping,0,',','.') : 'Gratis') }}</span>
                     </div>
                     
                     <div class="summary-row total">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BuyerController extends Controller
 {
@@ -16,7 +17,24 @@ class BuyerController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(12);
 
-        return view('buyer.home', compact('products'));
+        // Select a few random products for FlashSale
+        $flashProducts = Product::with('shop')
+            ->where('status', 'available')
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+
+        // Store flash product ids in session so checkout/cart can apply discounts
+        session(['flash_sale_ids' => $flashProducts->pluck('id')->toArray()]);
+
+        // Set flash sale end time (1 hour) if not set or expired
+        $flashEnds = session('flash_sale_ends_at');
+        if (!$flashEnds || Carbon::parse($flashEnds)->isPast()) {
+            $flashEnds = Carbon::now()->addHour()->toIso8601String();
+            session(['flash_sale_ends_at' => $flashEnds]);
+        }
+
+        return view('buyer.home', compact('products', 'flashProducts', 'flashEnds'));
     }
 
     public function search(Request $request)
