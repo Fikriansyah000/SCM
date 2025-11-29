@@ -58,6 +58,8 @@ Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->grou
     Route::get('/home', [BuyerController::class, 'home'])->name('home');
     Route::get('/search', [BuyerController::class, 'search'])->name('search');
     Route::get('/shop/{id}', [BuyerController::class, 'visitShop'])->name('shop.visit');
+    // Product detail (PDP)
+    Route::get('/products/{product}', [\App\Http\Controllers\Buyer\ProductPageController::class, 'show'])->name('products.show');
     
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');

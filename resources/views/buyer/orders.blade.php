@@ -281,3 +281,44 @@
     @endif
 </div>
 @endsection
+@push('scripts')
+<script>
+// Star rating interaction
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.stars-input').forEach(function(container) {
+        const targetSelector = container.getAttribute('data-target');
+        const target = document.querySelector(targetSelector);
+        const stars = container.querySelectorAll('.star-clickable');
+        const setRating = (value) => {
+            stars.forEach(s => {
+                const v = parseInt(s.getAttribute('data-value'));
+                s.style.color = v <= value ? '#f6ad55' : '#ddd';
+            });
+            if (target) target.value = value;
+        };
+        stars.forEach(function(star) {
+            star.addEventListener('click', function() {
+                const v = parseInt(this.getAttribute('data-value'));
+                setRating(v);
+            });
+            star.addEventListener('mouseover', function() {
+                const v = parseInt(this.getAttribute('data-value'));
+                stars.forEach(s => {
+                    const sv = parseInt(s.getAttribute('data-value'));
+                    s.style.color = sv <= v ? '#f6ad55' : '#ddd';
+                });
+            });
+            star.addEventListener('mouseout', function() {
+                const current = parseInt(target ? target.value : 0) || 0;
+                stars.forEach(s => {
+                    const sv = parseInt(s.getAttribute('data-value'));
+                    s.style.color = sv <= current ? '#f6ad55' : '#ddd';
+                });
+            });
+        });
+        // initialize default
+        if (target) setRating(parseInt(target.value) || 5);
+    });
+});
+</script>
+@endpush

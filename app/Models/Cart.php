@@ -12,7 +12,13 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'product_variation_id',
         'quantity',
+        'customizations',
+    ];
+
+    protected $casts = [
+        'customizations' => 'array',
     ];
 
     public function user()
@@ -23,5 +29,10 @@ class Cart extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function variation()
+    {
+        return $this->belongsTo(ProductVariation::class, 'product_variation_id');
     }
 }

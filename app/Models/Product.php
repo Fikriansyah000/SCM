@@ -18,10 +18,19 @@ class Product extends Model
         'category',
         'image',
         'status',
+        'product_type',
+        'food_profile',
+        'service_profile',
+        'requires_booking',
+        'booking_settings',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'food_profile' => 'array',
+        'service_profile' => 'array',
+        'booking_settings' => 'array',
+        'requires_booking' => 'boolean',
     ];
 
     public function shop()
@@ -38,12 +47,24 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-<<<<<<< HEAD
 
     public function reviews()
     {
         return $this->hasMany(\App\Models\ProductReview::class);
     }
-=======
->>>>>>> 81f0d06 (First Up|)
+
+    public function variations()
+    {
+        return $this->hasMany(ProductVariation::class);
+    }
+
+    public function serviceSlots()
+    {
+        return $this->hasMany(ServiceSlot::class);
+    }
+
+    public function serviceBookings()
+    {
+        return $this->hasMany(ServiceBooking::class);
+    }
 }

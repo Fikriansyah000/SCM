@@ -178,14 +178,7 @@
             @foreach($notifications as $notification)
 <<<<<<< HEAD
             @php
-                $orderLink = null;
-                if (isset($notification->data['order_id'])) {
-                    if (auth()->user()->isSeller()) {
-                        $orderLink = route('seller.orders.show', $notification->data['order_id']);
-                    } else {
-                        $orderLink = route('buyer.orders.show', $notification->data['order_id']);
-                    }
-                }
+                $orderLink = $notification->action_url ?? null;
             @endphp
 
             <div data-href="{{ $orderLink }}" class="notification-card {{ !$notification->is_read ? 'unread' : '' }} is-{{ getNotificationType($notification->type) }}" @if($orderLink) style="cursor:pointer;" @endif>
@@ -214,8 +207,8 @@
 
                         <!-- Action Buttons -->
                         <div class="notification-actions">
-                            @if($notification->type === 'new_order' && $notification->data && isset($notification->data['order_id']))
-                            <a href="{{ route('seller.orders.show', $notification->data['order_id']) }}" 
+                            @if($notification->type === 'new_order' && $orderLink)
+                            <a href="{{ $orderLink }}" 
                                class="btn-notif-action">
                                 <i class="fas fa-eye me-1"></i>Lihat Pesanan
                             </a>

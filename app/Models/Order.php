@@ -149,7 +149,8 @@ class Order extends Model
             'user_id' => $this->user_id,
             'title' => 'Pesanan Dikonfirmasi',
             'message' => 'Pesanan #' . $this->order_number . ' telah dikonfirmasi penjual',
-            'type' => 'order_confirmed'
+            'type' => 'order_confirmed',
+            'data' => $this->notificationData()
         ]);
     }
 
@@ -168,7 +169,9 @@ class Order extends Model
             'title' => 'Pesanan Dikirim',
             'message' => 'Pesanan #' . $this->order_number . ' sedang dalam perjalanan',
             'type' => 'order_shipped',
-            'data' => ['tracking_number' => $trackingNumber]
+            'data' => $this->notificationData([
+                'tracking_number' => $trackingNumber
+            ])
         ]);
     }
 
@@ -182,7 +185,8 @@ class Order extends Model
                 'user_id' => $this->user_id,
                 'title' => 'Paket Sedang Diantar',
                 'message' => 'Pesanan #' . $this->order_number . ' sedang dalam perjalanan ke alamat Anda',
-                'type' => 'shipping_update'
+                'type' => 'shipping_update',
+                'data' => $this->notificationData()
             ]);
         }
     }
@@ -201,7 +205,8 @@ class Order extends Model
             'user_id' => $this->user_id,
             'title' => 'Pesanan Diterima',
             'message' => 'Pesanan #' . $this->order_number . ' telah tiba di lokasi Anda',
-            'type' => 'order_delivered'
+            'type' => 'order_delivered',
+            'data' => $this->notificationData()
         ]);
     }
 
@@ -217,7 +222,8 @@ class Order extends Model
             'user_id' => $this->user_id,
             'title' => 'Transaksi Selesai',
             'message' => 'Terima kasih! Transaksi #' . $this->order_number . ' telah selesai',
-            'type' => 'order_completed'
+            'type' => 'order_completed',
+            'data' => $this->notificationData()
         ]);
     }
 
@@ -234,7 +240,10 @@ class Order extends Model
             'user_id' => $this->user_id,
             'title' => 'Pesanan Dibatalkan',
             'message' => 'Pesanan #' . $this->order_number . ' telah dibatalkan',
-            'type' => 'order_cancelled'
+            'type' => 'order_cancelled',
+            'data' => $this->notificationData([
+                'cancel_reason' => $reason
+            ])
         ]);
     }
 
@@ -289,5 +298,13 @@ class Order extends Model
             'failed_delivery' => 'Gagal Kirim',
             default => 'Unknown'
         };
+    }
+
+    protected function notificationData(array $extra = []): array
+    {
+        return array_merge([
+            'order_id' => $this->id,
+            'order_number' => $this->order_number,
+        ], array_filter($extra, fn($value) => !is_null($value)));
     }
 }

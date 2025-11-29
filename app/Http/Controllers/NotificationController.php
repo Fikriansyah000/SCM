@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
@@ -13,6 +14,11 @@ class NotificationController extends Controller
         $notifications = Notification::where('user_id', auth()->id())
             ->latest()
             ->paginate(15);
+
+        $notifications->getCollection()->transform(function ($notification) {
+            $notification->action_url = $this->resolveNotificationLink($notification);
+            return $notification;
+        });
 
         return view('notifications.index', compact('notifications'));
     }
@@ -45,5 +51,37 @@ class NotificationController extends Controller
         Notification::where('user_id', auth()->id())->delete();
 
         return back()->with('success', 'Semua notifikasi dihapus');
+    }
+
+    private function resolveNotificationLink(Notification $notification): ?string
+    {
+        $data = $notification->data ?? [];
+        $orderId = $data['order_id'] ?? null;
+
+        if (!$orderId && isset($data['order_number'])) {
+            $orderId = Order::where('order_number', $data['order_number'])->value('id');
+        }
+
+        if (!$orderId && preg_match('/#([A-Z0-9\-]+)/', $notification->message, $matches)) {
+            $orderId = Order::where('order_number', $matches[1])->value('id');
+        }
+
+        if (!$orderId) {
+            return null;
+        }
+
+        if (!isset($data['order_id'])) {
+            $data['order_id'] = $orderId;
+            $notification->data = $data;
+            $notification->save();
+        }
+
+        $user = auth()->user();
+
+        if (method_exists($user, 'isSeller') && $user->isSeller()) {
+            return route('seller.orders.show', $orderId);
+        }
+
+        return route('buyer.orders.show', $orderId);
     }
 }

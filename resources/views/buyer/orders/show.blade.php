@@ -637,7 +637,7 @@ function closeShipReturnModal() {
         }
     });
 });
-</script>
+
 // Star rating interaction
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.stars-input').forEach(function(container) {

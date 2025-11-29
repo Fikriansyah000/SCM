@@ -71,16 +71,40 @@
     .message {
         display: flex;
 <<<<<<< HEAD
+<<<<<<< HEAD
         flex-direction: column;
+=======
+        gap: 0.6rem;
+        align-items: flex-end;
+>>>>>>> 72c28ce (Benerin Beberapa Fitur)
         margin-bottom: 0;
     }
-    
-    .message.sent {
-        align-items: flex-end;
+
+    .message.sent { justify-content: flex-end; }
+    .message.received { justify-content: flex-start; }
+
+    .message-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        flex: 0 0 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-    
-    .message.received {
-        align-items: flex-start;
+
+    .message.received .message-avatar {
+        background: #eaeaea;
+        color: #555;
+        order: 0;
+    }
+    .message.sent .message-avatar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        order: 2;
     }
     
     .message-bubble {
@@ -91,8 +115,10 @@
         word-break: break-word;
         overflow-wrap: break-word;
         white-space: pre-wrap;
+        text-align: justify;
+        hyphens: auto;
         animation: fadeIn 0.3s ease;
-        line-height: 1.4;
+        line-height: 1.5;
         font-size: 0.95rem;
 =======
         margin-bottom: 0.5rem;
@@ -274,16 +300,28 @@
         <!-- Messages -->
         <div class="chat-messages" id="messagesContainer">
             @foreach($messages as $message)
-            <div class="message {{ $message->sender_id == auth()->id() ? 'sent' : 'received' }}">
-                <div>
-                    <div class="message-bubble">
-                        {{ $message->message }}
+                @php
+                    $isSent = $message->sender_id == auth()->id();
+                    $initials = strtoupper(substr($isSent ? auth()->user()->name : $otherUser->name, 0, 1));
+                @endphp
+                <div class="message {{ $isSent ? 'sent' : 'received' }}">
+                    @if(!$isSent)
+                        <div class="message-avatar" title="{{ $otherUser->name }}">{{ $initials }}</div>
+                    @endif
+
+                    <div class="message-content" style="display:flex; flex-direction:column; max-width:80%;">
+                        <div class="message-bubble">
+                            {{ $message->message }}
+                        </div>
+                        <div class="message-time">
+                            {{ $message->created_at->format('H:i') }}
+                        </div>
                     </div>
-                    <div class="message-time">
-                        {{ $message->created_at->format('H:i') }}
-                    </div>
+
+                    @if($isSent)
+                        <div class="message-avatar" title="{{ auth()->user()->name }}">{{ $initials }}</div>
+                    @endif
                 </div>
-            </div>
             @endforeach
         </div>
         

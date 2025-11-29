@@ -169,6 +169,7 @@
                         <small class="text-muted">Max 2MB, Format: JPG, PNG, GIF</small>
                     </div>
                     <input type="file" id="logo" name="logo" accept="image/*" style="display: none;">
+                    <div id="logoPreview" class="image-preview" style="display:none; margin-top:1rem; max-width:240px;"></div>
                     @error('logo')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -182,6 +183,7 @@
                         <small class="text-muted">Max 2MB, Format: JPG, PNG, GIF</small>
                     </div>
                     <input type="file" id="banner" name="banner" accept="image/*" style="display: none;">
+                    <div id="bannerPreview" class="image-preview" style="display:none; margin-top:1rem; max-width:480px;"></div>
                     @error('banner')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -194,4 +196,24 @@
         </div>
     </div>
 </div>
+<script>
+// Simple FileReader previews for logo and banner
+function bindPreview(inputId, previewId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (!input || !preview) return;
+    input.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            preview.innerHTML = `<img src="${reader.result}" alt="preview" style="width:100%; border-radius:.5rem; box-shadow:0 2px 8px rgba(0,0,0,.1);"/>`;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    });
+}
+bindPreview('logo', 'logoPreview');
+bindPreview('banner', 'bannerPreview');
+</script>
 @endsection
