@@ -204,7 +204,6 @@
             gap: 1rem;
         }
     }
-<<<<<<< HEAD
     /* Modal styles */
     .modal {
         display: none;
@@ -250,8 +249,6 @@
         font-weight: 600;
         cursor: pointer;
     }
-=======
->>>>>>> 81f0d06 (First Up|)
 </style>
 
 <div class="container my-4">
@@ -285,7 +282,6 @@
                         Rp{{ number_format($item->price * $item->quantity, 0, ',', '.') }}
                     </div>
                 </div>
-<<<<<<< HEAD
                 {{-- Review block per item --}}
                 @php
                     $existingReview = \App\Models\ProductReview::where('product_id', $item->product_id)
@@ -340,8 +336,6 @@
                         @endif
                     @endif
                 </div>
-=======
->>>>>>> 81f0d06 (First Up|)
                 @endforeach
 
                 <!-- Shipping Address -->
@@ -351,7 +345,6 @@
                 <p>{{ $order->shipping_address }}</p>
 
                 <!-- Tracking Number -->
-<<<<<<< HEAD
                 <div class="section-title">
                     <i class="fas fa-shipping-fast"></i>Informasi Pengiriman
                 </div>
@@ -367,20 +360,14 @@
                     <br>
                     <strong>Status Pengiriman:</strong> {{ $order->getShippingStatusLabel() ?? ucfirst($order->shipping_status) }}
                 </p>
-
-=======
->>>>>>> 81f0d06 (First Up|)
                 @if($order->tracking_number)
                 <div class="section-title">
                     <i class="fas fa-barcode"></i>Nomor Resi
                 </div>
                 <p><strong>{{ $order->tracking_number }}</strong></p>
-<<<<<<< HEAD
                     @if($order->live_tracking_url)
                         <p><a href="{{ $order->live_tracking_url }}" target="_blank" class="btn btn-outline-primary btn-sm">Lacak Pengiriman</a></p>
                     @endif
-=======
->>>>>>> 81f0d06 (First Up|)
                 @endif
 
                 <!-- Order Actions -->
@@ -405,7 +392,6 @@
     </form>
 @endif
 
-<<<<<<< HEAD
                 {{-- Return flow: request return when delivered/completed and no active return --}}
                 @if(in_array($order->status, ['delivered','completed']) && !$order->return_status)
                     <button type="button" class="btn btn-warning" onclick="openReturnModal()">
@@ -432,9 +418,6 @@
                         @endif
                     </div>
                 @endif
-
-=======
->>>>>>> 81f0d06 (First Up|)
                 </div>
             </div>
 
@@ -488,7 +471,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <!-- Return Request Modal -->
         <div id="returnModal" class="modal">
             <div class="modal-content">
@@ -537,9 +519,6 @@
                 </form>
             </div>
         </div>
-
-=======
->>>>>>> 81f0d06 (First Up|)
         <!-- Sidebar -->
         <div>
             <div class="order-summary">
@@ -549,11 +528,8 @@
 
                 @php
                     $subtotal = $order->items->sum(fn($item) => $item->price * $item->quantity);
-<<<<<<< HEAD
                     $shipping = $order->shipping_cost ?? 0;
-=======
-                    $shipping = $order->shipping_method === 'delivery' ? 10000 : 0;
->>>>>>> 81f0d06 (First Up|)
+                    $shipping = $order->shipping_cost ?? ($order->shipping_method === 'delivery' ? 10000 : 0);
                     $total = $subtotal + $shipping;
                 @endphp
 
@@ -563,8 +539,12 @@
                 </div>
 
                 <div class="summary-item">
-<<<<<<< HEAD
-                    <span>Ongkir <small class="text-muted">({{ $order->getShippingModeLabel() }})</small></span>
+                    <span>Ongkir
+                        @php($modeLabel = $order->getShippingModeLabel() ?? ucfirst($order->shipping_mode ?? $order->shipping_method))
+                        @if(!empty($modeLabel))
+                            <small class="text-muted">({{ $modeLabel }})</small>
+                        @endif
+                    </span>
                     <strong>Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
                 </div>
 
@@ -579,12 +559,6 @@
                     </strong>
                 </div>
 
-=======
-                    <span>Ongkir</span>
-                    <strong>Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
-                </div>
-
->>>>>>> 81f0d06 (First Up|)
                 <div class="summary-total">
                     <span>Total</span>
                     <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
@@ -605,7 +579,6 @@
         </div>
     </div>
 </div>
-<<<<<<< HEAD
 <script>
 function openReturnModal() {
     const el = document.getElementById('returnModal');
@@ -678,7 +651,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
-=======
->>>>>>> 81f0d06 (First Up|)
 @endsection

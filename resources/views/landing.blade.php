@@ -276,7 +276,6 @@
       line-height: 1.6;
     }
 
-<<<<<<< HEAD
     /* Product Card Styles */
     .product-showcase-card {
       flex: 0 0 calc(25% - 1.125rem);
@@ -376,9 +375,6 @@
         flex: 0 0 calc(100% - 0.5rem);
       }
     }
-
-=======
->>>>>>> 81f0d06 (First Up|)
     /* CTA Section */
     .cta-section {
       background: linear-gradient(135deg, #5273a1 0%, #0a4c8c 100%);
@@ -472,7 +468,6 @@
     </div>
   </section>
 
-<<<<<<< HEAD
     <!-- Products Showcase Section -->
   <section style="padding: 60px 5%; background: white;">
     <div class="features-title">
@@ -494,9 +489,6 @@
       </div>
     </div>
   </section>
-
-=======
->>>>>>> 81f0d06 (First Up|)
   <!-- About Section -->
   <section class="about-section">
     <div class="about-container">
@@ -511,11 +503,6 @@
     </div>
   </section>
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 81f0d06 (First Up|)
   <!-- Features Section -->
   <section class="features-section">
     <div class="features-title">
@@ -572,7 +559,6 @@
     function toggleMenu() {
       alert('Mobile menu akan muncul di sini');
     }
-<<<<<<< HEAD
 
     // Product Carousel
     const carousel = document.getElementById('productCarousel');

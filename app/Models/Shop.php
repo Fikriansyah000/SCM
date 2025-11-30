@@ -34,12 +34,9 @@ class Shop extends Model
     {
         return $this->hasMany(Order::class);
     }
-<<<<<<< HEAD
 
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
-=======
->>>>>>> 81f0d06 (First Up|)
 }

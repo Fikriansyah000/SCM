@@ -60,12 +60,8 @@
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
-<<<<<<< HEAD
         gap: 0.75rem;
         background: #fafbfc;
-=======
-        gap: 1rem;
->>>>>>> 81f0d06 (First Up|)
     }
     
     .message {
