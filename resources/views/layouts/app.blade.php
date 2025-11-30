@@ -74,7 +74,7 @@
 <body>
     @include('layouts.navbar')
     
-    <main class="py-4">
+    <main class="main-layout">
         <div class="container">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -10,10 +10,99 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to bottom, #e8f1f8 0%, #ffffff 100%);
       color: #333;
+    }
+
+    /* Section-Based Scroll System */
+    .section-fullscreen {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-fullscreen.section-auto-height {
+      min-height: auto;
+      padding: 80px 0;
+    }
+
+    /* Section scroll indicator */
+    .scroll-indicator {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .scroll-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(58, 123, 255, 0.3);
+      border: 2px solid var(--primary, #3A7BFF);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .scroll-dot.active {
+      background: var(--primary, #3A7BFF);
+      transform: scale(1.3);
+    }
+
+    .scroll-dot:hover {
+      background: var(--primary, #3A7BFF);
+      transform: scale(1.2);
+    }
+
+    /* Section entrance animations */
+    .section-fullscreen .section-content {
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section-fullscreen.in-view .section-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Staggered children animation */
+    .section-fullscreen.in-view .section-content > *:nth-child(1) { transition-delay: 0.1s; }
+    .section-fullscreen.in-view .section-content > *:nth-child(2) { transition-delay: 0.2s; }
+    .section-fullscreen.in-view .section-content > *:nth-child(3) { transition-delay: 0.3s; }
+    .section-fullscreen.in-view .section-content > *:nth-child(4) { transition-delay: 0.4s; }
+
+    @media (max-width: 768px) {
+      .scroll-indicator {
+        display: none;
+      }
+      
+      html {
+        scroll-snap-type: y proximity;
+      }
+      
+      .section-fullscreen {
+        min-height: auto;
+        padding: 60px 0;
+        scroll-snap-align: none;
+      }
     }
 
     /* Hero Section */
@@ -518,121 +607,180 @@
 </head>
 <body>
 
+  <!-- Scroll Indicator Dots -->
+  <nav class="scroll-indicator" id="scrollIndicator">
+    <div class="scroll-dot active" data-section="0" title="Hero"></div>
+    <div class="scroll-dot" data-section="1" title="Produk"></div>
+    <div class="scroll-dot" data-section="2" title="Tentang"></div>
+    <div class="scroll-dot" data-section="3" title="Fitur"></div>
+    <div class="scroll-dot" data-section="4" title="Bergabung"></div>
+  </nav>
+
   <!-- Hero Section -->
-   @guest
-  <section class="hero-section js-reveal">
-    <div class="hero-content js-reveal-left">
-      <h2>Platform Jual Beli Khusus Mahasiswa</h2>
-      <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
-      <a href="{{ route('register.buyer') }}" class="hero-btn btn-outline-primary btn-lg">
-                        Daftar Sekarang
-                    </a>
-    </div>
-    @endguest
-    <div class="hero-image js-reveal-right">
-      <div class="floating-elements">
-        <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
-        <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
-        <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
-        <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
+  <section class="section-fullscreen" id="section-hero" style="background: linear-gradient(135deg, #e8f1f8 0%, #ffffff 50%, #f0f7ff 100%);">
+    <div class="section-content">
+      @guest
+      <div class="hero-section">
+        <div class="hero-content js-reveal-left">
+          <h2>Platform Jual Beli Khusus Mahasiswa</h2>
+          <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
+          <a href="{{ route('register.buyer') }}" class="hero-btn btn-outline-primary btn-lg">
+                            Daftar Sekarang
+                        </a>
+        </div>
+      @endguest
+      <div class="hero-image js-reveal-right">
+        <div class="floating-elements">
+          <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
+          <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
+          <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
+          <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
+        </div>
+        <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
       </div>
-      <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
+    </div>
     </div>
   </section>
 
-    <!-- Products Showcase Section -->
-  <section class="js-reveal" style="padding: 60px 5%; background: white;">
-    <div class="features-title">
-      <h3>Produk Unggulan</h3>
-      <p>Jelajahi koleksi produk terpopuler dari seller terpercaya</p>
-    </div>
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <div style="position: relative; overflow: hidden;">
-        <div id="productCarousel" style="display: flex; gap: 1.5rem; overflow-x: auto; scroll-behavior: smooth; padding: 1rem 0; -webkit-overflow-scrolling: touch;">
-          <!-- Products will be populated here -->
+  <!-- Products Showcase Section -->
+  <section class="section-fullscreen" id="section-products" style="background: white;">
+    <div class="section-content" style="padding: 60px 5%;">
+      <div class="features-title">
+        <h3>Produk Unggulan</h3>
+        <p>Jelajahi koleksi produk terpopuler dari seller terpercaya</p>
+      </div>
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="position: relative; overflow: hidden;">
+          <div id="productCarousel" style="display: flex; gap: 1.5rem; overflow-x: auto; scroll-behavior: smooth; padding: 1rem 0; -webkit-overflow-scrolling: touch;">
+            <!-- Products will be populated here -->
+          </div>
+          <!-- Navigation arrows -->
+          <button onclick="scrollCarousel(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
+            ❮
+          </button>
+          <button onclick="scrollCarousel(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
+            ❯
+          </button>
         </div>
-        <!-- Navigation arrows -->
-        <button onclick="scrollCarousel(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
-          ❮
-        </button>
-        <button onclick="scrollCarousel(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
-          ❯
-        </button>
       </div>
     </div>
   </section>
 
   <!-- About Section -->
-  <section class="about-section js-reveal">
-    <div class="about-container">
-      <div class="about-text js-reveal-left">
-        <h3>Tentang PestiMart</h3>
-        <p><strong>PestiMart</strong> adalah solusi e-commerce khusus mahasiswa yang dirancang untuk memudahkan jual beli kebutuhan kampus. Mulai dari buku, alat tulis, hingga perlengkapan kos, semuanya tersedia dalam satu platform yang praktis, cepat, dan hemat.</p>
-        <p>Dengan sistem verifikasi mahasiswa menggunakan NIM dan E-KTM, kami memastikan setiap transaksi berlangsung aman dan terpercaya. PestiMart bukan hanya tempat berbelanja, tapi juga komunitas mahasiswa yang saling membantu dalam memenuhi kebutuhan kampus.</p>
-      </div>
-      <div class="about-image js-reveal-right">
-        <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'" class="js-parallax" data-parallax-speed="0.15">
+  <section class="section-fullscreen" id="section-about" style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);">
+    <div class="section-content">
+      <div class="about-section">
+        <div class="about-container">
+          <div class="about-text js-reveal-left">
+            <h3>Tentang PestiMart</h3>
+            <p><strong>PestiMart</strong> adalah solusi e-commerce khusus mahasiswa yang dirancang untuk memudahkan jual beli kebutuhan kampus. Mulai dari buku, alat tulis, hingga perlengkapan kos, semuanya tersedia dalam satu platform yang praktis, cepat, dan hemat.</p>
+            <p>Dengan sistem verifikasi mahasiswa menggunakan NIM dan E-KTM, kami memastikan setiap transaksi berlangsung aman dan terpercaya. PestiMart bukan hanya tempat berbelanja, tapi juga komunitas mahasiswa yang saling membantu dalam memenuhi kebutuhan kampus.</p>
+          </div>
+          <div class="about-image js-reveal-right">
+            <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'" class="js-parallax" data-parallax-speed="0.15">
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-
-
   <!-- Features Section -->
-  <section class="features-section js-reveal">
-    <div class="features-title">
-      <h3>Keunggulan PestiMart</h3>
+  <section class="section-fullscreen" id="section-features" style="background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);">
+    <div class="section-content">
+      <div class="features-section">
+        <div class="features-title">
+          <h3>Keunggulan PestiMart</h3>
       <p>Solusi lengkap untuk kebutuhan mahasiswa</p>
     </div>
-    <div class="features-grid js-reveal">
-      <div class="feature-card">
-        <div class="feature-icon">🎓</div>
-        <h4>Khusus Mahasiswa</h4>
-        <p>Platform eksklusif dengan verifikasi NIM dan E-KTM untuk keamanan maksimal</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h4>Cepat & Praktis</h4>
-        <p>Temukan dan beli kebutuhan kampus dalam hitungan menit</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">💰</div>
-        <h4>Harga Terjangkau</h4>
-        <p>Dapatkan harga terbaik dari sesama mahasiswa</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h4>Aman Terpercaya</h4>
-        <p>Sistem keamanan berlapis untuk melindungi setiap transaksi</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📱</div>
-        <h4>Mudah Diakses</h4>
-        <p>Responsive design yang dapat diakses dari perangkat apapun</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h4>Komunitas Aktif</h4>
-        <p>Bergabung dengan komunitas mahasiswa se-Indonesia</p>
+        <div class="features-grid js-reveal">
+          <div class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h4>Khusus Mahasiswa</h4>
+            <p>Platform eksklusif dengan verifikasi NIM dan E-KTM untuk keamanan maksimal</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4>Cepat & Praktis</h4>
+            <p>Temukan dan beli kebutuhan kampus dalam hitungan menit</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h4>Harga Terjangkau</h4>
+            <p>Dapatkan harga terbaik dari sesama mahasiswa</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h4>Aman Terpercaya</h4>
+            <p>Sistem keamanan berlapis untuk melindungi setiap transaksi</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h4>Mudah Diakses</h4>
+            <p>Responsive design yang dapat diakses dari perangkat apapun</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🤝</div>
+            <h4>Komunitas Aktif</h4>
+            <p>Bergabung dengan komunitas mahasiswa se-Indonesia</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-@guest
-  <section class="cta-section js-reveal">
-    <h3>Siap Bergabung?</h3>
-    <p>Mulai pengalaman jual beli yang lebih mudah bersama ribuan mahasiswa lainnya</p>
-   <a href="{{ route('register.buyer') }}" class="cta-btn btn-outline-primary btn-lg">
-                        Daftar Sekarang
-                    </a>
+  @guest
+  <section class="section-fullscreen" id="section-cta" style="background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, #6366f1 100%);">
+    <div class="section-content">
+      <div class="cta-section" style="background: transparent; box-shadow: none;">
+        <h3>Siap Bergabung?</h3>
+        <p>Mulai pengalaman jual beli yang lebih mudah bersama ribuan mahasiswa lainnya</p>
+        <a href="{{ route('register.buyer') }}" class="cta-btn btn-outline-primary btn-lg">
+          Daftar Sekarang
+        </a>
+      </div>
+    </div>
   </section>
-@endguest
+  @endguest
 
 
   <script>
     function toggleMenu() {
       alert('Mobile menu akan muncul di sini');
+    }
+
+    // Section-Based Scroll with Indicator
+    function initSectionScroll() {
+      const sections = document.querySelectorAll('.section-fullscreen');
+      const dots = document.querySelectorAll('.scroll-dot');
+      
+      // Observer for section visibility
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Add in-view class for animations
+            entry.target.classList.add('in-view');
+            
+            // Update active dot
+            const sectionIndex = Array.from(sections).indexOf(entry.target);
+            dots.forEach((dot, idx) => {
+              dot.classList.toggle('active', idx === sectionIndex);
+            });
+          }
+        });
+      }, {
+        threshold: 0.5,
+        rootMargin: '0px'
+      });
+
+      sections.forEach(section => sectionObserver.observe(section));
+
+      // Click on dots to scroll to section
+      dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+          sections[idx]?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
     }
 
     // Scroll Reveal with IntersectionObserver
@@ -754,6 +902,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
       autoRotateCarousel();
+      initSectionScroll();
       initScrollReveal();
       initParallax();
     });

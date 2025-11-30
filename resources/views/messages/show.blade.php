@@ -6,19 +6,19 @@
 <style>
     .chat-wrapper {
         background: var(--card-bg, #FFFFFF);
-        border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 200px);
+        height: calc(100vh - 180px);
         margin-bottom: 2rem;
     }
     
     .chat-header {
         background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -33,125 +33,173 @@
     }
     
     .chat-avatar {
-        width: 50px;
-        height: 50px;
-        background: rgba(255,255,255,0.3);
+        width: 48px;
+        height: 48px;
+        background: rgba(255,255,255,0.25);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         flex-shrink: 0;
+        border: 2px solid rgba(255,255,255,0.3);
     }
     
     .user-details h5 {
-        margin-bottom: 0;
+        margin-bottom: 0.25rem;
         font-size: 1rem;
+        font-weight: 600;
     }
     
     .user-status {
-        font-size: 0.85rem;
-        opacity: 0.9;
+        font-size: 0.8rem;
+        opacity: 0.85;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .user-status::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #4ade80;
+        border-radius: 50%;
+        display: inline-block;
     }
     
     .chat-messages {
         flex-grow: 1;
         overflow-y: auto;
-        padding: 1.5rem;
+        padding: 1.25rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        background: var(--neutral-gray, #ECEEF3);
+        gap: 0.5rem;
+        background: linear-gradient(180deg, #f0f4f8 0%, #e8ecf1 100%);
     }
     
+    /* Native Chat Message Styling */
     .message {
         display: flex;
-        flex-direction: column;
-
-        gap: 0.6rem;
         align-items: flex-end;
-        margin-bottom: 0;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+        max-width: 85%;
     }
 
-    .message.sent { justify-content: flex-end; }
-    .message.received { justify-content: flex-start; }
+    .message.sent {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .message.received {
+        align-self: flex-start;
+        flex-direction: row;
+    }
 
     .message-avatar {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
-        flex: 0 0 36px;
+        flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        font-size: 0.8rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
     .message.received .message-avatar {
-        background: #eaeaea;
-        color: #555;
-        order: 0;
+        background: #e5e7eb;
+        color: #4b5563;
     }
+
     .message.sent .message-avatar {
         background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: #fff;
-        order: 2;
     }
-    
-    .message-bubble {
-        padding: 0.875rem 1.125rem;
-        border-radius: 1.125rem;
-        max-width: 75%;
-        word-wrap: break-word;
-        word-break: break-word;
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
-        text-align: justify;
-        hyphens: auto;
-        animation: fadeIn 0.3s ease;
-        line-height: 1.5;
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
+
+    .message-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
     }
-    
-    .message.sent {
-        justify-content: flex-end;
+
+    .message.sent .message-content {
+        align-items: flex-end;
+    }
+
+    .message.received .message-content {
+        align-items: flex-start;
     }
     
     .message-bubble {
         padding: 0.75rem 1rem;
-        border-radius: 1rem;
-        max-width: 70%;
+        max-width: 100%;
         word-wrap: break-word;
-        animation: fadeIn 0.3s ease;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
+        line-height: 1.45;
+        font-size: 0.95rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
     }
     
+    /* Native asymmetric corners - iMessage style */
     .message.received .message-bubble {
-        background: var(--card-bg, #FFFFFF);
+        background: #ffffff;
         color: var(--neutral-dark, #1A1F36);
+        border-radius: 1.125rem 1.125rem 1.125rem 0.375rem;
     }
     
     .message.sent .message-bubble {
-        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, #5a9bff 100%);
         color: white;
+        border-radius: 1.125rem 1.125rem 0.375rem 1.125rem;
     }
     
     .message-time {
+        font-size: 0.7rem;
+        color: #9ca3af;
+        padding: 0 0.25rem;
+    }
+
+    .message.sent .message-time {
+        text-align: right;
+    }
+
+    /* Date separator */
+    .date-separator {
+        text-align: center;
+        padding: 0.75rem 0;
         font-size: 0.75rem;
-        color: #999;
-        margin-top: 0.375rem;
-        padding: 0 0.5rem;
-        opacity: 0.8;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .date-separator span {
+        background: rgba(255,255,255,0.8);
+        padding: 0.4rem 0.75rem;
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
     @media (max-width: 768px) {
+        .chat-wrapper {
+            height: calc(100vh - 150px);
+            border-radius: 0;
+            margin-bottom: 0;
+        }
+
+        .message {
+            max-width: 90%;
+        }
+
         .message-bubble {
-            max-width: 85%;
             font-size: 0.9rem;
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 0.9rem;
         }
         
         .chat-header {
@@ -163,73 +211,103 @@
             height: 40px;
             font-size: 1rem;
         }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+        }
     }
     
     @media (max-width: 480px) {
         .message-bubble {
-            max-width: 90%;
-            font-size: 0.85rem;
-            padding: 0.7rem 0.9rem;
+            font-size: 0.875rem;
+            padding: 0.65rem 0.85rem;
+        }
+
+        .message-avatar {
+            display: none;
         }
     }
     
     @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(8px);
         }
         to {
             opacity: 1;
             transform: translateY(0);
         }
     }
+
+    .message-bubble {
+        animation: fadeIn 0.25s ease-out;
+    }
     
     .chat-input-area {
-        padding: 1.5rem;
-        border-top: 1px solid var(--neutral-gray, #ECEEF3);
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
         background: var(--card-bg, #FFFFFF);
     }
     
     .input-group {
         display: flex;
-        gap: 0.5rem;
+        align-items: flex-end;
+        gap: 0.75rem;
     }
     
     .message-input {
         flex-grow: 1;
         padding: 0.75rem 1rem;
-        border: 1px solid #ddd;
-        border-radius: 2rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 1.5rem;
         font-family: inherit;
         resize: none;
-        max-height: 100px;
+        max-height: 120px;
+        min-height: 44px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        background: #f9fafb;
+        transition: all 0.2s ease;
     }
     
     .message-input:focus {
         outline: none;
         border-color: var(--primary, #3A7BFF);
-        box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
+        box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
+        background: #ffffff;
+    }
+
+    .message-input::placeholder {
+        color: #9ca3af;
     }
     
     .send-button {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
         border: none;
         border-radius: 50%;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: all 0.2s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 600;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(58, 123, 255, 0.3);
+    }
+
+    .send-button i {
+        font-size: 1rem;
+        margin-left: 2px;
     }
     
     @media (hover: hover) {
         .send-button:hover {
-            transform: scale(1.05);
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(58, 123, 255, 0.4);
         }
     }
     
@@ -300,22 +378,11 @@
                     $initials = strtoupper(substr($isSent ? auth()->user()->name : $otherUser->name, 0, 1));
                 @endphp
                 <div class="message {{ $isSent ? 'sent' : 'received' }}">
-                    @if(!$isSent)
-                        <div class="message-avatar" title="{{ $otherUser->name }}">{{ $initials }}</div>
-                    @endif
-
-                    <div class="message-content" style="display:flex; flex-direction:column; max-width:80%;">
-                        <div class="message-bubble">
-                            {{ $message->message }}
-                        </div>
-                        <div class="message-time">
-                            {{ $message->created_at->format('H:i') }}
-                        </div>
+                    <div class="message-avatar" title="{{ $isSent ? auth()->user()->name : $otherUser->name }}">{{ $initials }}</div>
+                    <div class="message-content">
+                        <div class="message-bubble">{{ $message->message }}</div>
+                        <div class="message-time">{{ $message->created_at->format('H:i') }}</div>
                     </div>
-
-                    @if($isSent)
-                        <div class="message-avatar" title="{{ auth()->user()->name }}">{{ $initials }}</div>
-                    @endif
                 </div>
             @endforeach
         </div>
@@ -339,11 +406,20 @@
 </div>
 
 <script>
-// Auto scroll ke bawah
+// Smooth scroll ke bawah
 const messagesContainer = document.getElementById('messagesContainer');
-if (messagesContainer) {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+function scrollToBottom(smooth = true) {
+    if (messagesContainer) {
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: smooth ? 'smooth' : 'instant'
+        });
+    }
 }
+
+// Initial scroll (instant)
+scrollToBottom(false);
 
 // Auto refresh messages setiap 3 detik
 setInterval(() => {
@@ -355,23 +431,39 @@ setInterval(() => {
             const newMessages = newDoc.getElementById('messagesContainer');
             if (newMessages && newMessages.innerHTML !== messagesContainer.innerHTML) {
                 messagesContainer.innerHTML = newMessages.innerHTML;
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                scrollToBottom(true);
             }
         });
 }, 3000);
 
-// Disable send button saat form submit
+// Handle form submit
 document.getElementById('messageForm').addEventListener('submit', function(e) {
     const textarea = this.querySelector('textarea');
     if (textarea.value.trim() === '') {
         e.preventDefault();
+        return;
     }
+    // Reset textarea height after send
+    setTimeout(() => {
+        textarea.style.height = 'auto';
+    }, 100);
 });
 
-// Auto-resize textarea
-document.querySelector('.message-input').addEventListener('input', function() {
+// Auto-resize textarea with better max height
+const messageInput = document.querySelector('.message-input');
+messageInput.addEventListener('input', function() {
     this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// Submit on Enter (without Shift)
+messageInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (this.value.trim() !== '') {
+            document.getElementById('messageForm').submit();
+        }
+    }
 });
 </script>
 @endsection

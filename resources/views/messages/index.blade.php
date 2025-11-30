@@ -149,6 +149,11 @@
     }
 
     @media (max-width: 768px) {
+        .messages-header {
+            padding: 1.25rem 0;
+            margin-bottom: 1.5rem;
+        }
+
         .conversation-item {
             padding: 0.85rem;
             gap: 0.75rem;
