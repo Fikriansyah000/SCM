@@ -60,23 +60,16 @@
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
-<<<<<<< HEAD
         gap: 0.75rem;
         background: #fafbfc;
-=======
-        gap: 1rem;
->>>>>>> 81f0d06 (First Up|)
     }
     
     .message {
         display: flex;
-<<<<<<< HEAD
-<<<<<<< HEAD
         flex-direction: column;
-=======
+
         gap: 0.6rem;
         align-items: flex-end;
->>>>>>> 72c28ce (Benerin Beberapa Fitur)
         margin-bottom: 0;
     }
 
@@ -120,7 +113,6 @@
         animation: fadeIn 0.3s ease;
         line-height: 1.5;
         font-size: 0.95rem;
-=======
         margin-bottom: 0.5rem;
     }
     
@@ -134,7 +126,6 @@
         max-width: 70%;
         word-wrap: break-word;
         animation: fadeIn 0.3s ease;
->>>>>>> 81f0d06 (First Up|)
     }
     
     .message.received .message-bubble {
@@ -150,7 +141,6 @@
     .message-time {
         font-size: 0.75rem;
         color: #999;
-<<<<<<< HEAD
         margin-top: 0.375rem;
         padding: 0 0.5rem;
         opacity: 0.8;
@@ -170,10 +160,6 @@
             font-size: 0.85rem;
             padding: 0.7rem 0.9rem;
         }
-=======
-        margin-top: 0.25rem;
-        padding: 0 0.5rem;
->>>>>>> 81f0d06 (First Up|)
     }
     
     @keyframes fadeIn {
@@ -276,7 +262,6 @@
                 <div class="user-details">
                     <h5>{{ $otherUser->name }}</h5>
                     <div class="user-status">
-<<<<<<< HEAD
                         @if($shop)
                             <i class="fas fa-store me-1"></i>{{ $shop->shop_name }}
                         @else
@@ -285,12 +270,6 @@
                             @else
                                 <i class="fas fa-shopping-cart me-1"></i>Pembeli
                             @endif
-=======
-                        @if($otherUser->role === 'seller')
-                            <i class="fas fa-store me-1"></i>Penjual
-                        @else
-                            <i class="fas fa-shopping-cart me-1"></i>Pembeli
->>>>>>> 81f0d06 (First Up|)
                         @endif
                     </div>
                 </div>
@@ -329,12 +308,9 @@
         <div class="chat-input-area">
             <form method="POST" action="{{ route('messages.send', $otherUser->id) }}" id="messageForm">
                 @csrf
-<<<<<<< HEAD
                 @if($shop)
                     <input type="hidden" name="shop_id" value="{{ $shop->id }}">
                 @endif
-=======
->>>>>>> 81f0d06 (First Up|)
                 <div class="input-group">
                     <textarea class="message-input" name="message" placeholder="Tulis pesan..." required></textarea>
                     <button type="submit" class="send-button" title="Kirim">

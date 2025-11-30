@@ -250,7 +250,6 @@
         color: #333;
     }
 
-<<<<<<< HEAD
     /* Return Section Styles */
     .return-section {
         background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
@@ -387,8 +386,6 @@
         background: #138496 !important;
     }
 
-=======
->>>>>>> 81f0d06 (First Up|)
     @media (max-width: 768px) {
         .order-detail-container {
             grid-template-columns: 1fr;
@@ -477,9 +474,8 @@
                     </div>
                 </div>
                 @endforeach
-<<<<<<< HEAD
 
-                <!-- Return Request from Buyer -->
+            <!-- Return Request from Buyer -->
                 @if($order->return_status)
                 <div class="section-title mt-4">
                     <i class="fas fa-undo"></i>Status Pengajuan Retur
@@ -608,8 +604,6 @@
                     </div>
                 </div>
                 @endif
-=======
->>>>>>> 81f0d06 (First Up|)
             </div>
         </div>
 
@@ -657,7 +651,6 @@
 
                     @endif
 
-<<<<<<< HEAD
                     {{-- Return management actions --}}
                     @if($order->return_status === 'requested')
                         <div style="background:#e3f2fd;padding:1rem;border-radius:0.5rem;margin-bottom:1rem;">
@@ -749,8 +742,6 @@
                         </a>
                     @endif
 
-=======
->>>>>>> 81f0d06 (First Up|)
                     <a href="{{ route('seller.orders') }}" class="btn-action btn-back">
                         <i class="fas fa-arrow-left me-1"></i>Kembali
                     </a>

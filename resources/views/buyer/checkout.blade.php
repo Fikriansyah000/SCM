@@ -52,7 +52,6 @@
         outline: none;
     }
 
-<<<<<<< HEAD
     /* Shipping Mode Selection */
     .shipping-modes-grid {
         display: grid;
@@ -169,8 +168,6 @@
         font-weight: 500;
     }
 
-=======
->>>>>>> 81f0d06 (First Up|)
     .radio-group {
         display: flex;
         gap: 1rem;
@@ -275,13 +272,10 @@
         .checkout-container {
             grid-template-columns: 1fr;
         }
-<<<<<<< HEAD
 
         .shipping-modes-grid {
             grid-template-columns: 1fr;
         }
-=======
->>>>>>> 81f0d06 (First Up|)
     }
 </style>
 
@@ -290,11 +284,7 @@
         <i class="fas fa-shopping-cart me-2"></i>Checkout
     </h2>
 
-<<<<<<< HEAD
     <form method="POST" action="{{ route('buyer.checkout.store') }}" class="checkout-container" id="checkoutForm">
-=======
-    <form method="POST" action="{{ route('buyer.checkout.store') }}" class="checkout-container">
->>>>>>> 81f0d06 (First Up|)
         @csrf
 
         <!-- Form -->
@@ -316,7 +306,6 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
             <!-- Mode Transportasi -->
             <div class="checkout-card">
                 <h3 class="section-title">
@@ -344,12 +333,6 @@
             <div class="checkout-card">
                 <h3 class="section-title">
                     <i class="fas fa-cog me-2"></i>Pengaturan Pengiriman
-=======
-            <!-- Metode Pengiriman -->
-            <div class="checkout-card">
-                <h3 class="section-title">
-                    <i class="fas fa-truck me-2"></i>Metode Pengiriman
->>>>>>> 81f0d06 (First Up|)
                 </h3>
 
                 <div class="form-group">
@@ -365,20 +348,10 @@
                             <input type="radio" name="shipping_method" value="delivery" checked required>
                             <div>
                                 <strong>Diantar</strong><br>
-<<<<<<< HEAD
                                 <small>Lihat opsi di atas</small>
                             </div>
                         </label>
                     </div>
-=======
-                                <small>Rp 10.000</small>
-                            </div>
-                        </label>
-                    </div>
-                    @error('shipping_method')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
->>>>>>> 81f0d06 (First Up|)
                 </div>
             </div>
         </div>
@@ -392,32 +365,23 @@
                 </h3>
 
                 @foreach($cart as $item)
-<<<<<<< HEAD
                 @php
                     $isFlash = in_array($item->product_id, session('flash_sale_ids', []));
                     $unitPrice = $item->product->price;
                     $displayPrice = $isFlash ? round($unitPrice * 0.90) : $unitPrice;
                 @endphp
-=======
->>>>>>> 81f0d06 (First Up|)
                 <div class="cart-item">
                     <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : asset('images/no-product.png') }}" 
                          alt="{{ $item->product->name }}">
                     <div class="item-details">
                         <div class="item-name">{{ $item->product->name }}</div>
                         <div class="item-qty">{{ $item->quantity }}x</div>
-<<<<<<< HEAD
                         @if($isFlash)
                             <div style="font-size:0.85rem; color:#28a745;">Flash Sale: 10% off + Gratis Ongkir</div>
                         @endif
                     </div>
                     <div class="item-price">
                         Rp{{ number_format($displayPrice * $item->quantity, 0, ',', '.') }}
-=======
-                    </div>
-                    <div class="item-price">
-                        Rp{{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}
->>>>>>> 81f0d06 (First Up|)
                     </div>
                 </div>
                 @endforeach
@@ -429,7 +393,6 @@
                     <i class="fas fa-receipt me-2"></i>Ringkasan
                 </h3>
 
-<<<<<<< HEAD
                 <div class="summary-row">
                     <span>Subtotal</span>
                     <strong id="subtotal-display">Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
@@ -438,39 +401,19 @@
                 <div class="summary-row">
                     <span>Diskon</span>
                     <strong id="discount-display">-Rp{{ number_format($discount, 0, ',', '.') }}</strong>
-=======
-                @php
-                    $subtotal = $cart->sum(fn($item) => $item->product->price * $item->quantity);
-                @endphp
-
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <strong>Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
->>>>>>> 81f0d06 (First Up|)
                 </div>
 
                 <div class="summary-row" id="shipping-fee">
                     <span>Ongkir</span>
-<<<<<<< HEAD
                     <strong id="shipping-display">Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
-=======
-                    <strong>Rp 10.000</strong>
->>>>>>> 81f0d06 (First Up|)
                 </div>
 
                 <div class="summary-total">
                     <span>Total</span>
-<<<<<<< HEAD
                     <span id="total-amount">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
                 <button type="submit" class="btn-checkout" id="checkoutBtn">
-=======
-                    <span id="total-amount">Rp{{ number_format($subtotal + 10000, 0, ',', '.') }}</span>
-                </div>
-
-                <button type="submit" class="btn-checkout">
->>>>>>> 81f0d06 (First Up|)
                     <i class="fas fa-check me-2"></i>Lanjutkan Pembayaran
                 </button>
             </div>
@@ -479,7 +422,6 @@
 </div>
 
 <script>
-<<<<<<< HEAD
     const subtotal = {{ $subtotal }};
     const discount = {{ $discount }};
     const flashHasDiscount = {{ $discount > 0 ? 'true' : 'false' }};
@@ -573,22 +515,5 @@
             return false;
         }
     });
-=======
-document.querySelectorAll('input[name="shipping_method"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        const shippingFee = this.value === 'pickup' ? 0 : 10000;
-        const subtotal = {{ $subtotal }};
-        const total = subtotal + shippingFee;
-
-        document.getElementById('shipping-fee').innerHTML = `
-            <span>Ongkir</span>
-            <strong>Rp${shippingFee.toLocaleString('id-ID')}</strong>
-        `;
-
-        document.getElementById('total-amount').textContent = 
-            'Rp' + total.toLocaleString('id-ID');
-    });
-});
->>>>>>> 81f0d06 (First Up|)
 </script>
 @endsection

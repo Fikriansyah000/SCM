@@ -176,15 +176,11 @@
     <div class="notifications-container">
         @if($notifications->count() > 0)
             @foreach($notifications as $notification)
-<<<<<<< HEAD
             @php
                 $orderLink = $notification->action_url ?? null;
             @endphp
 
             <div data-href="{{ $orderLink }}" class="notification-card {{ !$notification->is_read ? 'unread' : '' }} is-{{ getNotificationType($notification->type) }}" @if($orderLink) style="cursor:pointer;" @endif>
-=======
-            <div class="notification-card {{ !$notification->is_read ? 'unread' : '' }} is-{{ getNotificationType($notification->type) }}">
->>>>>>> 81f0d06 (First Up|)
                 <div style="display: flex; gap: 1rem;">
                     <div class="notification-icon">
                         {!! getNotificationIcon($notification->type) !!}
@@ -214,11 +210,7 @@
                             </a>
                             @endif
 
-<<<<<<< HEAD
                             <form method="POST" action="{{ route('notifications.read', $notification) }}" style="flex: 1;" onsubmit="event.stopPropagation();">
-=======
-                            <form method="POST" action="{{ route('notifications.read', $notification) }}" style="flex: 1;">
->>>>>>> 81f0d06 (First Up|)
                                 @csrf
                                 <button type="submit" class="btn-notif-action btn-secondary w-100">
                                     <i class="fas fa-check me-1"></i>Sudah Dibaca
@@ -230,7 +222,6 @@
             </div>
             @endforeach
 
-<<<<<<< HEAD
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.notification-card[data-href]').forEach(function(card) {
@@ -245,8 +236,6 @@
             });
         </script>
 
-=======
->>>>>>> 81f0d06 (First Up|)
             <div class="mt-4">
                 {{ $notifications->links('pagination::bootstrap-5') }}
             </div>
