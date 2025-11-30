@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('landing') }}">
+        <a class="navbar-brand" href="@auth @if(auth()->user()->role === 'buyer'){{ route('buyer.home') }}@elseif(auth()->user()->role === 'seller'){{ route('seller.dashboard') }}@else{{ route('landing') }}@endif @else{{ route('landing') }}@endauth">
             <i class="fas fa-shopping-cart me-2"></i>PestiMart
         </a>
         
@@ -120,7 +120,7 @@
 <!-- Off-Canvas Mobile Menu -->
 <div class="offcanvas-menu" id="offcanvasMenu">
     <div class="offcanvas-header">
-        <a href="{{ route('landing') }}" class="offcanvas-brand">
+        <a href="@auth @if(auth()->user()->role === 'buyer'){{ route('buyer.home') }}@elseif(auth()->user()->role === 'seller'){{ route('seller.dashboard') }}@else{{ route('landing') }}@endif @else{{ route('landing') }}@endauth" class="offcanvas-brand">
             <i class="fas fa-shopping-cart"></i>
             <span>PestiMart</span>
         </a>
@@ -256,6 +256,24 @@
         backdrop-filter: blur(10px);
         padding: 15px 5%;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1050;
+        height: 76px;
+    }
+
+    @media (max-width: 768px) {
+        .navbar {
+            padding: 10px 4%;
+            height: 60px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .navbar {
+            padding: 8px 3%;
+            height: 56px;
+        }
     }
 
     .navbar-brand {

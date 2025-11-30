@@ -10,9 +10,13 @@
       padding: 0;
     }
 
-    html {
+    /* Landing page scroll container */
+    .landing-scroll-container {
+      height: calc(100vh - 76px);
+      overflow-y: auto;
       scroll-behavior: smooth;
       scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
     }
 
     body {
@@ -23,7 +27,7 @@
 
     /* Section-Based Scroll System */
     .section-fullscreen {
-      min-height: 100vh;
+      min-height: calc(100vh - 76px);
       scroll-snap-align: start;
       scroll-snap-stop: always;
       display: flex;
@@ -41,7 +45,7 @@
     /* Section scroll indicator */
     .scroll-indicator {
       position: fixed;
-      right: 20px;
+      right: 15px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
@@ -89,19 +93,50 @@
     .section-fullscreen.in-view .section-content > *:nth-child(3) { transition-delay: 0.3s; }
     .section-fullscreen.in-view .section-content > *:nth-child(4) { transition-delay: 0.4s; }
 
+    /* Mobile Section-Based Scroll */
     @media (max-width: 768px) {
-      .scroll-indicator {
-        display: none;
+      .landing-scroll-container {
+        height: calc(100vh - 60px);
+        scroll-snap-type: y mandatory;
       }
-      
-      html {
-        scroll-snap-type: y proximity;
+
+      .scroll-indicator {
+        right: 8px;
+        gap: 10px;
+      }
+
+      .scroll-dot {
+        width: 10px;
+        height: 10px;
+        border-width: 1.5px;
       }
       
       .section-fullscreen {
-        min-height: auto;
-        padding: 60px 0;
-        scroll-snap-align: none;
+        min-height: calc(100vh - 60px);
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        padding: 30px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .landing-scroll-container {
+        height: calc(100vh - 56px);
+      }
+
+      .section-fullscreen {
+        min-height: calc(100vh - 56px);
+        padding: 20px 0;
+      }
+
+      .scroll-dot {
+        width: 8px;
+        height: 8px;
+      }
+
+      .scroll-indicator {
+        right: 6px;
+        gap: 8px;
       }
     }
 
@@ -173,6 +208,319 @@
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(10, 76, 140, 0.2);
       animation: floatMain 6s ease-in-out infinite;
+    }
+
+    /* Mobile Hero adjustments */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 30px 5% 20px;
+        gap: 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-content {
+        min-width: 100%;
+      }
+
+      .hero-content h2 {
+        font-size: clamp(24px, 6vw, 32px);
+        margin-bottom: 15px;
+      }
+
+      .hero-content p {
+        font-size: clamp(14px, 3.5vw, 16px);
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .hero-btn {
+        padding: 10px 24px;
+        font-size: 14px;
+      }
+
+      .hero-image {
+        min-width: 100%;
+        order: -1;
+      }
+
+      .hero-image img {
+        max-width: 200px;
+      }
+
+      .float-icon {
+        font-size: 28px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-section {
+        padding: 20px 4% 15px;
+        gap: 15px;
+      }
+
+      .hero-content h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .hero-content p {
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+
+      .hero-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+      }
+
+      .hero-image img {
+        max-width: 160px;
+      }
+
+      .float-icon {
+        font-size: 22px;
+      }
+    }
+
+    /* ====== ABOUT SECTION MOBILE ====== */
+    @media (max-width: 768px) {
+      .about-section {
+        padding: 30px 4%;
+        margin: 0;
+      }
+
+      .about-container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .about-text h3 {
+        font-size: 26px;
+        margin-bottom: 12px;
+      }
+
+      .about-text p {
+        font-size: 14px;
+        line-height: 1.6;
+        text-align: center;
+      }
+
+      .about-image img {
+        max-width: 200px;
+        order: -1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .about-section {
+        padding: 20px 3%;
+      }
+
+      .about-text h3 {
+        font-size: 22px;
+      }
+
+      .about-text p {
+        font-size: 13px;
+      }
+
+      .about-image img {
+        max-width: 150px;
+      }
+    }
+
+    /* ====== FEATURES SECTION MOBILE ====== */
+    @media (max-width: 768px) {
+      .features-section {
+        padding: 30px 4%;
+      }
+
+      .features-title h3 {
+        font-size: 26px;
+        margin-bottom: 8px;
+      }
+
+      .features-title p {
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .feature-card {
+        padding: 15px;
+      }
+
+      .feature-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .feature-card h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .feature-card p {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .features-section {
+        padding: 20px 3%;
+      }
+
+      .features-title h3 {
+        font-size: 22px;
+      }
+
+      .features-title p {
+        font-size: 13px;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .feature-card {
+        padding: 12px;
+      }
+
+      .feature-icon {
+        font-size: 24px;
+      }
+
+      .feature-card h4 {
+        font-size: 13px;
+      }
+
+      .feature-card p {
+        font-size: 11px;
+      }
+    }
+
+    /* ====== CTA SECTION MOBILE ====== */
+    @media (max-width: 768px) {
+      .cta-section {
+        padding: 30px 4%;
+      }
+
+      .cta-section h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .cta-section p {
+        font-size: 14px;
+        margin-bottom: 15px;
+      }
+
+      .cta-btn {
+        padding: 12px 30px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cta-section {
+        padding: 25px 3%;
+      }
+
+      .cta-section h3 {
+        font-size: 20px;
+      }
+
+      .cta-section p {
+        font-size: 13px;
+      }
+
+      .cta-btn {
+        padding: 10px 25px;
+        font-size: 13px;
+      }
+    }
+
+    /* ====== PRODUCTS CAROUSEL MOBILE ====== */
+    @media (max-width: 768px) {
+      #section-products .section-content {
+        padding: 30px 4% !important;
+      }
+
+      #section-products .features-title h3 {
+        font-size: 26px;
+      }
+
+      #section-products .features-title p {
+        font-size: 14px;
+      }
+
+      .product-card {
+        min-width: 180px !important;
+        max-width: 180px !important;
+      }
+
+      .product-card img {
+        height: 120px !important;
+      }
+
+      .product-card h4 {
+        font-size: 13px !important;
+      }
+
+      .product-card .price {
+        font-size: 14px !important;
+      }
+
+      #productCarousel button {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 16px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #section-products .section-content {
+        padding: 20px 3% !important;
+      }
+
+      #section-products .features-title h3 {
+        font-size: 22px;
+      }
+
+      #section-products .features-title p {
+        font-size: 13px;
+      }
+
+      .product-card {
+        min-width: 150px !important;
+        max-width: 150px !important;
+      }
+
+      .product-card img {
+        height: 100px !important;
+      }
+
+      .product-card h4 {
+        font-size: 12px !important;
+      }
+
+      .product-card .price {
+        font-size: 13px !important;
+      }
+
+      #productCarousel button {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 14px !important;
+      }
     }
 
     /* Floating decorative elements */
@@ -613,32 +961,51 @@
     <div class="scroll-dot" data-section="1" title="Produk"></div>
     <div class="scroll-dot" data-section="2" title="Tentang"></div>
     <div class="scroll-dot" data-section="3" title="Fitur"></div>
+    @guest
     <div class="scroll-dot" data-section="4" title="Bergabung"></div>
+    @endguest
   </nav>
+
+  <!-- Landing Scroll Container -->
+  <div class="landing-scroll-container" id="landingScrollContainer">
 
   <!-- Hero Section -->
   <section class="section-fullscreen" id="section-hero" style="background: linear-gradient(135deg, #e8f1f8 0%, #ffffff 50%, #f0f7ff 100%);">
     <div class="section-content">
-      @guest
       <div class="hero-section">
+        @guest
         <div class="hero-content js-reveal-left">
           <h2>Platform Jual Beli Khusus Mahasiswa</h2>
           <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
           <a href="{{ route('register.buyer') }}" class="hero-btn btn-outline-primary btn-lg">
-                            Daftar Sekarang
-                        </a>
+            Daftar Sekarang
+          </a>
         </div>
-      @endguest
-      <div class="hero-image js-reveal-right">
-        <div class="floating-elements">
-          <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
-          <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
-          <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
-          <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
+        @else
+        <div class="hero-content js-reveal-left">
+          <h2>Selamat Datang di PestiMart</h2>
+          <p>Platform jual beli khusus mahasiswa. Temukan kebutuhan kampus Anda dengan mudah dan aman.</p>
+          @if(auth()->user()->role === 'buyer')
+          <a href="{{ route('buyer.home') }}" class="hero-btn btn-outline-primary btn-lg">
+            Jelajahi Produk
+          </a>
+          @else
+          <a href="{{ route('seller.dashboard') }}" class="hero-btn btn-outline-primary btn-lg">
+            Ke Dashboard
+          </a>
+          @endif
         </div>
-        <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
+        @endguest
+        <div class="hero-image js-reveal-right">
+          <div class="floating-elements">
+            <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
+            <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
+            <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
+            <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
+          </div>
+          <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
+        </div>
       </div>
-    </div>
     </div>
   </section>
 
@@ -743,6 +1110,7 @@
   </section>
   @endguest
 
+  </div><!-- End Landing Scroll Container -->
 
   <script>
     function toggleMenu() {
@@ -751,10 +1119,11 @@
 
     // Section-Based Scroll with Indicator
     function initSectionScroll() {
+      const scrollContainer = document.getElementById('landingScrollContainer');
       const sections = document.querySelectorAll('.section-fullscreen');
       const dots = document.querySelectorAll('.scroll-dot');
       
-      // Observer for section visibility
+      // Observer for section visibility - use scroll container as root
       const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -769,6 +1138,7 @@
           }
         });
       }, {
+        root: scrollContainer,
         threshold: 0.5,
         rootMargin: '0px'
       });
@@ -778,13 +1148,17 @@
       // Click on dots to scroll to section
       dots.forEach((dot, idx) => {
         dot.addEventListener('click', () => {
-          sections[idx]?.scrollIntoView({ behavior: 'smooth' });
+          const targetSection = sections[idx];
+          if (targetSection && scrollContainer) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         });
       });
     }
 
     // Scroll Reveal with IntersectionObserver
     function initScrollReveal() {
+      const scrollContainer = document.getElementById('landingScrollContainer');
       const revealElements = document.querySelectorAll('.js-reveal, .js-reveal-left, .js-reveal-right');
       
       const revealObserver = new IntersectionObserver((entries) => {
@@ -794,6 +1168,7 @@
           }
         });
       }, {
+        root: scrollContainer,
         threshold: 0.15,
         rootMargin: '0px 0px -50px 0px'
       });
@@ -803,10 +1178,11 @@
 
     // Parallax Effect on Scroll
     function initParallax() {
+      const scrollContainer = document.getElementById('landingScrollContainer');
       const parallaxElements = document.querySelectorAll('.js-parallax');
       
       function updateParallax() {
-        const scrollY = window.scrollY;
+        const scrollY = scrollContainer ? scrollContainer.scrollTop : window.scrollY;
         
         parallaxElements.forEach(el => {
           const speed = parseFloat(el.dataset.parallaxSpeed) || 0.3;
@@ -820,7 +1196,8 @@
       }
 
       let ticking = false;
-      window.addEventListener('scroll', () => {
+      const scrollTarget = scrollContainer || window;
+      scrollTarget.addEventListener('scroll', () => {
         if (!ticking) {
           requestAnimationFrame(() => {
             updateParallax();

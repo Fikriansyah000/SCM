@@ -112,6 +112,19 @@ body {
     line-height: 1.5;
 }
 
+/* Landing Page Layout Override */
+.main-layout:has(.landing-scroll-container) {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.main-layout:has(.landing-scroll-container) > .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 /* ==========================================================================
    3. Typography Utilities
    ========================================================================== */
