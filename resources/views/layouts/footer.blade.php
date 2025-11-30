@@ -1,56 +1,56 @@
-<footer>
+<footer class="site-footer">
     <div class="container">
         <div class="row mb-4">
             <div class="col-md-3 mb-4 mb-md-0">
-                <h5 class="mb-3">
+                <h5 class="footer-brand mb-3">
                     <i class="fas fa-shopping-cart me-2"></i>PestiMart
                 </h5>
-                <p class="text-muted small">Platform e-commerce khusus mahasiswa untuk jual beli kebutuhan kampus dengan aman dan terpercaya.</p>
+                <p class="footer-text small">Platform e-commerce khusus mahasiswa untuk jual beli kebutuhan kampus dengan aman dan terpercaya.</p>
             </div>
             <div class="col-md-3 mb-4 mb-md-0">
-                <h5 class="mb-3">Menu</h5>
-                <ul class="list-unstyled text-muted small">
-                    <li><a href="{{ route('landing') }}" class="text-muted text-decoration-none">Beranda</a></li>
+                <h5 class="footer-heading mb-3">Menu</h5>
+                <ul class="footer-links list-unstyled small">
+                    <li><a href="{{ route('landing') }}">Beranda</a></li>
                     @auth
                         @if(auth()->user()->role === 'buyer')
-                            <li><a href="{{ route('buyer.home') }}" class="text-muted text-decoration-none">Belanja</a></li>
+                            <li><a href="{{ route('buyer.home') }}">Belanja</a></li>
                         @else
-                            <li><a href="{{ route('seller.dashboard') }}" class="text-muted text-decoration-none">Dashboard</a></li>
+                            <li><a href="{{ route('seller.dashboard') }}">Dashboard</a></li>
                         @endif
                     @endauth
                 </ul>
             </div>
             <div class="col-md-3 mb-4 mb-md-0">
-                <h5 class="mb-3">Bantuan</h5>
-                <ul class="list-unstyled text-muted small">
-                    <li><a href="#" class="text-muted text-decoration-none">Hubungi Kami</a></li>
-                    <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
-                    <li><a href="#" class="text-muted text-decoration-none">Kebijakan</a></li>
+                <h5 class="footer-heading mb-3">Bantuan</h5>
+                <ul class="footer-links list-unstyled small">
+                    <li><a href="#">Hubungi Kami</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Kebijakan</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
-                <h5 class="mb-3">Ikuti Kami</h5>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-sm btn-outline-light rounded-circle">
+                <h5 class="footer-heading mb-3">Ikuti Kami</h5>
+                <div class="footer-social d-flex gap-2">
+                    <a href="#" class="btn btn-sm rounded-circle" aria-label="Facebook">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="btn btn-sm btn-outline-light rounded-circle">
+                    <a href="#" class="btn btn-sm rounded-circle" aria-label="Twitter">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="#" class="btn btn-sm btn-outline-light rounded-circle">
+                    <a href="#" class="btn btn-sm rounded-circle" aria-label="Instagram">
                         <i class="fab fa-instagram"></i>
                     </a>
                 </div>
             </div>
         </div>
-        <hr class="bg-secondary">
-        <div class="row">
+        <hr class="footer-divider">
+        <div class="row footer-bottom">
             <div class="col-md-6">
-                <p class="text-muted small mb-0">&copy; {{ date('Y') }} PestiMart. Semua hak dilindungi.</p>
+                <p class="footer-copyright small mb-0">&copy; {{ date('Y') }} PestiMart. Semua hak dilindungi.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <p class="text-muted small mb-0">
-                    Made with <i class="fas fa-heart text-danger"></i> for Students
+                <p class="footer-credit small mb-0">
+                    Made with <i class="fas fa-heart"></i> 5A PSTI
                 </p>
             </div>
         </div>
@@ -58,91 +58,112 @@
 </footer>
 
 <style>
-    footer {
-        background: #2d3e50;
+    .site-footer {
+        background: linear-gradient(135deg, var(--color-neutral-dark, #1A1F36), #2a3040);
         color: white;
-        padding: 30px 5%;
+        padding: 40px 5% 30px;
         margin-top: 3rem;
     }
 
-    footer .container {
+    .site-footer .container {
         max-width: 100%;
         padding: 0;
     }
 
-    footer h5 {
+    .footer-brand {
+        font-family: var(--font-display, 'Poppins'), sans-serif;
         color: white;
+        font-weight: 700;
+        font-size: clamp(16px, 2vw, 18px);
+    }
+
+    .footer-heading {
+        color: white;
+        font-family: var(--font-display, 'Poppins'), sans-serif;
         font-weight: 600;
         font-size: clamp(14px, 1.8vw, 16px);
     }
 
-    footer p {
+    .footer-text {
+        color: rgba(255, 255, 255, 0.75);
         font-size: clamp(13px, 1.5vw, 15px);
-        opacity: 0.9;
+        line-height: 1.7;
         margin-bottom: 8px;
-        line-height: 1.6;
     }
 
-    footer a {
-        color: #a6bdd5;
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+
+    .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
+        font-size: clamp(13px, 1.4vw, 14px);
         transition: all 0.3s ease;
         display: inline-block;
     }
 
-    footer a:hover {
-        color: #5273a1;
-        transform: translateX(2px);
+    .footer-links a:hover {
+        color: var(--color-secondary, #6ECBF9);
+        transform: translateX(4px);
     }
 
-    footer ul li {
-        margin-bottom: 8px;
-    }
-
-    footer ul li a {
-        font-size: clamp(12px, 1.4vw, 14px);
-        opacity: 0.85;
-    }
-
-    footer hr {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        margin: 2rem 0;
-    }
-
-    footer .btn-outline-light {
-        color: #a6bdd5;
-        border-color: #a6bdd5;
+    .footer-social .btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: transparent;
         transition: all 0.3s ease;
     }
 
-    footer .btn-outline-light:hover {
+    .footer-social .btn:hover {
         color: white;
-        background-color: #5273a1;
-        border-color: #5273a1;
-        transform: translateY(-2px);
+        background: var(--color-primary, #3A7BFF);
+        border-color: var(--color-primary, #3A7BFF);
+        transform: translateY(-3px);
     }
 
-    footer .text-muted {
-        color: #a6bdd5 !important;
-        opacity: 0.85;
+    .footer-divider {
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 2rem 0;
+    }
+
+    .footer-copyright,
+    .footer-credit {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-credit .fa-heart {
+        color: var(--color-accent, #FF8F3A);
+        animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.15); }
     }
 
     @media (max-width: 768px) {
-        footer {
-            padding: 20px 5%;
+        .site-footer {
+            padding: 30px 5% 20px;
             text-align: center;
         }
 
-        footer .col-md-6 {
+        .footer-bottom .col-md-6 {
             text-align: center !important;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        footer a {
-            display: inline;
+        .footer-links a:hover {
+            transform: none;
         }
 
-        footer .d-flex {
+        .footer-social {
             justify-content: center !important;
         }
     }

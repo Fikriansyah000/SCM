@@ -33,6 +33,7 @@
     }
 
     .hero-content h2 {
+      font-family: var(--font-display, 'Poppins'), sans-serif;
       color: var(--neutral-dark, #1A1F36);
       font-size: clamp(32px, 5vw, 48px);
       font-weight: 700;
@@ -164,10 +165,11 @@
 
     .about-text {
       flex: 1;
-      min-width: 450px;
+      min-width: 280px;
     }
 
     .about-text h3 {
+      font-family: var(--font-display, 'Poppins'), sans-serif;
       color: var(--primary, #3A7BFF);
       font-size: clamp(24px, 3.5vw, 36px);
       font-weight: 700;
@@ -180,13 +182,21 @@
       line-height: 1.8;
       margin-bottom: 18px;
       text-align: justify;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .about-image {
       flex: 1;
-      min-width: 300px;
+      min-width: 280px;
       position: relative;
-      margin-left: 100px;
+      margin-left: 0;
+    }
+
+    @media (min-width: 992px) {
+      .about-image {
+        margin-left: 50px;
+      }
     }
 
     .about-image img {
@@ -218,6 +228,7 @@
     }
 
     .features-title h3 {
+      font-family: var(--font-display, 'Poppins'), sans-serif;
       color: var(--primary, #3A7BFF);
       font-size: clamp(26px, 4vw, 38px);
       font-weight: 700;
@@ -387,6 +398,7 @@
     }
 
     .cta-section h3 {
+      font-family: var(--font-display, 'Poppins'), sans-serif;
       font-size: clamp(28px, 4.5vw, 42px);
       font-weight: 700;
       margin-bottom: 15px;
@@ -447,14 +459,69 @@
         text-align: center;
       }
     }
+
+    /* Scroll Reveal Animations */
+    .js-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .js-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .js-reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .js-reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .js-reveal-left.is-visible,
+    .js-reveal-right.is-visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Feature cards staggered reveal */
+    .features-grid .feature-card {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .features-grid.is-visible .feature-card:nth-child(1) { transition-delay: 0.1s; }
+    .features-grid.is-visible .feature-card:nth-child(2) { transition-delay: 0.2s; }
+    .features-grid.is-visible .feature-card:nth-child(3) { transition-delay: 0.3s; }
+    .features-grid.is-visible .feature-card:nth-child(4) { transition-delay: 0.4s; }
+    .features-grid.is-visible .feature-card:nth-child(5) { transition-delay: 0.5s; }
+    .features-grid.is-visible .feature-card:nth-child(6) { transition-delay: 0.6s; }
+
+    .features-grid.is-visible .feature-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Parallax floating icons */
+    .js-parallax {
+      transition: transform 0.15s ease-out;
+    }
   </style>
 </head>
 <body>
 
   <!-- Hero Section -->
    @guest
-  <section class="hero-section">
-    <div class="hero-content">
+  <section class="hero-section js-reveal">
+    <div class="hero-content js-reveal-left">
       <h2>Platform Jual Beli Khusus Mahasiswa</h2>
       <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
       <a href="{{ route('register.buyer') }}" class="hero-btn btn-outline-primary btn-lg">
@@ -462,19 +529,19 @@
                     </a>
     </div>
     @endguest
-    <div class="hero-image">
+    <div class="hero-image js-reveal-right">
       <div class="floating-elements">
-        <div class="float-icon">📦</div>
-        <div class="float-icon">🛒</div>
-        <div class="float-icon">💳</div>
-        <div class="float-icon">⭐</div>
+        <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
+        <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
+        <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
+        <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
       </div>
-      <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'">
+      <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
     </div>
   </section>
 
     <!-- Products Showcase Section -->
-  <section style="padding: 60px 5%; background: white;">
+  <section class="js-reveal" style="padding: 60px 5%; background: white;">
     <div class="features-title">
       <h3>Produk Unggulan</h3>
       <p>Jelajahi koleksi produk terpopuler dari seller terpercaya</p>
@@ -496,15 +563,15 @@
   </section>
 
   <!-- About Section -->
-  <section class="about-section">
+  <section class="about-section js-reveal">
     <div class="about-container">
-      <div class="about-text">
+      <div class="about-text js-reveal-left">
         <h3>Tentang PestiMart</h3>
         <p><strong>PestiMart</strong> adalah solusi e-commerce khusus mahasiswa yang dirancang untuk memudahkan jual beli kebutuhan kampus. Mulai dari buku, alat tulis, hingga perlengkapan kos, semuanya tersedia dalam satu platform yang praktis, cepat, dan hemat.</p>
         <p>Dengan sistem verifikasi mahasiswa menggunakan NIM dan E-KTM, kami memastikan setiap transaksi berlangsung aman dan terpercaya. PestiMart bukan hanya tempat berbelanja, tapi juga komunitas mahasiswa yang saling membantu dalam memenuhi kebutuhan kampus.</p>
       </div>
-      <div class="about-image">
-        <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'">
+      <div class="about-image js-reveal-right">
+        <img src="ecommerce-illustration.jpg" alt="PestiMart E-commerce" onerror="this.src='heroAbout.png'" class="js-parallax" data-parallax-speed="0.15">
       </div>
     </div>
   </section>
@@ -512,12 +579,12 @@
 
 
   <!-- Features Section -->
-  <section class="features-section">
+  <section class="features-section js-reveal">
     <div class="features-title">
       <h3>Keunggulan PestiMart</h3>
       <p>Solusi lengkap untuk kebutuhan mahasiswa</p>
     </div>
-    <div class="features-grid">
+    <div class="features-grid js-reveal">
       <div class="feature-card">
         <div class="feature-icon">🎓</div>
         <h4>Khusus Mahasiswa</h4>
@@ -553,7 +620,7 @@
 
   <!-- CTA Section -->
 @guest
-  <section class="cta-section">
+  <section class="cta-section js-reveal">
     <h3>Siap Bergabung?</h3>
     <p>Mulai pengalaman jual beli yang lebih mudah bersama ribuan mahasiswa lainnya</p>
    <a href="{{ route('register.buyer') }}" class="cta-btn btn-outline-primary btn-lg">
@@ -566,6 +633,54 @@
   <script>
     function toggleMenu() {
       alert('Mobile menu akan muncul di sini');
+    }
+
+    // Scroll Reveal with IntersectionObserver
+    function initScrollReveal() {
+      const revealElements = document.querySelectorAll('.js-reveal, .js-reveal-left, .js-reveal-right');
+      
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      revealElements.forEach(el => revealObserver.observe(el));
+    }
+
+    // Parallax Effect on Scroll
+    function initParallax() {
+      const parallaxElements = document.querySelectorAll('.js-parallax');
+      
+      function updateParallax() {
+        const scrollY = window.scrollY;
+        
+        parallaxElements.forEach(el => {
+          const speed = parseFloat(el.dataset.parallaxSpeed) || 0.3;
+          const rect = el.getBoundingClientRect();
+          const centerY = rect.top + rect.height / 2;
+          const windowCenterY = window.innerHeight / 2;
+          const offset = (centerY - windowCenterY) * speed;
+          
+          el.style.transform = `translateY(${offset * -0.3}px)`;
+        });
+      }
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            updateParallax();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
     }
 
     // Product Carousel
@@ -639,6 +754,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
       autoRotateCarousel();
+      initScrollReveal();
+      initParallax();
     });
   </script>
 </div>

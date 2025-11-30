@@ -4,11 +4,13 @@
             <i class="fas fa-shopping-cart me-2"></i>PestiMart
         </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-menu-toggle d-lg-none" type="button" onclick="openOffcanvasMenu()" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
         </button>
         
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Desktop Navigation -->
+        <div class="collapse navbar-collapse desktop-nav" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 @guest
                     <li class="nav-item">
@@ -112,17 +114,153 @@
     </div>
 </nav>
 
+<!-- Off-Canvas Mobile Menu Overlay -->
+<div class="offcanvas-overlay" id="offcanvasOverlay" onclick="closeOffcanvasMenu()"></div>
+
+<!-- Off-Canvas Mobile Menu -->
+<div class="offcanvas-menu" id="offcanvasMenu">
+    <div class="offcanvas-header">
+        <a href="{{ route('landing') }}" class="offcanvas-brand">
+            <i class="fas fa-shopping-cart"></i>
+            <span>PestiMart</span>
+        </a>
+        <button class="offcanvas-close" onclick="closeOffcanvasMenu()" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="offcanvas-body">
+        <ul class="offcanvas-nav">
+            @guest
+                <li class="offcanvas-nav-item">
+                    <a class="offcanvas-nav-link" href="{{ route('login') }}">
+                        <i class="fas fa-sign-in-alt"></i>Login
+                    </a>
+                </li>
+                <li class="offcanvas-nav-item">
+                    <a class="offcanvas-nav-link" href="{{ route('register.buyer') }}">
+                        <i class="fas fa-user-plus"></i>Daftar
+                    </a>
+                </li>
+            @else
+                @if(auth()->user()->role === 'buyer')
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('buyer.home') ? 'active' : '' }}" href="{{ route('buyer.home') }}">
+                            <i class="fas fa-home"></i>Home
+                        </a>
+                    </li>
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link position-relative {{ request()->routeIs('buyer.cart') ? 'active' : '' }}" href="{{ route('buyer.cart') }}">
+                            <i class="fas fa-shopping-cart"></i>Keranjang
+                            @php
+                                $cartCount = \App\Models\Cart::where('user_id', auth()->id())->count();
+                            @endphp
+                            @if($cartCount > 0)
+                                <span class="badge bg-danger ms-2">{{ $cartCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('buyer.orders') ? 'active' : '' }}" href="{{ route('buyer.orders') }}">
+                            <i class="fas fa-history"></i>Pesanan
+                        </a>
+                    </li>
+                @else
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('seller.dashboard') ? 'active' : '' }}" href="{{ route('seller.dashboard') }}">
+                            <i class="fas fa-chart-line"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('seller.shop') ? 'active' : '' }}" href="{{ route('seller.shop') }}">
+                            <i class="fas fa-store"></i>Toko Saya
+                        </a>
+                    </li>
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('seller.products.*') ? 'active' : '' }}" href="{{ route('seller.products.index') }}">
+                            <i class="fas fa-box"></i>Produk
+                        </a>
+                    </li>
+                @endif
+                
+                <li class="offcanvas-nav-item">
+                    <a class="offcanvas-nav-link" href="{{ route('notifications.index') }}">
+                        <i class="fas fa-bell"></i>Notifikasi
+                        @php
+                            $unreadCount = \App\Models\Notification::where('user_id', auth()->id())
+                                ->where('is_read', false)
+                                ->count();
+                        @endphp
+                        @if($unreadCount > 0)
+                            <span class="badge bg-danger ms-2">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                
+                <li class="offcanvas-nav-item">
+                    <a class="offcanvas-nav-link" href="{{ route('messages.index') }}">
+                        <i class="fas fa-envelope"></i>Pesan
+                    </a>
+                </li>
+                
+                <li class="offcanvas-nav-item">
+                    <a class="offcanvas-nav-link" href="{{ route('profile.show') }}">
+                        <i class="fas fa-id-card"></i>Profil
+                    </a>
+                </li>
+            @endguest
+        </ul>
+    </div>
+    
+    @auth
+    <div class="offcanvas-footer">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--color-primary);"></i>
+            <span class="fw-semibold">{{ auth()->user()->name }}</span>
+        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger w-100">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </button>
+        </form>
+    </div>
+    @endauth
+</div>
+
+<script>
+    function openOffcanvasMenu() {
+        document.getElementById('offcanvasMenu').classList.add('is-open');
+        document.getElementById('offcanvasOverlay').classList.add('is-open');
+        document.body.classList.add('offcanvas-open');
+    }
+    
+    function closeOffcanvasMenu() {
+        document.getElementById('offcanvasMenu').classList.remove('is-open');
+        document.getElementById('offcanvasOverlay').classList.remove('is-open');
+        document.body.classList.remove('offcanvas-open');
+    }
+    
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeOffcanvasMenu();
+        }
+    });
+</script>
+
 <style>
     /* Navigation */
     .navbar {
-        background: rgba(166, 189, 213, 0.95);
+        background: linear-gradient(135deg, rgba(58, 123, 255, 0.95), rgba(110, 203, 249, 0.9));
         backdrop-filter: blur(10px);
         padding: 15px 5%;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     }
 
     .navbar-brand {
-        color: #0a4c8c !important;
+        font-family: var(--font-display, 'Poppins'), sans-serif;
+        color: white !important;
         font-size: clamp(20px, 3vw, 26px);
         font-weight: 700;
         display: flex;
@@ -144,7 +282,7 @@
     }
 
     .nav-link {
-        color: #0a4c8c !important;
+        color: white !important;
         font-weight: 600;
         font-size: clamp(13px, 1.5vw, 15px);
         transition: all 0.3s ease;
@@ -154,19 +292,18 @@
     }
 
     .nav-link:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.2);
         transform: translateY(-2px);
     }
 
     .nav-link.active {
-        background: rgba(255, 255, 255, 0.4);
-        color: #0a4c8c !important;
+        background: rgba(255, 255, 255, 0.3);
         font-weight: 700;
     }
 
     .nav-link.btn-login {
         background: white;
-        color: #0a4c8c !important;
+        color: var(--color-primary, #3A7BFF) !important;
         border: none;
         padding: 8px 20px !important;
     }
@@ -174,31 +311,49 @@
     .nav-link.btn-login:hover {
         background: #f0f4f8;
         transform: translateY(-2px);
+        color: var(--color-primary, #3A7BFF) !important;
     }
 
     .nav-link.btn-register {
-        background: #0a4c8c;
+        background: var(--color-accent, #FF8F3A);
         color: white !important;
         border: none;
         padding: 8px 20px !important;
     }
 
     .nav-link.btn-register:hover {
-        background: #083b6d;
+        background: #e6802f;
         transform: translateY(-2px);
     }
 
-    .navbar-toggler {
-        border-color: #0a4c8c;
-        padding: 0.25rem 0.5rem;
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: none;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md, 8px);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: all 0.3s ease;
     }
 
-    .navbar-toggler:focus {
-        box-shadow: 0 0 0 0.25rem rgba(10, 76, 140, 0.25);
+    .mobile-menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
 
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%230a4c8c' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    @media (max-width: 991px) {
+        .mobile-menu-toggle {
+            display: flex;
+        }
+        
+        .desktop-nav {
+            display: none !important;
+        }
     }
 
     .dropdown-menu {
@@ -220,13 +375,13 @@
     }
 
     .dropdown-item {
-        color: #0a4c8c;
+        color: var(--color-primary, #3A7BFF);
         transition: all 0.2s ease;
     }
 
     .dropdown-item:hover {
-        background: rgba(10, 76, 140, 0.1);
-        color: #083b6d;
+        background: rgba(58, 123, 255, 0.1);
+        color: var(--color-primary, #3A7BFF);
     }
 
     .dropdown-divider {
@@ -244,58 +399,140 @@
         50% { opacity: 0.7; }
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 991px) {
-        .navbar {
-            padding: 12px 5%;
-        }
-
-        .navbar-nav {
-            margin-top: 15px;
-            gap: 0;
-        }
-
-        .nav-link {
-            padding: 10px 15px !important;
-            margin-bottom: 5px;
-        }
-
-        .nav-link.btn-login,
-        .nav-link.btn-register {
-            margin-top: 10px;
-            text-align: center;
-            padding: 10px 15px !important;
-        }
-
-        .navbar-collapse {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
+    /* Off-Canvas Menu Styles */
+    .offcanvas-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1040;
     }
 
-    /* Dark Mode Support */
-    @media (prefers-color-scheme: dark) {
-        .navbar {
-            background: rgba(10, 76, 140, 0.9);
-        }
+    .offcanvas-overlay.is-open {
+        opacity: 1;
+        visibility: visible;
+    }
 
-        .navbar-collapse {
-            background: rgba(10, 76, 140, 0.95);
-        }
+    .offcanvas-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: min(300px, 85vw);
+        height: 100%;
+        background: white;
+        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1050;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
 
-        .nav-link {
-            color: white !important;
-        }
+    .offcanvas-menu.is-open {
+        transform: translateX(0);
+    }
 
-        .nav-link.btn-login {
-            background: #0a4c8c;
-            color: white !important;
-        }
+    .offcanvas-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF), var(--color-secondary, #6ECBF9));
+        color: white;
+    }
 
-        .nav-link.btn-login:hover {
-            background: #083b6d;
+    .offcanvas-brand {
+        font-family: var(--font-display, 'Poppins'), sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .offcanvas-brand:hover {
+        color: white;
+    }
+
+    .offcanvas-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md, 8px);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: background 0.2s ease;
+    }
+
+    .offcanvas-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .offcanvas-body {
+        flex: 1;
+        padding: 1rem;
+    }
+
+    .offcanvas-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .offcanvas-nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .offcanvas-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--color-text-primary, #333);
+        text-decoration: none;
+        border-radius: var(--radius-md, 8px);
+        font-weight: 500;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .offcanvas-nav-link:hover,
+    .offcanvas-nav-link.active {
+        background: rgba(58, 123, 255, 0.1);
+        color: var(--color-primary, #3A7BFF);
+    }
+
+    .offcanvas-nav-link i {
+        width: 20px;
+        text-align: center;
+        color: var(--color-primary, #3A7BFF);
+    }
+
+    .offcanvas-footer {
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        background: var(--color-neutral-light, #f8f9fa);
+    }
+
+    body.offcanvas-open {
+        overflow: hidden;
+    }
+
+    @media (min-width: 992px) {
+        .offcanvas-menu,
+        .offcanvas-overlay {
+            display: none !important;
         }
     }
 </style>

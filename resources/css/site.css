@@ -72,6 +72,7 @@
 
     /* Typography */
     --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-display: 'Poppins', 'Segoe UI', system-ui, sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
@@ -79,6 +80,8 @@
     --font-size-xl: 1.25rem;
     --font-size-2xl: 1.5rem;
     --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
 
     /* Transitions */
     --transition-fast: 150ms ease;
@@ -1187,4 +1190,426 @@ body {
 body.modal-open {
     overflow: hidden;
     padding-right: var(--scrollbar-width, 0);
+}
+
+/* ==========================================================================
+   26. Display Typography (Headings with Display Font)
+   ========================================================================== */
+
+.h1-site {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-neutral-dark);
+}
+
+.h2-site {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-neutral-dark);
+}
+
+.h3-site {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-neutral-dark);
+}
+
+.h4-site {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-neutral-dark);
+}
+
+.heading-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ==========================================================================
+   27. Scroll Reveal & Animation Utilities
+   ========================================================================== */
+
+.section-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered children reveal */
+.reveal-children > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-children.is-visible > *:nth-child(1) { transition-delay: 0.1s; }
+.reveal-children.is-visible > *:nth-child(2) { transition-delay: 0.2s; }
+.reveal-children.is-visible > *:nth-child(3) { transition-delay: 0.3s; }
+.reveal-children.is-visible > *:nth-child(4) { transition-delay: 0.4s; }
+.reveal-children.is-visible > *:nth-child(5) { transition-delay: 0.5s; }
+.reveal-children.is-visible > *:nth-child(6) { transition-delay: 0.6s; }
+
+.reveal-children.is-visible > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Slide-in variants */
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-left.is-visible,
+.reveal-right.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Scale reveal */
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ==========================================================================
+   28. Parallax Utilities
+   ========================================================================== */
+
+.parallax-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.parallax-layer {
+    will-change: transform;
+    transition: transform 0.1s linear;
+}
+
+.parallax-slow {
+    --parallax-speed: 0.3;
+}
+
+.parallax-medium {
+    --parallax-speed: 0.5;
+}
+
+.parallax-fast {
+    --parallax-speed: 0.7;
+}
+
+/* Floating animation for decorative elements */
+@keyframes float-gentle {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes float-delayed {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(-5deg); }
+}
+
+.animate-float {
+    animation: float-gentle 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+    animation: float-delayed 5s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+/* ==========================================================================
+   29. Off-Canvas Mobile Navigation
+   ========================================================================== */
+
+.offcanvas-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+    z-index: var(--z-modal-backdrop);
+}
+
+.offcanvas-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.offcanvas-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(300px, 85vw);
+    height: 100%;
+    background: var(--color-white);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    z-index: var(--z-modal);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.offcanvas-menu.is-open {
+    transform: translateX(0);
+}
+
+.offcanvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--gradient-primary);
+    color: var(--color-white);
+}
+
+.offcanvas-brand {
+    font-family: var(--font-display);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.offcanvas-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--color-white);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: background var(--transition-fast);
+}
+
+.offcanvas-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.offcanvas-body {
+    flex: 1;
+    padding: var(--space-4);
+}
+
+.offcanvas-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.offcanvas-nav-item {
+    margin-bottom: var(--space-2);
+}
+
+.offcanvas-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.offcanvas-nav-link:hover,
+.offcanvas-nav-link.active {
+    background: rgba(58, 123, 255, 0.1);
+    color: var(--color-primary);
+}
+
+.offcanvas-nav-link i {
+    width: 20px;
+    text-align: center;
+    color: var(--color-primary);
+}
+
+.offcanvas-footer {
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-neutral-light);
+}
+
+/* Body scroll lock when menu open */
+body.offcanvas-open {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   30. Section Layout Helpers
+   ========================================================================== */
+
+.section {
+    padding-block: var(--space-12);
+}
+
+.section-hero {
+    padding-block: var(--space-16) var(--space-12);
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+}
+
+.section-sm {
+    padding-block: var(--space-8);
+}
+
+.section-lg {
+    padding-block: var(--space-16);
+}
+
+/* ==========================================================================
+   31. Text Containment & Mobile Fixes
+   ========================================================================== */
+
+.break-words {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.contain-text {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.text-justify-mobile {
+    text-align: left;
+}
+
+@media (min-width: 768px) {
+    .text-justify-mobile {
+        text-align: justify;
+    }
+}
+
+/* Responsive padding for text blocks */
+.px-safe {
+    padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+    .px-safe {
+        padding-inline: var(--space-6);
+    }
+}
+
+@media (min-width: 1200px) {
+    .px-safe {
+        padding-inline: var(--space-8);
+    }
+}
+
+/* ==========================================================================
+   32. Interactive Hover Effects
+   ========================================================================== */
+
+@media (hover: hover) {
+    .hover-lift {
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .hover-glow {
+        transition: box-shadow var(--transition-base);
+    }
+    
+    .hover-glow:hover {
+        box-shadow: 0 0 30px rgba(58, 123, 255, 0.3);
+    }
+    
+    .hover-scale {
+        transition: transform var(--transition-base);
+    }
+    
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+}
+
+/* ==========================================================================
+   33. Mobile Navigation Toggle
+   ========================================================================== */
+
+.mobile-menu-toggle {
+    display: none;
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+@media (max-width: 991px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .desktop-nav {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .offcanvas-menu,
+    .offcanvas-overlay {
+        display: none !important;
+    }
 }
