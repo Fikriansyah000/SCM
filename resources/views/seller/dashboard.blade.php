@@ -5,25 +5,28 @@
 @section('content')
 <style>
     .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
+        background: var(--gradient-primary);
+        color: var(--color-white);
+        padding: var(--space-8) 0;
+        margin-bottom: var(--space-8);
     }
     
     .stat-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 1.5rem;
+        background: var(--color-white);
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-border);
+        margin-bottom: var(--space-4);
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all var(--transition-base);
     }
-    
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+
+    @media (hover: hover) {
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-card-hover);
+        }
     }
     
     .stat-icon {
@@ -32,116 +35,151 @@
         justify-content: center;
         width: 50px;
         height: 50px;
-        border-radius: 50%;
-        margin: 0 auto 1rem;
-        font-size: 1.5rem;
+        border-radius: var(--radius-full);
+        margin: 0 auto var(--space-4);
+        font-size: var(--font-size-2xl);
     }
     
-    .stat-icon.primary {
-        background: #667eea;
-        color: white;
-    }
-    
-    .stat-icon.success {
-        background: #48bb78;
-        color: white;
-    }
-    
-    .stat-icon.warning {
-        background: #f6ad55;
-        color: white;
-    }
-    
-    .stat-icon.danger {
-        background: #f5576c;
-        color: white;
-    }
+    .stat-icon.primary { background: var(--color-primary); color: var(--color-white); }
+    .stat-icon.success { background: var(--color-success); color: var(--color-white); }
+    .stat-icon.warning { background: var(--color-accent); color: var(--color-white); }
+    .stat-icon.danger { background: var(--color-danger); color: var(--color-white); }
     
     .stat-value {
-        font-size: 1.8rem;
+        font-size: var(--font-size-2xl);
         font-weight: 700;
-        color: #333;
-        margin-bottom: 0.5rem;
+        color: var(--color-neutral-dark);
+        margin-bottom: var(--space-2);
+    }
+
+    @media (max-width: 575.98px) {
+        .stat-value {
+            font-size: var(--font-size-xl);
+        }
     }
     
     .stat-label {
-        color: #999;
-        font-size: 0.95rem;
+        color: var(--color-text-muted);
+        font-size: var(--font-size-sm);
         font-weight: 500;
     }
     
     .section-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 1.5rem;
+        background: var(--color-white);
+        padding: var(--space-4);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-border);
+        margin-bottom: var(--space-6);
+    }
+
+    @media (min-width: 768px) {
+        .section-card {
+            padding: var(--space-6);
+        }
     }
     
     .section-title {
-        font-size: 1.2rem;
+        font-size: var(--font-size-lg);
         font-weight: 600;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: var(--space-6);
+        padding-bottom: var(--space-4);
+        border-bottom: 2px solid var(--color-border);
+        color: var(--color-neutral-dark);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .section-title i {
+        color: var(--color-primary);
     }
     
     .quick-actions {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+    }
+
+    @media (min-width: 576px) {
+        .quick-actions {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (min-width: 992px) {
+        .quick-actions {
+            grid-template-columns: repeat(5, 1fr);
+        }
     }
     
     .action-btn {
-        padding: 1rem;
+        padding: var(--space-4);
         text-align: center;
-        border: 2px solid #f0f0f0;
-        border-radius: 0.75rem;
-        background: white;
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-white);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all var(--transition-fast);
         text-decoration: none;
-        color: #333;
+        color: var(--color-neutral-dark);
     }
-    
-    .action-btn:hover {
-        border-color: #667eea;
-        background: #f0f4ff;
-        color: #667eea;
+
+    @media (hover: hover) {
+        .action-btn:hover {
+            border-color: var(--color-primary);
+            background: rgba(58, 123, 255, 0.05);
+            color: var(--color-primary);
+        }
     }
     
     .action-btn i {
         display: block;
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
+        font-size: var(--font-size-2xl);
+        margin-bottom: var(--space-2);
+        color: var(--color-primary);
     }
     
     .action-btn span {
         display: block;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: var(--font-size-sm);
     }
 
     .chart-container {
         position: relative;
-        height: 400px;
         width: 100%;
-        margin-bottom: 2rem;
+        height: clamp(240px, 40vw, 400px);
     }
 
-    .chart-wrapper {
-        padding: 1rem;
-    }
     .stat-link {
         text-decoration: none;
         color: inherit;
         display: block;
     }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+    }
+
+    @media (min-width: 576px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (min-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
 </style>
 
 <div class="dashboard-header">
     <div class="container">
-        <h2>
+        <h2 class="heading-clamp">
             <i class="fas fa-tachometer-alt me-2"></i>Dashboard Penjual
         </h2>
         <p class="mt-2">Selamat datang, {{ auth()->user()->name }}!</p>
@@ -153,82 +191,71 @@
     <!-- Revenue Chart -->
     <div class="section-card">
         <div class="section-title">
-            <i class="fas fa-chart-line me-2"></i>Revenue 12 Bulan Terakhir
+            <i class="fas fa-chart-line"></i>Revenue 12 Bulan Terakhir
         </div>
-        <div class="chart-wrapper">
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
-            </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
         </div>
     </div>
+
     <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('seller.products.index') }}" class="stat-link">
-                <div class="stat-card">
-                    <div class="stat-icon primary">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <div class="stat-value">{{ $totalProducts }}</div>
-                    <div class="stat-label">Total Produk</div>
+    <div class="stats-grid mb-4">
+        <a href="{{ route('seller.products.index') }}" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-box"></i>
                 </div>
-            </a>
-        </div>
+                <div class="stat-value">{{ $totalProducts }}</div>
+                <div class="stat-label">Total Produk</div>
+            </div>
+        </a>
 
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('seller.orders') }}" class="stat-link">
-                <div class="stat-card">
-                    <div class="stat-icon warning">
-                        <i class="fas fa-shopping-bag"></i>
-                    </div>
-                    <div class="stat-value">{{ $totalOrders }}</div>
-                    <div class="stat-label">Total Pesanan</div>
+        <a href="{{ route('seller.orders') }}" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-shopping-bag"></i>
                 </div>
-            </a>
-        </div>
+                <div class="stat-value">{{ $totalOrders }}</div>
+                <div class="stat-label">Total Pesanan</div>
+            </div>
+        </a>
 
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('seller.orders') }}?status=pending" class="stat-link">
-                <div class="stat-card">
-                    <div class="stat-icon danger">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-value">{{ $pendingOrders }}</div>
-                    <div class="stat-label">Pesanan Pending</div>
+        <a href="{{ route('seller.orders') }}?status=pending" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-clock"></i>
                 </div>
-            </a>
-        </div>
+                <div class="stat-value">{{ $pendingOrders }}</div>
+                <div class="stat-label">Pesanan Pending</div>
+            </div>
+        </a>
 
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('seller.orders') }}?return_status=requested" class="stat-link">
-                <div class="stat-card">
-                    <div class="stat-icon danger">
-                        <i class="fas fa-undo"></i>
-                    </div>
-                    <div class="stat-value">{{ $returnRequests ?? 0 }}</div>
-                    <div class="stat-label">Pesanan Retur</div>
+        <a href="{{ route('seller.orders') }}?return_status=requested" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-undo"></i>
                 </div>
-            </a>
-        </div>
+                <div class="stat-value">{{ $returnRequests ?? 0 }}</div>
+                <div class="stat-label">Pesanan Retur</div>
+            </div>
+        </a>
 
-        <div class="col-6 col-md-4 col-lg-2">
-            <a href="{{ route('seller.orders') }}" class="stat-link">
-                <div class="stat-card">
-                    <div class="stat-icon success">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
-                    <div class="stat-label">Total Revenue</div>
+        <a href="{{ route('seller.orders') }}" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-money-bill-wave"></i>
                 </div>
-            </a>
-        </div>
+                <div class="stat-value">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </a>
     </div>
 
     
     <!-- Shop Info -->
     <div class="section-card">
         <div class="section-title">
-            <i class="fas fa-store me-2"></i>Informasi Toko
+            <i class="fas fa-store"></i>Informasi Toko
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -245,7 +272,7 @@
             </div>
         </div>
         <div class="mt-3">
-            <a href="{{ route('seller.shop.edit') }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('seller.shop.edit') }}" class="btn-gradient btn-gradient-sm">
                 <i class="fas fa-edit me-2"></i>Edit Toko
             </a>
         </div>
@@ -254,7 +281,7 @@
     <!-- Quick Actions -->
     <div class="section-card">
         <div class="section-title">
-            <i class="fas fa-bolt me-2"></i>Aksi Cepat
+            <i class="fas fa-bolt"></i>Aksi Cepat
         </div>
         <div class="quick-actions">
             <a href="{{ route('seller.products.create') }}" class="action-btn">
@@ -286,6 +313,7 @@
 
 <script>
     // Revenue Chart Configuration
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#3A7BFF';
     const revenueCtx = document.getElementById('revenueChart').getContext('2d');
     
     const revenueChart = new Chart(revenueCtx, {
@@ -295,18 +323,18 @@
             datasets: [{
                 label: 'Revenue (Rp)',
                 data: {!! json_encode($revenueData) !!},
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderColor: primaryColor,
+                backgroundColor: 'rgba(58, 123, 255, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
                 pointRadius: 6,
-                pointBackgroundColor: '#667eea',
+                pointBackgroundColor: primaryColor,
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointHoverRadius: 8,
-                pointHoverBackgroundColor: '#764ba2',
-                hoverBackgroundColor: 'rgba(102, 126, 234, 0.2)'
+                pointHoverBackgroundColor: '#6ECBF9',
+                hoverBackgroundColor: 'rgba(58, 123, 255, 0.2)'
             }]
         },
         options: {
@@ -316,7 +344,7 @@
                 legend: {
                     display: true,
                     labels: {
-                        color: '#333',
+                        color: '#1A1F36',
                         font: {
                             size: 12,
                             weight: 'bold'
@@ -325,10 +353,10 @@
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backgroundColor: 'rgba(26, 31, 54, 0.9)',
                     titleColor: '#fff',
                     bodyColor: '#fff',
-                    borderColor: '#667eea',
+                    borderColor: primaryColor,
                     borderWidth: 1,
                     padding: 12,
                     displayColors: false,
@@ -344,7 +372,7 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: '#999',
+                        color: '#6c757d',
                         callback: function(value) {
                             return 'Rp' + (value / 1000).toFixed(0) + 'K';
                         }
@@ -356,7 +384,7 @@
                 },
                 x: {
                     ticks: {
-                        color: '#999'
+                        color: '#6c757d'
                     },
                     grid: {
                         display: false,

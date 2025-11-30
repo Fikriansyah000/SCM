@@ -12,11 +12,17 @@
         margin: 0 auto;
     }
 
+    @media (max-width: 991px) {
+        .order-detail-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
     .detail-card {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
         padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
     .section-header {
@@ -25,13 +31,15 @@
         align-items: center;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid #f0f0f0;
+        border-bottom: 2px solid var(--neutral-gray, #ECEEF3);
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
     .section-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -73,20 +81,22 @@
         display: flex;
         gap: 1rem;
         padding-bottom: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
         margin-bottom: 1rem;
     }
 
     .order-item img {
         width: 80px;
         height: 80px;
-        background: #f0f0f0;
+        background: var(--neutral-gray, #ECEEF3);
         border-radius: 0.4rem;
         object-fit: cover;
+        flex-shrink: 0;
     }
 
     .item-details {
         flex-grow: 1;
+        min-width: 0;
     }
 
     .item-name {
@@ -100,12 +110,12 @@
     }
 
     .item-price {
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         font-weight: 600;
     }
 
     .buyer-info {
-        background: #f8f9fa;
+        background: var(--neutral-gray, #ECEEF3);
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 1rem;
@@ -116,6 +126,8 @@
         justify-content: space-between;
         margin-bottom: 0.75rem;
         font-size: 0.95rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .info-row:last-child {
@@ -135,7 +147,7 @@
 
     .btn-action {
         padding: 0.875rem;
-        background: #667eea;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
         color: white;
         border: none;
         border-radius: 0.5rem;
@@ -150,10 +162,13 @@
         gap: 0.5rem;
     }
 
-    .btn-action:hover {
-        background: #764ba2;
-        text-decoration: none;
-        color: white;
+    @media (hover: hover) {
+        .btn-action:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: white;
+        }
     }
 
     .btn-action:disabled {
@@ -165,8 +180,10 @@
         background: #999;
     }
 
-    .btn-back:hover {
-        background: #777;
+    @media (hover: hover) {
+        .btn-back:hover {
+            background: #777;
+        }
     }
 
     .form-group {
@@ -188,8 +205,8 @@
     }
 
     .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: var(--primary, #3A7BFF);
+        box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
         outline: none;
     }
 
@@ -204,6 +221,7 @@
         z-index: 999;
         align-items: center;
         justify-content: center;
+        padding: 1rem;
     }
 
     .modal.show {
@@ -211,11 +229,10 @@
     }
 
     .modal-content {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         padding: 2rem;
         border-radius: 0.75rem;
-        max-width: 400px;
-        width: 95%;
+        width: clamp(320px, 95vw, 420px);
         box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
 
@@ -223,6 +240,7 @@
         font-size: 1.2rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
+        color: var(--neutral-dark, #1A1F36);
     }
 
     .modal-buttons {
@@ -241,19 +259,19 @@
     }
 
     .btn-confirm {
-        background: #667eea;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
         color: white;
     }
 
     .btn-cancel {
-        background: #f0f0f0;
-        color: #333;
+        background: var(--neutral-gray, #ECEEF3);
+        color: var(--neutral-dark, #1A1F36);
     }
 
     /* Return Section Styles */
     .return-section {
-        background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
-        border-left: 4px solid #ff9800;
+        background: linear-gradient(135deg, rgba(255, 143, 58, 0.1) 0%, rgba(255, 143, 58, 0.2) 100%);
+        border-left: 4px solid var(--accent, #FF8F3A);
         padding: 1.5rem;
         border-radius: 0.5rem;
         margin: 1.5rem 0;
@@ -294,7 +312,7 @@
     }
 
     .return-info {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 1rem;
@@ -304,7 +322,9 @@
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .return-info-item:last-child {
@@ -317,13 +337,13 @@
     }
 
     .return-info-value {
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
     }
 
     .return-timeline {
         margin-top: 1rem;
         padding-top: 1rem;
-        border-top: 1px solid rgba(255, 152, 0, 0.3);
+        border-top: 1px solid rgba(255, 143, 58, 0.3);
     }
 
     .return-timeline-item {
@@ -335,7 +355,7 @@
     .return-timeline-dot {
         width: 12px;
         height: 12px;
-        background: #ff9800;
+        background: var(--accent, #FF8F3A);
         border-radius: 50%;
         margin-top: 0.4rem;
         flex-shrink: 0;
@@ -347,7 +367,7 @@
 
     .return-timeline-label {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
     }
 
     .return-timeline-date {
@@ -366,29 +386,43 @@
         background: #28a745 !important;
     }
 
-    .btn-approve:hover {
-        background: #218838 !important;
+    @media (hover: hover) {
+        .btn-approve:hover {
+            background: #218838 !important;
+        }
     }
 
     .btn-reject {
         background: #dc3545 !important;
     }
 
-    .btn-reject:hover {
-        background: #c82333 !important;
+    @media (hover: hover) {
+        .btn-reject:hover {
+            background: #c82333 !important;
+        }
     }
 
     .btn-confirm-return {
-        background: #17a2b8 !important;
+        background: var(--primary, #3A7BFF) !important;
     }
 
-    .btn-confirm-return:hover {
-        background: #138496 !important;
+    @media (hover: hover) {
+        .btn-confirm-return:hover {
+            filter: brightness(1.1);
+        }
     }
 
     @media (max-width: 768px) {
-        .order-detail-container {
-            grid-template-columns: 1fr;
+        .modal-content {
+            padding: 1.5rem;
+        }
+        
+        .detail-card {
+            padding: 1rem;
+        }
+        
+        .return-section {
+            padding: 1rem;
         }
     }
 </style>
@@ -625,11 +659,11 @@
                     <span class="info-label">Subtotal:</span>
                     <strong>Rp{{ number_format($subtotal, 0, ',', '.') }}</strong>
                 </div>
-                <div class="info-row mb-3" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 1rem;">
+                <div class="info-row mb-3" style="border-bottom: 1px solid var(--neutral-gray, #ECEEF3); padding-bottom: 1rem;">
                     <span class="info-label">Ongkir:</span>
                     <strong>Rp{{ number_format($shipping, 0, ',', '.') }}</strong>
                 </div>
-                <div class="info-row" style="font-size: 1.1rem; color: #667eea;">
+                <div class="info-row" style="font-size: 1.1rem; color: var(--primary, #3A7BFF);">
                     <span>Total:</span>
                     <strong>Rp{{ number_format($total, 0, ',', '.') }}</strong>
                 </div>

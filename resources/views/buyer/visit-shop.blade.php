@@ -5,15 +5,15 @@
 @section('content')
 <style>
     .shop-header {
-        background: white;
-        border-bottom: 2px solid #f0f0f0;
+        background: var(--card-bg, #FFFFFF);
+        border-bottom: 2px solid var(--neutral-gray, #ECEEF3);
         padding: 2rem 0;
         margin-bottom: 2rem;
     }
     
     .shop-banner {
-        height: 200px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: clamp(150px, 25vw, 200px);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         border-radius: 0.75rem;
         margin-bottom: 1.5rem;
         position: relative;
@@ -29,7 +29,7 @@
     .shop-logo {
         width: 120px;
         height: 120px;
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
         display: flex;
         align-items: center;
@@ -39,7 +39,7 @@
         left: 2rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         overflow: hidden;
-        border: 3px solid white;
+        border: 3px solid var(--card-bg, #FFFFFF);
     }
     
     .shop-logo img {
@@ -59,9 +59,9 @@
     }
     
     .shop-name {
-        font-size: 1.8rem;
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
         font-weight: 700;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         margin-bottom: 0.5rem;
     }
     
@@ -70,6 +70,7 @@
         gap: 2rem;
         color: #666;
         font-size: 0.95rem;
+        flex-wrap: wrap;
     }
     
     .shop-meta-item {
@@ -81,8 +82,8 @@
     .shop-description {
         margin-top: 1rem;
         padding: 1rem;
-        background: #f8f9fa;
-        border-left: 4px solid #667eea;
+        background: var(--neutral-gray, #ECEEF3);
+        border-left: 4px solid var(--primary, #3A7BFF);
         border-radius: 0.5rem;
         color: #666;
     }
@@ -97,22 +98,25 @@
     .product-card {
         border: none;
         border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         overflow: hidden;
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
         height: 100%;
+        background: var(--card-bg, #FFFFFF);
     }
     
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    @media (hover: hover) {
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
     }
     
     .product-image {
         height: 200px;
-        background: #f0f0f0;
+        background: var(--neutral-gray, #ECEEF3);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -134,7 +138,7 @@
     
     .product-name {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         margin-bottom: 0.5rem;
         line-height: 1.3;
         overflow: hidden;
@@ -162,7 +166,7 @@
     .product-price {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         margin-bottom: 0.75rem;
     }
     
@@ -175,7 +179,7 @@
     .btn-add-cart {
         width: 100%;
         padding: 0.75rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
         border: none;
         border-radius: 0.5rem;
@@ -184,10 +188,12 @@
         transition: all 0.3s ease;
     }
     
-    .btn-add-cart:hover {
-        transform: translateY(-2px);
-        text-decoration: none;
-        color: white;
+    @media (hover: hover) {
+        .btn-add-cart:hover {
+            filter: brightness(1.05);
+            text-decoration: none;
+            color: white;
+        }
     }
     
     .empty-shop {
@@ -201,6 +207,30 @@
         color: #ddd;
         margin-bottom: 1rem;
     }
+    
+    @media (max-width: 768px) {
+        .shop-logo {
+            width: 80px;
+            height: 80px;
+            bottom: -40px;
+            left: 1rem;
+        }
+        
+        .shop-info {
+            margin-top: 2.5rem;
+            padding-left: 0;
+        }
+        
+        .shop-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+    }
 </style>
 
 <div class="shop-header">
@@ -211,7 +241,7 @@
                     @if($shop->banner)
                         <img src="{{ asset('storage/' . $shop->banner) }}" alt="Banner">
                     @else
-                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);"></div>
                     @endif
                     
                     <div class="shop-logo">

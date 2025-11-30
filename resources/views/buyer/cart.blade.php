@@ -5,19 +5,26 @@
 @section('content')
 <style>
     .cart-container {
-        background: #faf6f1;
-        border-radius: 0.75rem;
-        padding: 2rem;
-        box-shadow: 0 10px 28px rgba(7,18,46,0.04);
-        border: 1px solid rgba(139,113,89,0.08);
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-border);
+    }
+
+    @media (min-width: 768px) {
+        .cart-container {
+            padding: var(--space-6);
+        }
     }
     
     .cart-item {
         display: flex;
-        gap: 1.5rem;
-        padding: 1.5rem 0;
-        border-bottom: 1px solid #eee;
+        gap: var(--space-4);
+        padding: var(--space-4) 0;
+        border-bottom: 1px solid var(--color-border);
         align-items: center;
+        flex-wrap: wrap;
     }
     
     .cart-item:last-child {
@@ -25,15 +32,22 @@
     }
     
     .cart-image {
-        width: 100px;
-        height: 100px;
-        background: #f0ede8;
-        border-radius: 0.5rem;
+        width: 80px;
+        height: 80px;
+        background: var(--color-neutral-gray);
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        border: 1px solid rgba(139,113,89,0.1);
+        flex-shrink: 0;
+    }
+
+    @media (min-width: 576px) {
+        .cart-image {
+            width: 100px;
+            height: 100px;
+        }
     }
     
     .cart-image img {
@@ -44,35 +58,50 @@
     
     .cart-image .no-image {
         font-size: 2rem;
-        color: #ddd;
+        color: var(--color-text-muted);
     }
     
     .cart-details {
-        flex-grow: 1;
+        flex: 1;
+        min-width: 0;
     }
     
     .cart-product-name {
         font-weight: 600;
-        color: #333;
-        margin-bottom: 0.25rem;
+        color: var(--color-neutral-dark);
+        margin-bottom: var(--space-1);
     }
     
     .cart-shop {
-        font-size: 0.85rem;
-        color: #999;
-        margin-bottom: 0.5rem;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-2);
     }
     
     .cart-price {
-        color: #667eea;
+        color: var(--color-primary);
         font-weight: 600;
+    }
+
+    .flash-sale-tag {
+        font-size: var(--font-size-xs);
+        color: var(--color-success);
+        margin-top: var(--space-1);
     }
     
     .quantity-control {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin: 0 1rem;
+        gap: var(--space-2);
+        margin: 0 var(--space-2);
+    }
+
+    @media (max-width: 575.98px) {
+        .quantity-control {
+            flex-basis: 100%;
+            justify-content: flex-start;
+            margin: var(--space-3) 0 0;
+        }
     }
     
     .quantity-btn {
@@ -81,129 +110,174 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f0ede8;
-        border: 1px solid rgba(139,113,89,0.1);
-        border-radius: 0.25rem;
+        background: var(--color-neutral-gray);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all var(--transition-fast);
     }
-    
-    .quantity-btn:hover {
-        background: #a87d68;
-        color: white;
+
+    @media (hover: hover) {
+        .quantity-btn:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+            border-color: var(--color-primary);
+        }
     }
     
     .quantity-input {
         width: 50px;
         text-align: center;
-        border: 1px solid #ddd;
-        border-radius: 0.25rem;
-        padding: 0.5rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        padding: var(--space-2);
     }
     
     .cart-actions {
         display: flex;
-        gap: 1rem;
+        gap: var(--space-4);
         align-items: center;
+    }
+
+    @media (max-width: 575.98px) {
+        .cart-actions {
+            margin-left: auto;
+        }
     }
     
     .btn-remove {
         background: none;
         border: none;
-        color: #f5576c;
+        color: var(--color-danger);
         cursor: pointer;
-        font-size: 1.2rem;
-        transition: transform 0.3s ease;
+        font-size: var(--font-size-lg);
+        transition: transform var(--transition-fast);
+        padding: var(--space-2);
     }
-    
-    .btn-remove:hover {
-        transform: scale(1.2);
+
+    @media (hover: hover) {
+        .btn-remove:hover {
+            transform: scale(1.2);
+        }
     }
     
     .cart-summary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 0.75rem;
-        position: sticky;
-        top: 20px;
+        background: var(--gradient-primary);
+        color: var(--color-white);
+        padding: var(--space-6);
+        border-radius: var(--radius-lg);
+    }
+
+    /* Disable sticky on mobile */
+    @media (min-width: 992px) {
+        .cart-summary {
+            position: sticky;
+            top: var(--space-4);
+        }
     }
     
     .cart-summary h4 {
-        margin-bottom: 1.5rem;
+        margin-bottom: var(--space-6);
         font-weight: 600;
     }
     
     .summary-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-4);
         border-bottom: 1px solid rgba(255,255,255,0.2);
     }
     
     .summary-row.total {
         border-bottom: none;
-        font-size: 1.2rem;
+        font-size: var(--font-size-lg);
         font-weight: 700;
-        margin-top: 1rem;
+        margin-top: var(--space-4);
     }
     
     .btn-checkout {
         width: 100%;
-        padding: 0.75rem;
-        background: white;
-        color: #667eea;
+        padding: var(--space-3);
+        background: var(--color-white);
+        color: var(--color-primary);
         border: none;
-        border-radius: 0.5rem;
+        border-radius: var(--radius-md);
         font-weight: 600;
         cursor: pointer;
-        margin-top: 1rem;
-        transition: transform 0.3s ease;
+        margin-top: var(--space-4);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        text-decoration: none;
     }
-    
-    .btn-checkout:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    @media (hover: hover) {
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: var(--color-primary);
+        }
     }
     
     .btn-continue-shopping {
         width: 100%;
-        padding: 0.75rem;
+        padding: var(--space-3);
         background: transparent;
-        color: white;
-        border: 2px solid white;
-        border-radius: 0.5rem;
+        color: var(--color-white);
+        border: 2px solid var(--color-white);
+        border-radius: var(--radius-md);
         font-weight: 600;
         cursor: pointer;
-        margin-top: 1rem;
-        transition: all 0.3s ease;
+        margin-top: var(--space-3);
+        transition: all var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        text-decoration: none;
     }
-    
-    .btn-continue-shopping:hover {
-        background: white;
-        color: #667eea;
+
+    @media (hover: hover) {
+        .btn-continue-shopping:hover {
+            background: var(--color-white);
+            color: var(--color-primary);
+        }
     }
     
     .empty-cart {
         text-align: center;
-        padding: 3rem;
-        color: #999;
+        padding: var(--space-12);
+        color: var(--color-text-muted);
     }
     
     .empty-cart i {
         font-size: 4rem;
-        color: #ddd;
-        margin-bottom: 1rem;
+        color: var(--color-neutral-gray);
+        margin-bottom: var(--space-4);
+    }
+
+    .cart-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    @media (min-width: 992px) {
+        .cart-grid {
+            grid-template-columns: 2fr 1fr;
+        }
     }
 </style>
 
 <div class="container my-4">
     @if($carts->count() > 0)
-        <div class="row">
-            <div class="col-lg-8">
-                <h2 class="mb-4">
-                    <i class="fas fa-shopping-cart me-2"></i>Keranjang Belanja
+        <div class="cart-grid">
+            <div>
+                <h2 class="mb-4 heading-clamp">
+                    <i class="fas fa-shopping-cart me-2" style="color: var(--color-primary);"></i>Keranjang Belanja
                 </h2>
                 
                 <div class="cart-container">
@@ -235,12 +309,14 @@
                                     @endphp
                                     Rp{{ number_format($displayPrice, 0, ',', '.') }} x {{ $cart->quantity }}
                                     @if($isFlash)
-                                        <div style="font-size:0.8rem; color:#28a745;">(Flash Sale: 10% off + Gratis Ongkir)</div>
+                                        <div class="flash-sale-tag">
+                                            <i class="fas fa-bolt me-1"></i>Flash Sale: 10% off + Gratis Ongkir
+                                        </div>
                                     @endif
                                 </div>
                             </div>                            
                             <div class="quantity-control">
-                                <form method="PUT" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
+                                <form method="POST" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
                                     @csrf
                                     @method('PUT')
                                     <button type="button" class="quantity-btn" onclick="decreaseQty(this)">
@@ -254,7 +330,7 @@
                             </div>
                             
                             <div class="cart-actions">
-                                <form method="POST" action="{{ route('buyer.cart.remove', $cart->id) }}" style="display: inline;">
+                                <form method="POST" action="{{ route('buyer.cart.remove', $cart->id) }}" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-remove" title="Hapus dari keranjang">
@@ -273,7 +349,7 @@
                 </div>
             </div>
             
-            <div class="col-lg-4">
+            <div>
                 <div class="cart-summary">
                     <h4>Ringkasan Pesanan</h4>
                     
@@ -299,12 +375,12 @@
                         <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                     
-                    <a href="{{ route('buyer.checkout') }}" class="btn btn-checkout">
-                        <i class="fas fa-arrow-right me-2"></i>Lanjut Checkout
+                    <a href="{{ route('buyer.checkout') }}" class="btn-checkout">
+                        <i class="fas fa-arrow-right"></i>Lanjut Checkout
                     </a>
                     
-                    <a href="{{ route('buyer.home') }}" class="btn btn-continue-shopping">
-                        <i class="fas fa-arrow-left me-2"></i>Lanjut Belanja
+                    <a href="{{ route('buyer.home') }}" class="btn-continue-shopping">
+                        <i class="fas fa-arrow-left"></i>Lanjut Belanja
                     </a>
                 </div>
             </div>
@@ -315,7 +391,7 @@
                 <i class="fas fa-shopping-cart"></i>
                 <h3>Keranjang Anda Kosong</h3>
                 <p class="mb-4">Mulai belanja produk kebutuhan kampusmu sekarang</p>
-                <a href="{{ route('buyer.home') }}" class="btn btn-primary btn-lg">
+                <a href="{{ route('buyer.home') }}" class="btn-gradient btn-gradient-lg">
                     <i class="fas fa-shopping-bag me-2"></i>Mulai Belanja
                 </a>
             </div>

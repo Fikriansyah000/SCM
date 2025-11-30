@@ -10,27 +10,29 @@
     }
 
     .notification-card {
-        background: white;
-        border-left: 4px solid #667eea;
+        background: var(--card-bg, #FFFFFF);
+        border-left: 4px solid var(--primary, #3A7BFF);
         border-radius: 0.75rem;
         padding: 1.5rem;
         margin-bottom: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
         cursor: pointer;
     }
 
-    .notification-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        transform: translateY(-2px);
+    @media (hover: hover) {
+        .notification-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
     }
 
     .notification-card.unread {
-        background: #f8f9ff;
+        background: rgba(58, 123, 255, 0.05);
     }
 
     .notification-card.is-order {
-        border-left-color: #667eea;
+        border-left-color: var(--primary, #3A7BFF);
     }
 
     .notification-card.is-delivery {
@@ -38,7 +40,7 @@
     }
 
     .notification-card.is-message {
-        border-left-color: #f093fb;
+        border-left-color: var(--accent, #FF8F3A);
     }
 
     .notification-header {
@@ -54,9 +56,9 @@
         justify-content: center;
         width: 40px;
         height: 40px;
-        background: #f0f4ff;
+        background: rgba(58, 123, 255, 0.1);
         border-radius: 50%;
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         font-size: 1.2rem;
         margin-right: 1rem;
         flex-shrink: 0;
@@ -64,7 +66,7 @@
 
     .notification-title {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         margin-bottom: 0.25rem;
     }
 
@@ -84,12 +86,13 @@
         display: flex;
         gap: 0.75rem;
         margin-top: 1rem;
+        flex-wrap: wrap;
     }
 
     .btn-notif-action {
         flex: 1;
         padding: 0.6rem 1rem;
-        background: #667eea;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
         color: white;
         border: none;
         border-radius: 0.4rem;
@@ -99,27 +102,32 @@
         text-decoration: none;
         text-align: center;
         transition: all 0.3s ease;
+        min-width: 120px;
     }
 
-    .btn-notif-action:hover {
-        background: #764ba2;
-        text-decoration: none;
-        color: white;
+    @media (hover: hover) {
+        .btn-notif-action:hover {
+            filter: brightness(1.05);
+            text-decoration: none;
+            color: white;
+        }
     }
 
     .btn-secondary {
-        background: #f0f0f0;
-        color: #333;
+        background: var(--neutral-gray, #ECEEF3);
+        color: var(--neutral-dark, #1A1F36);
     }
 
-    .btn-secondary:hover {
-        background: #e0e0e0;
+    @media (hover: hover) {
+        .btn-secondary:hover {
+            background: #ddd;
+        }
     }
 
     .empty-notifications {
         text-align: center;
         padding: 3rem;
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
     }
 
@@ -134,11 +142,13 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
     .btn-mark-all {
         padding: 0.5rem 1rem;
-        background: #f0f0f0;
+        background: var(--neutral-gray, #ECEEF3);
         border: none;
         border-radius: 0.4rem;
         cursor: pointer;
@@ -147,13 +157,27 @@
         transition: all 0.3s ease;
     }
 
-    .btn-mark-all:hover {
-        background: #e0e0e0;
+    @media (hover: hover) {
+        .btn-mark-all:hover {
+            background: #ddd;
+        }
     }
 
     @media (max-width: 768px) {
         .notifications-container {
-            padding: 0 1rem;
+            padding: 0;
+        }
+        
+        .notification-card {
+            padding: 1rem;
+        }
+        
+        .notification-actions {
+            flex-direction: column;
+        }
+        
+        .btn-notif-action {
+            min-width: 100%;
         }
     }
 </style>
@@ -193,7 +217,7 @@
                                 <div class="notification-message">{{ $notification->message }}</div>
                             </div>
                             @if(!$notification->is_read)
-                            <span style="display: inline-block; width: 10px; height: 10px; background: #667eea; border-radius: 50%;"></span>
+                            <span style="display: inline-block; width: 10px; height: 10px; background: var(--primary, #3A7BFF); border-radius: 50%;"></span>
                             @endif
                         </div>
 

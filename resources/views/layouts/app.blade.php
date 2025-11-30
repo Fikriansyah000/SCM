@@ -10,71 +10,57 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Site Design System -->
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    
     <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --success-color: #48bb78;
-            --warning-color: #f6ad55;
-            --danger-color: #f56565;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
+        /* Legacy overrides - migrating to site.css */
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--gradient-primary);
             border: none;
-            transition: transform 0.3s ease;
+            transition: transform var(--transition-fast);
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            background: var(--gradient-primary-hover);
             transform: translateY(-2px);
         }
         
         .card {
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-card);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-card-hover);
+            }
         }
         
         .form-control {
-            border-radius: 0.5rem;
-            border: 1px solid #ddd;
-            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            padding: var(--space-3) var(--space-4);
         }
         
         .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
         }
         
         .alert {
-            border-radius: 0.5rem;
+            border-radius: var(--radius-md);
             border: none;
         }
         
         .badge-primary {
-            background-color: var(--primary-color);
+            background-color: var(--color-primary);
         }
         
         .text-primary {
-            color: var(--primary-color) !important;
+            color: var(--color-primary) !important;
         }
     </style>
     

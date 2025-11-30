@@ -1,0 +1,1190 @@
+/**
+ * PestiMart Global Design System
+ * ================================
+ * Tokens, utilities, and components for consistent UI
+ */
+
+/* ==========================================================================
+   1. CSS Custom Properties (Design Tokens)
+   ========================================================================== */
+
+:root {
+    /* Primary Colors */
+    --color-primary: #3A7BFF;
+    --color-primary-dark: #2563eb;
+    --color-primary-light: #6ECBF9;
+    --gradient-primary: linear-gradient(135deg, #3A7BFF, #6ECBF9);
+    --gradient-primary-hover: linear-gradient(135deg, #6ECBF9, #3A7BFF);
+
+    /* Neutral Colors */
+    --color-neutral-dark: #1A1F36;
+    --color-neutral-gray: #ECEEF3;
+    --color-neutral-light: #F8F9FA;
+    --color-white: #FFFFFF;
+
+    /* Accent & Status Colors */
+    --color-accent: #FF8F3A;
+    --color-accent-dark: #e67e22;
+    --color-success: #28a745;
+    --color-success-light: #d4edda;
+    --color-warning: #ffc107;
+    --color-warning-light: #fff3cd;
+    --color-danger: #dc3545;
+    --color-danger-light: #f8d7da;
+    --color-info: #17a2b8;
+    --color-info-light: #d1ecf1;
+
+    /* Text Colors */
+    --color-text-primary: #1A1F36;
+    --color-text-secondary: #6c757d;
+    --color-text-muted: #999999;
+    --color-text-light: #FFFFFF;
+
+    /* Border Colors */
+    --color-border: #ECEEF3;
+    --color-border-dark: #dee2e6;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-card-hover: 0 8px 24px rgba(58, 123, 255, 0.15);
+
+    /* Spacing Scale (based on 4px) */
+    --space-1: 0.25rem;   /* 4px */
+    --space-2: 0.5rem;    /* 8px */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.25rem;   /* 20px */
+    --space-6: 1.5rem;    /* 24px */
+    --space-8: 2rem;      /* 32px */
+    --space-10: 2.5rem;   /* 40px */
+    --space-12: 3rem;     /* 48px */
+    --space-16: 4rem;     /* 64px */
+
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+
+    /* Typography */
+    --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+
+    /* Z-index Scale */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+}
+
+/* ==========================================================================
+   2. Base Resets & Defaults
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--color-text-primary);
+    background-color: var(--color-neutral-light);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   3. Typography Utilities
+   ========================================================================== */
+
+.text-primary { color: var(--color-primary) !important; }
+.text-accent { color: var(--color-accent) !important; }
+.text-dark { color: var(--color-neutral-dark) !important; }
+.text-muted { color: var(--color-text-muted) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-danger { color: var(--color-danger) !important; }
+.text-warning { color: var(--color-warning) !important; }
+
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+
+.nowrap { white-space: nowrap; }
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   4. Container Variants
+   ========================================================================== */
+
+.container-narrow {
+    max-width: 720px;
+    margin-inline: auto;
+    padding-inline: var(--space-4);
+}
+
+.container-wide {
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: var(--space-4);
+}
+
+/* ==========================================================================
+   5. Card Component
+   ========================================================================== */
+
+.card-site {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+@media (hover: hover) {
+    .card-site:hover {
+        box-shadow: var(--shadow-card-hover);
+    }
+    
+    .card-site-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-card-hover);
+    }
+}
+
+.card-body-site {
+    padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+    .card-body-site {
+        padding: var(--space-6);
+    }
+}
+
+.card-header-site {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-neutral-light);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* ==========================================================================
+   6. Button Components
+   ========================================================================== */
+
+.btn-gradient {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-base);
+    text-decoration: none;
+}
+
+@media (hover: hover) {
+    .btn-gradient:hover {
+        background: var(--gradient-primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
+        color: var(--color-white);
+    }
+}
+
+.btn-gradient:active {
+    transform: translateY(0);
+}
+
+.btn-gradient:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-gradient-sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+}
+
+.btn-gradient-lg {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--font-size-lg);
+}
+
+.btn-accent {
+    background: var(--color-accent);
+    color: var(--color-white);
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+@media (hover: hover) {
+    .btn-accent:hover {
+        background: var(--color-accent-dark);
+        transform: translateY(-2px);
+    }
+}
+
+.btn-outline-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    color: var(--color-primary);
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+@media (hover: hover) {
+    .btn-outline-primary:hover {
+        background: var(--color-primary);
+        color: var(--color-white);
+    }
+}
+
+/* ==========================================================================
+   7. Grid Utilities
+   ========================================================================== */
+
+.grid-base {
+    display: grid;
+    gap: var(--space-4);
+}
+
+/* Auto-fill grid with minimum 250px columns */
+.grid-auto-250 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+}
+
+/* Auto-fill grid with minimum 200px columns */
+.grid-auto-200 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+}
+
+/* 2-column grid */
+.grid-2 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 2fr / 1fr layout for product/detail pages */
+.grid-2-1 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 992px) {
+    .grid-2-1 {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* 1fr / 2fr layout (reversed) */
+.grid-1-2 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 992px) {
+    .grid-1-2 {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+/* 3-column grid */
+.grid-3 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 4-column grid */
+.grid-4 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 768px) {
+    .grid-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ==========================================================================
+   8. Flexbox Utilities
+   ========================================================================== */
+
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.flex-1 { flex: 1; }
+.flex-grow { flex-grow: 1; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+.min-w-0 { min-width: 0; }
+
+/* ==========================================================================
+   9. Spacing Utilities
+   ========================================================================== */
+
+.m-0 { margin: 0; }
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.p-0 { padding: 0; }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-6 { padding: var(--space-6); }
+.p-8 { padding: var(--space-8); }
+
+.px-2 { padding-inline: var(--space-2); }
+.px-4 { padding-inline: var(--space-4); }
+.px-6 { padding-inline: var(--space-6); }
+
+.py-2 { padding-block: var(--space-2); }
+.py-3 { padding-block: var(--space-3); }
+.py-4 { padding-block: var(--space-4); }
+.py-6 { padding-block: var(--space-6); }
+
+/* ==========================================================================
+   10. Image Utilities
+   ========================================================================== */
+
+.img-square-40 {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-md);
+}
+
+.img-square-48 {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-md);
+}
+
+.img-square-64 {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-md);
+}
+
+.img-square-80 {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-lg);
+}
+
+.img-square-100 {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-lg);
+}
+
+.img-cover {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.img-contain {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+}
+
+.avatar-md {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+}
+
+.avatar-lg {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   11. Badge & Status Utilities
+   ========================================================================== */
+
+.badge-site {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.badge-primary {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.badge-accent {
+    background: var(--color-accent);
+    color: var(--color-white);
+}
+
+.badge-success {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.badge-warning {
+    background: var(--color-warning-light);
+    color: #856404;
+}
+
+.badge-danger {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+}
+
+.badge-info {
+    background: var(--color-info-light);
+    color: var(--color-info);
+}
+
+.badge-neutral {
+    background: var(--color-neutral-gray);
+    color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   12. Form Enhancements
+   ========================================================================== */
+
+.form-control-site {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control-site:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
+}
+
+.form-label-site {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Selectable Option (Shipping, Payment, etc.) */
+.option-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-white);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.option-card.is-selected,
+.option-card:has(input:checked) {
+    border-color: var(--color-primary);
+    background: rgba(58, 123, 255, 0.05);
+}
+
+@media (hover: hover) {
+    .option-card:hover:not(.is-selected) {
+        border-color: var(--color-primary-light);
+    }
+}
+
+.option-card input[type="radio"] {
+    accent-color: var(--color-primary);
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   13. Modal Enhancements
+   ========================================================================== */
+
+.modal-site-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-modal-backdrop);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.modal-site-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-site {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: clamp(320px, 95vw, 520px);
+    max-height: 90vh;
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-modal);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base), transform var(--transition-base);
+    overflow: hidden;
+}
+
+.modal-site.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modal-site-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-neutral-dark);
+    margin: 0;
+}
+
+.modal-site-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+@media (hover: hover) {
+    .modal-site-close:hover {
+        background: var(--color-neutral-gray);
+        color: var(--color-text-primary);
+    }
+}
+
+.modal-site-body {
+    padding: var(--space-6);
+    overflow-y: auto;
+    max-height: calc(90vh - 140px);
+}
+
+.modal-site-footer {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-neutral-light);
+}
+
+@media (max-width: 575.98px) {
+    .modal-site-body {
+        padding: var(--space-4);
+    }
+    
+    .modal-site-header,
+    .modal-site-footer {
+        padding-inline: var(--space-4);
+    }
+}
+
+/* ==========================================================================
+   14. Scroll-Snap Carousel
+   ========================================================================== */
+
+.carousel-snap {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: var(--space-2);
+}
+
+.carousel-snap::-webkit-scrollbar {
+    height: 6px;
+}
+
+.carousel-snap::-webkit-scrollbar-track {
+    background: var(--color-neutral-gray);
+    border-radius: var(--radius-full);
+}
+
+.carousel-snap::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+}
+
+.carousel-snap-item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+
+/* Banner/Hero Carousel */
+.carousel-banner {
+    width: 100%;
+    max-width: 100%;
+}
+
+.carousel-banner .carousel-snap-item {
+    width: 100%;
+    min-width: 100%;
+}
+
+@media (min-width: 768px) {
+    .carousel-banner .carousel-snap-item {
+        width: 80%;
+        min-width: 80%;
+    }
+}
+
+/* Product Card Carousel */
+.carousel-products .carousel-snap-item {
+    width: 200px;
+    min-width: 200px;
+}
+
+@media (min-width: 576px) {
+    .carousel-products .carousel-snap-item {
+        width: 240px;
+        min-width: 240px;
+    }
+}
+
+/* ==========================================================================
+   15. Chat & Message Utilities
+   ========================================================================== */
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    word-wrap: break-word;
+}
+
+.chat-bubble-sent {
+    align-self: flex-end;
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    border-bottom-right-radius: var(--radius-sm);
+}
+
+.chat-bubble-received {
+    align-self: flex-start;
+    background: var(--color-neutral-gray);
+    color: var(--color-text-primary);
+    border-bottom-left-radius: var(--radius-sm);
+}
+
+.chat-input-container {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-white);
+}
+
+/* ==========================================================================
+   16. Chart Utilities
+   ========================================================================== */
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: clamp(240px, 40vw, 400px);
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ==========================================================================
+   17. Responsive Visibility
+   ========================================================================== */
+
+.hide-mobile {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hide-mobile {
+        display: block;
+    }
+}
+
+.show-mobile {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .show-mobile {
+        display: none;
+    }
+}
+
+/* Mobile-specific: Disable sticky on small screens */
+@media (max-width: 991.98px) {
+    .sticky-desktop {
+        position: static !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .sticky-desktop {
+        position: sticky;
+        top: var(--space-4);
+    }
+}
+
+/* ==========================================================================
+   18. Price & Highlight Utilities
+   ========================================================================== */
+
+.price-primary {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.price-accent {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-accent);
+}
+
+.price-original {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+}
+
+.flash-sale-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   19. Dividers & Borders
+   ========================================================================== */
+
+.divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: var(--space-4) 0;
+}
+
+.divider-dashed {
+    height: 0;
+    border: none;
+    border-top: 1px dashed var(--color-border);
+    margin: var(--space-4) 0;
+}
+
+.border-bottom {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.border-top {
+    border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   20. Rating Stars
+   ========================================================================== */
+
+.rating-stars {
+    display: inline-flex;
+    gap: var(--space-1);
+}
+
+.rating-stars .fa-star {
+    color: var(--color-neutral-gray);
+    font-size: var(--font-size-lg);
+    transition: color var(--transition-fast);
+}
+
+.rating-stars .fa-star.active,
+.rating-stars .fa-star.filled {
+    color: var(--color-accent);
+}
+
+.rating-stars-clickable .fa-star {
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .rating-stars-clickable .fa-star:hover,
+    .rating-stars-clickable .fa-star:hover ~ .fa-star {
+        color: var(--color-accent);
+    }
+}
+
+/* ==========================================================================
+   21. Notification Cards
+   ========================================================================== */
+
+.notification-item {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: background var(--transition-fast);
+    cursor: pointer;
+}
+
+.notification-item.unread {
+    background: rgba(58, 123, 255, 0.05);
+    border-left: 3px solid var(--color-primary);
+}
+
+@media (hover: hover) {
+    .notification-item:hover {
+        background: var(--color-neutral-light);
+    }
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+}
+
+.notification-icon.success { background: var(--color-success-light); color: var(--color-success); }
+.notification-icon.warning { background: var(--color-warning-light); color: #856404; }
+.notification-icon.danger { background: var(--color-danger-light); color: var(--color-danger); }
+.notification-icon.info { background: var(--color-info-light); color: var(--color-info); }
+.notification-icon.primary { background: rgba(58, 123, 255, 0.15); color: var(--color-primary); }
+
+/* ==========================================================================
+   22. Info Row / Summary Row
+   ========================================================================== */
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) 0;
+}
+
+.info-row-label {
+    color: var(--color-text-secondary);
+}
+
+.info-row-value {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) 0;
+    border-top: 2px solid var(--color-border);
+    margin-top: var(--space-2);
+}
+
+.summary-total-label {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-neutral-dark);
+}
+
+.summary-total-value {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ==========================================================================
+   23. Status Timeline
+   ========================================================================== */
+
+.timeline {
+    position: relative;
+    padding-left: var(--space-8);
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--space-4);
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: calc(-1 * var(--space-8) + 4px);
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background: var(--color-white);
+    border: 3px solid var(--color-border);
+}
+
+.timeline-dot.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+}
+
+.timeline-dot.success {
+    border-color: var(--color-success);
+    background: var(--color-success);
+}
+
+.timeline-content {
+    background: var(--color-neutral-light);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   24. Clamp Utilities for Responsive Text/Headers
+   ========================================================================== */
+
+.heading-clamp {
+    font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-3xl));
+    font-weight: 700;
+    color: var(--color-neutral-dark);
+    line-height: 1.2;
+}
+
+.subheading-clamp {
+    font-size: clamp(var(--font-size-base), 2.5vw, var(--font-size-xl));
+    color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
+   25. Misc Utilities
+   ========================================================================== */
+
+.cursor-pointer { cursor: pointer; }
+.select-none { user-select: none; }
+.pointer-events-none { pointer-events: none; }
+
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.overflow-hidden { overflow: hidden; }
+.overflow-auto { overflow: auto; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.relative { position: relative; }
+.absolute { position: absolute; }
+
+.inline-block { display: inline-block; }
+.inline-flex { display: inline-flex; }
+.block { display: block; }
+.hidden { display: none; }
+
+.opacity-50 { opacity: 0.5; }
+.opacity-75 { opacity: 0.75; }
+
+/* Scroll Lock for Modals */
+body.modal-open {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0);
+}

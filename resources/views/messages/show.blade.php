@@ -5,9 +5,9 @@
 @section('content')
 <style>
     .chat-wrapper {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -16,7 +16,7 @@
     }
     
     .chat-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
         padding: 1.5rem;
         display: flex;
@@ -42,6 +42,7 @@
         justify-content: center;
         font-weight: 600;
         font-size: 1.2rem;
+        flex-shrink: 0;
     }
     
     .user-details h5 {
@@ -61,7 +62,7 @@
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        background: #fafbfc;
+        background: var(--neutral-gray, #ECEEF3);
     }
     
     .message {
@@ -95,7 +96,7 @@
         order: 0;
     }
     .message.sent .message-avatar {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: #fff;
         order: 2;
     }
@@ -129,12 +130,12 @@
     }
     
     .message.received .message-bubble {
-        background: #f0f0f0;
-        color: #333;
+        background: var(--card-bg, #FFFFFF);
+        color: var(--neutral-dark, #1A1F36);
     }
     
     .message.sent .message-bubble {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
     }
     
@@ -151,6 +152,16 @@
             max-width: 85%;
             font-size: 0.9rem;
             padding: 0.75rem 1rem;
+        }
+        
+        .chat-header {
+            padding: 1rem;
+        }
+        
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
         }
     }
     
@@ -175,8 +186,8 @@
     
     .chat-input-area {
         padding: 1.5rem;
-        border-top: 1px solid #f0f0f0;
-        background: #f8f9fa;
+        border-top: 1px solid var(--neutral-gray, #ECEEF3);
+        background: var(--card-bg, #FFFFFF);
     }
     
     .input-group {
@@ -196,14 +207,14 @@
     
     .message-input:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: var(--primary, #3A7BFF);
+        box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
     }
     
     .send-button {
         width: 40px;
         height: 40px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
         border: none;
         border-radius: 50%;
@@ -213,10 +224,13 @@
         align-items: center;
         justify-content: center;
         font-weight: 600;
+        flex-shrink: 0;
     }
     
-    .send-button:hover {
-        transform: scale(1.05);
+    @media (hover: hover) {
+        .send-button:hover {
+            transform: scale(1.05);
+        }
     }
     
     .send-button:active {
@@ -225,14 +239,14 @@
     
     .back-header {
         padding: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
         display: flex;
         align-items: center;
         gap: 1rem;
     }
     
     .back-link {
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         text-decoration: none;
         font-weight: 600;
         display: flex;
@@ -240,8 +254,10 @@
         gap: 0.5rem;
     }
     
-    .back-link:hover {
-        text-decoration: underline;
+    @media (hover: hover) {
+        .back-link:hover {
+            text-decoration: underline;
+        }
     }
 </style>
 

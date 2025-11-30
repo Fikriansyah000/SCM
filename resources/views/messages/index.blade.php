@@ -5,16 +5,16 @@
 @section('content')
 <style>
     .messages-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
     }
     
     .messages-container {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         overflow: hidden;
     }
     
@@ -26,7 +26,7 @@
     
     .conversation-item {
         padding: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
@@ -40,9 +40,11 @@
         border-bottom: none;
     }
     
-    .conversation-item:hover {
-        background: #f8f9fa;
-        padding-left: 1.5rem;
+    @media (hover: hover) {
+        .conversation-item:hover {
+            background: var(--neutral-gray, #ECEEF3);
+            padding-left: 1.5rem;
+        }
     }
     
     .conversation-avatar-wrapper {
@@ -54,7 +56,7 @@
     .conversation-avatar {
         width: 56px;
         height: 56px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -63,11 +65,11 @@
         font-weight: 700;
         font-size: 1.2rem;
         flex-shrink: 0;
-        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 2px 6px rgba(58, 123, 255, 0.2);
     }
 
     .conversation-avatar.shop {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, var(--accent, #FF8F3A) 0%, #FFB366 100%);
     }
     
     .conversation-content {
@@ -88,7 +90,7 @@
     
     .conversation-name {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         font-size: 0.95rem;
         white-space: nowrap;
         overflow: hidden;
@@ -122,8 +124,8 @@
     .conversation-type-badge {
         display: inline-block;
         padding: 0.2rem 0.6rem;
-        background: #e8f0ff;
-        color: #667eea;
+        background: rgba(58, 123, 255, 0.1);
+        color: var(--primary, #3A7BFF);
         border-radius: 0.25rem;
         font-size: 0.7rem;
         font-weight: 600;
@@ -142,7 +144,7 @@
     }
 
     .empty-messages h4 {
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         margin-bottom: 0.5rem;
     }
 
@@ -150,10 +152,6 @@
         .conversation-item {
             padding: 0.85rem;
             gap: 0.75rem;
-        }
-
-        .conversation-item:hover {
-            padding-left: 1rem;
         }
 
         .conversation-avatar {

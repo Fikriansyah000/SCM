@@ -21,17 +21,17 @@
     }
 
     .stat-card {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         padding: 1.5rem;
         border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         text-align: center;
     }
 
     .stat-number {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         margin-bottom: 0.5rem;
     }
 
@@ -50,7 +50,7 @@
 
     .filter-btn {
         padding: 0.75rem 1.5rem;
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border: 2px solid #ddd;
         border-radius: 2rem;
         cursor: pointer;
@@ -60,21 +60,23 @@
         color: #666;
     }
 
-    .filter-btn:hover {
-        border-color: #667eea;
-        color: #667eea;
+    @media (hover: hover) {
+        .filter-btn:hover {
+            border-color: var(--primary, #3A7BFF);
+            color: var(--primary, #3A7BFF);
+        }
     }
 
     .filter-btn.active {
-        background: #667eea;
-        border-color: #667eea;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
+        border-color: var(--primary, #3A7BFF);
         color: white;
     }
 
     .orders-container {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         overflow: hidden;
     }
 
@@ -83,19 +85,21 @@
         grid-template-columns: 2fr 1fr 1fr 1.5fr;
         gap: 1rem;
         padding: 1.5rem;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
         align-items: center;
         transition: all 0.3s ease;
     }
 
-    .order-row:hover {
-        background: #f8f9fa;
+    @media (hover: hover) {
+        .order-row:hover {
+            background: var(--neutral-gray, #ECEEF3);
+        }
     }
 
     .order-info h4 {
         font-weight: 600;
         margin-bottom: 0.25rem;
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
     }
 
     .order-number {
@@ -156,7 +160,7 @@
 
     .btn-small {
         padding: 0.5rem 1rem;
-        background: #667eea;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
         color: white;
         border: none;
         border-radius: 0.4rem;
@@ -167,10 +171,13 @@
         transition: all 0.3s ease;
     }
 
-    .btn-small:hover {
-        background: #764ba2;
-        text-decoration: none;
-        color: white;
+    @media (hover: hover) {
+        .btn-small:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: white;
+        }
     }
 
     .empty-state {
@@ -187,20 +194,25 @@
     @media (max-width: 1024px) {
         .order-row {
             grid-template-columns: 1fr;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
-        .order-row > * {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .order-actions {
+            justify-content: flex-end;
         }
+    }
 
-        .order-row > *::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #666;
-            min-width: 100px;
+    @media (max-width: 576px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 1.4rem;
         }
     }
 </style>

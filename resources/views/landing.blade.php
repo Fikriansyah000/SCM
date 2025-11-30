@@ -33,7 +33,7 @@
     }
 
     .hero-content h2 {
-      color: #0a4c8c;
+      color: var(--neutral-dark, #1A1F36);
       font-size: clamp(32px, 5vw, 48px);
       font-weight: 700;
       line-height: 1.3;
@@ -57,15 +57,17 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: clamp(14px, 1.8vw, 16px);
-      background: #0a4c8c;
+      background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
       color: white;
-      box-shadow: 0 4px 12px rgba(10, 76, 140, 0.3);
+      box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
     }
 
-    .hero-btn:hover {
-      background: #083b6d;
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px rgba(10, 76, 140, 0.4);
+    @media (hover: hover) {
+        .hero-btn:hover {
+          filter: brightness(1.05);
+          transform: translateY(-3px);
+          box-shadow: 0 6px 18px rgba(58, 123, 255, 0.4);
+        }
     }
 
     .hero-image {
@@ -166,7 +168,7 @@
     }
 
     .about-text h3 {
-      color: #0a4c8c;
+      color: var(--primary, #3A7BFF);
       font-size: clamp(24px, 3.5vw, 36px);
       font-weight: 700;
       margin-bottom: 20px;
@@ -216,7 +218,7 @@
     }
 
     .features-title h3 {
-      color: #0a4c8c;
+      color: var(--primary, #3A7BFF);
       font-size: clamp(26px, 4vw, 38px);
       font-weight: 700;
       margin-bottom: 10px;
@@ -254,7 +256,7 @@
     .feature-icon {
       width: 70px;
       height: 70px;
-      background: linear-gradient(135deg, #a6bdd5 0%, #5273a1 100%);
+      background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -264,7 +266,7 @@
     }
 
     .feature-card h4 {
-      color: #0a4c8c;
+      color: var(--primary, #3A7BFF);
       font-size: clamp(17px, 2vw, 20px);
       font-weight: 600;
       margin-bottom: 12px;
@@ -340,7 +342,7 @@
 
     .product-price-showcase {
       font-weight: 700;
-      color: #667eea;
+      color: var(--primary, #3A7BFF);
       font-size: 1rem;
       margin-bottom: 0.5rem;
     }
@@ -378,7 +380,7 @@
 
     /* CTA Section */
     .cta-section {
-      background: linear-gradient(135deg, #5273a1 0%, #0a4c8c 100%);
+      background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
       padding: 60px 5%;
       text-align: center;
       color: white;
@@ -405,13 +407,15 @@
       transition: all 0.3s ease;
       font-size: clamp(15px, 1.8vw, 17px);
       background: white;
-      color: #0a4c8c;
+      color: var(--primary, #3A7BFF);
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
     }
 
-    .cta-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+    @media (hover: hover) {
+        .cta-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
     }
 
    
@@ -481,10 +485,10 @@
           <!-- Products will be populated here -->
         </div>
         <!-- Navigation arrows -->
-        <button onclick="scrollCarousel(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid #667eea; color: #667eea; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
+        <button onclick="scrollCarousel(-1)" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
           ❮
         </button>
-        <button onclick="scrollCarousel(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid #667eea; color: #667eea; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='#667eea'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='#667eea'">
+        <button onclick="scrollCarousel(1)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: white; border: 2px solid var(--primary, #3A7BFF); color: var(--primary, #3A7BFF); width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary, #3A7BFF)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary, #3A7BFF)'">
           ❯
         </button>
       </div>

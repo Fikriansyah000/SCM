@@ -5,14 +5,13 @@
 @section('content')
 <style>
     .hero-banner {
-        background: linear-gradient(90deg, rgba(166,189,213,0.95) 0%, rgba(230,240,250,0.9) 100%);
-        color: #0a4c8c;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
+        color: white;
         padding: 2rem 0;
         margin-bottom: 2rem;
         border-radius: 0.75rem;
         overflow: hidden;
-        border: 1px solid rgba(10,76,140,0.04);
-        box-shadow: 0 4px 18px rgba(10,76,140,0.035);
+        box-shadow: 0 4px 18px rgba(58, 123, 255, 0.15);
     }
     
     .hero-content {
@@ -33,11 +32,11 @@
     }
     
     .search-container {
-        background: white;
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
         padding: 1.5rem;
         margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     
     .search-form .input-group {
@@ -53,8 +52,8 @@
     }
     
     .search-form .btn {
-        background: rgba(166, 189, 213, 0.95);
-        color: #0a4c8c;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
+        color: white;
         border: none;
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
@@ -62,9 +61,12 @@
         font-weight: 600;
     }
     
-    .search-form .btn:hover {
-        text-decoration: none;
-        color: white;
+    @media (hover: hover) {
+        .search-form .btn:hover {
+            filter: brightness(1.05);
+            text-decoration: none;
+            color: white;
+        }
     }
     
     .category-section {
@@ -76,22 +78,26 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
     
     .section-title {
         font-size: 1.3rem;
         font-weight: 700;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
     }
     
     .see-all-link {
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         text-decoration: none;
         font-weight: 600;
     }
     
-    .see-all-link:hover {
-        text-decoration: underline;
+    @media (hover: hover) {
+        .see-all-link:hover {
+            text-decoration: underline;
+        }
     }
     
     .categories-grid {
@@ -102,23 +108,25 @@
     }
     
     .category-card {
-        background: linear-gradient(180deg, #faf6f1 0%, #f5f0eb 100%);
+        background: var(--card-bg, #FFFFFF);
         border-radius: 0.75rem;
         padding: 1.25rem;
         text-align: center;
         cursor: pointer;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
-        box-shadow: 0 8px 20px rgba(139,113,89,0.06);
-        border: 1px solid rgba(139,113,89,0.08);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid var(--neutral-gray, #ECEEF3);
         text-decoration: none;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
     }
     
-    .category-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 12px 30px rgba(7,18,46,0.08);
-        text-decoration: none;
-        color: #4f6ed9;
+    @media (hover: hover) {
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: var(--primary, #3A7BFF);
+        }
     }
     
     .category-icon {
@@ -132,7 +140,7 @@
     }
     
     .promo-banner {
-        background: #ff6700;
+        background: linear-gradient(135deg, var(--accent, #FF8F3A), #FFB366);
         color: white;
         padding: 1.5rem;
         border-radius: 0.75rem;
@@ -165,25 +173,27 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        background: #faf6f1;
-        border: 1px solid rgba(139,113,89,0.08);
-        box-shadow: 0 12px 32px rgba(139,113,89,0.06);
+        background: var(--card-bg, #FFFFFF);
+        border: 1px solid var(--neutral-gray, #ECEEF3);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     
-    .product-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 46px rgba(7,18,46,0.06);
+    @media (hover: hover) {
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
     }
     
     .product-image {
         height: 180px;
-        background: linear-gradient(180deg, #f0ede8 0%, #e8e2da 100%);
+        background: var(--neutral-gray, #ECEEF3);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         position: relative;
-        border-bottom: 1px solid rgba(139,113,89,0.08);
+        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
     }
     
     .product-image img {
@@ -201,7 +211,7 @@
     
     .product-name {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
         margin-bottom: 0.5rem;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -222,7 +232,7 @@
     .product-rating .stars {
         display: flex;
         gap: 0.1rem;
-        color: #ffc107;
+        color: var(--accent, #FF8F3A);
     }
     
     .product-rating .stars i {
@@ -231,7 +241,7 @@
     
     .product-rating .rating-value {
         font-weight: 600;
-        color: #333;
+        color: var(--neutral-dark, #1A1F36);
     }
     
     .product-rating .rating-count {
@@ -248,7 +258,7 @@
     .product-price {
         font-size: 1.2rem;
         font-weight: 700;
-        color: #667eea;
+        color: var(--primary, #3A7BFF);
         margin-bottom: 0.75rem;
     }
     
@@ -261,29 +271,31 @@
     .btn-add-cart {
         width: 100%;
         padding: 0.65rem;
-        background: linear-gradient(90deg, rgba(166,189,213,0.98) 0%, rgba(120,160,210,0.95) 100%);
-        color: #06385f;
+        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
+        color: white;
         border: 0;
         border-radius: 0.45rem;
         font-weight: 600;
         cursor: pointer;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
         margin-top: auto;
-        box-shadow: 0 6px 16px rgba(102,126,234,0.09);
+        box-shadow: 0 6px 16px rgba(58, 123, 255, 0.15);
     }
     
-    .btn-add-cart:hover {
-        transform: translateY(-2px);
-        text-decoration: none;
-        color: white;
-        box-shadow: 0 10px 30px rgba(102,126,234,0.12);
+    @media (hover: hover) {
+        .btn-add-cart:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+            filter: brightness(1.05);
+        }
     }
 
     /* Flash card visual tweak */
     .category-card.flash {
-        border: 1px solid rgba(255,77,79,0.12);
-        box-shadow: 0 12px 32px rgba(255,77,79,0.08);
-        background: linear-gradient(180deg, #fff5f3 0%, #faf6f1 100%);
+        border: 1px solid rgba(255, 143, 58, 0.2);
+        box-shadow: 0 4px 12px rgba(255, 143, 58, 0.1);
+        background: linear-gradient(135deg, rgba(255, 143, 58, 0.05) 0%, var(--card-bg, #FFFFFF) 100%);
     }
 
     /* Responsive refinements */

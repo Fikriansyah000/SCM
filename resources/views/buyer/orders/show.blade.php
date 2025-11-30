@@ -6,139 +6,156 @@
 <style>
     .order-detail-container {
         display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 2rem;
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    @media (min-width: 992px) {
+        .order-detail-container {
+            grid-template-columns: 2fr 1fr;
+        }
     }
 
     .order-card,
     .order-summary {
-        background: white;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: var(--shadow-card);
+        border: 1px solid var(--color-border);
+    }
+
+    @media (min-width: 768px) {
+        .order-card,
+        .order-summary {
+            padding: var(--space-6);
+        }
     }
 
     .order-header {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #f0f0f0;
+        flex-direction: column;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+        padding-bottom: var(--space-4);
+        border-bottom: 2px solid var(--color-border);
+    }
+
+    @media (min-width: 576px) {
+        .order-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
     }
 
     .order-number-big {
-        font-size: 1.5rem;
+        font-size: var(--font-size-2xl);
         font-weight: 700;
-        color: #667eea;
+        color: var(--color-primary);
     }
 
     .status-badge-big {
         display: inline-block;
-        padding: 0.75rem 1.5rem;
-        border-radius: 2rem;
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-full);
         font-weight: 600;
+        font-size: var(--font-size-sm);
     }
 
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .status-processing {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-
-    .status-shipped {
-        background: #cfe2ff;
-        color: #084298;
-    }
-
-    .status-delivered {
-        background: #d1e7dd;
-        color: #0f5132;
-    }
-
-    .status-completed {
-        background: #d1e7dd;
-        color: #0f5132;
-    }
+    .status-pending { background: var(--color-warning-light); color: #856404; }
+    .status-processing { background: var(--color-info-light); color: var(--color-info); }
+    .status-shipped { background: rgba(58, 123, 255, 0.15); color: var(--color-primary); }
+    .status-delivered { background: var(--color-success-light); color: var(--color-success); }
+    .status-completed { background: var(--color-success-light); color: var(--color-success); }
 
     .section-title {
         font-weight: 600;
-        color: #333;
-        margin-bottom: 1rem;
-        margin-top: 1.5rem;
+        color: var(--color-neutral-dark);
+        margin-bottom: var(--space-4);
+        margin-top: var(--space-6);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: var(--space-2);
+    }
+
+    .section-title:first-child {
+        margin-top: 0;
     }
 
     .order-item {
         display: flex;
-        gap: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        gap: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+        flex-wrap: wrap;
     }
 
     .order-item img {
         width: 80px;
         height: 80px;
-        background: #f0f0f0;
-        border-radius: 0.4rem;
+        background: var(--color-neutral-gray);
+        border-radius: var(--radius-md);
         object-fit: cover;
+        flex-shrink: 0;
     }
 
     .item-details {
-        flex-grow: 1;
+        flex: 1;
+        min-width: 0;
     }
 
     .item-name {
         font-weight: 600;
-        margin-bottom: 0.25rem;
+        margin-bottom: var(--space-1);
+        color: var(--color-neutral-dark);
     }
 
     .item-price {
-        color: #667eea;
+        color: var(--color-primary);
         font-weight: 600;
+        white-space: nowrap;
     }
 
     .order-actions {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
+        gap: var(--space-3);
+        margin-top: var(--space-6);
     }
 
-    .btn-action {
-        padding: 0.75rem;
-        background: #667eea;
-        color: white;
-        border: none;
-        border-radius: 0.4rem;
-        text-decoration: none;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
+    .order-actions .btn {
+        width: 100%;
     }
 
-    .btn-action:hover {
-        background: #764ba2;
-        text-decoration: none;
-        color: white;
+    @media (min-width: 576px) {
+        .order-actions {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .order-actions .btn {
+            width: auto;
+        }
     }
 
-    .timeline {
+    .order-timeline {
         position: relative;
-        padding: 1.5rem 0;
+        padding-left: var(--space-8);
+    }
+
+    .order-timeline::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+        background: var(--color-border);
     }
 
     .timeline-item {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        position: relative;
+        margin-bottom: var(--space-6);
     }
 
     .timeline-item:last-child {
@@ -146,71 +163,125 @@
     }
 
     .timeline-dot {
+        position: absolute;
+        left: calc(-1 * var(--space-8) + 4px);
         width: 16px;
         height: 16px;
-        background: #ddd;
-        border-radius: 50%;
-        margin-top: 0.25rem;
-        flex-shrink: 0;
+        background: var(--color-neutral-gray);
+        border-radius: var(--radius-full);
+        border: 3px solid var(--color-white);
+        box-shadow: var(--shadow-sm);
     }
 
     .timeline-item.active .timeline-dot {
-        background: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: var(--color-primary);
+        box-shadow: 0 0 0 4px rgba(58, 123, 255, 0.15);
     }
 
     .timeline-content h4 {
         font-weight: 600;
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--space-1);
+        color: var(--color-neutral-dark);
     }
 
     .timeline-content p {
-        font-size: 0.85rem;
-        color: #999;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
         margin-bottom: 0;
     }
 
     .summary-item {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
     }
 
     .summary-item:last-child {
         border-bottom: none;
     }
 
-    .summary-total {
+    .order-summary .summary-total {
         display: flex;
         justify-content: space-between;
-        font-size: 1.2rem;
+        font-size: var(--font-size-lg);
         font-weight: 700;
-        color: #667eea;
-        padding-top: 1rem;
-        border-top: 2px solid #f0f0f0;
+        color: var(--color-primary);
+        padding-top: var(--space-4);
+        border-top: 2px solid var(--color-border);
     }
 
-    @media (max-width: 768px) {
-        .order-detail-container {
-            grid-template-columns: 1fr;
-        }
+    /* Review Form */
+    .review-block {
+        padding: var(--space-4);
+        border-bottom: 1px dashed var(--color-border);
+    }
 
-        .order-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
+    .review-form {
+        display: flex;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .review-rating-col {
+        flex: 0 0 180px;
+    }
+
+    .review-input-col {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .review-submit-col {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    @media (max-width: 575.98px) {
+        .review-rating-col,
+        .review-input-col,
+        .review-submit-col {
+            flex: 1 1 100%;
         }
     }
+
+    .rating-label {
+        font-weight: 700;
+        margin-bottom: var(--space-2);
+        color: var(--color-neutral-dark);
+    }
+
+    .stars-input .fa-star {
+        font-size: 20px;
+        color: var(--color-neutral-gray);
+        cursor: pointer;
+        margin-right: var(--space-1);
+        transition: color var(--transition-fast);
+    }
+
+    .stars-input .fa-star.active {
+        color: var(--color-accent);
+    }
+
+    /* Return status */
+    .return-status-block {
+        margin-top: var(--space-3);
+        padding: var(--space-3);
+        background: var(--color-neutral-light);
+        border-radius: var(--radius-md);
+    }
+
     /* Modal styles */
     .modal {
         display: none;
         position: fixed;
         inset: 0;
         background: rgba(0,0,0,0.5);
-        z-index: 9999;
+        z-index: var(--z-modal);
         align-items: center;
         justify-content: center;
     }
@@ -220,34 +291,67 @@
     }
 
     .modal-content {
-        background: #fff;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
+        background: var(--color-white);
+        padding: var(--space-6);
+        border-radius: var(--radius-xl);
         max-width: 520px;
-        width: 95%;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        width: clamp(320px, 95vw, 520px);
+        box-shadow: var(--shadow-lg);
     }
 
-    .modal-header { font-weight:700; margin-bottom:0.75rem; }
+    .modal-header {
+        font-weight: 700;
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-4);
+        color: var(--color-neutral-dark);
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: var(--space-3);
+        margin-top: var(--space-6);
+        flex-wrap: wrap;
+    }
 
     .btn-confirm {
-        padding: 0.6rem 1rem;
-        border-radius: 0.4rem;
-        background: #667eea;
-        color: #fff;
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-md);
+        background: var(--gradient-primary);
+        color: var(--color-white);
         border: none;
         font-weight: 600;
         cursor: pointer;
+        transition: transform var(--transition-fast);
+    }
+
+    @media (hover: hover) {
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+        }
     }
 
     .btn-cancel {
-        padding: 0.6rem 1rem;
-        border-radius: 0.4rem;
-        background: #f0f0f0;
-        color: #333;
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-md);
+        background: var(--color-neutral-gray);
+        color: var(--color-text-primary);
         border: none;
         font-weight: 600;
         cursor: pointer;
+    }
+
+    @media (max-width: 575.98px) {
+        .modal-content {
+            padding: var(--space-4);
+        }
+    }
+
+    /* Sticky sidebar on desktop */
+    @media (min-width: 992px) {
+        .order-summary-wrapper {
+            position: sticky;
+            top: var(--space-4);
+        }
     }
 </style>
 
@@ -290,47 +394,47 @@
                         ->first();
                 @endphp
 
-                <div style="padding: 0.75rem 1rem 1.5rem; border-bottom: 1px dashed #eee;">
+                <div class="review-block">
                     @if($existingReview)
-                        <div><strong>Ulasan Anda:</strong></div>
-                        <div style="margin-top:6px;">
-                            <div>
+                        <div class="font-semibold mb-2">Ulasan Anda:</div>
+                        <div class="mt-2">
+                            <div class="rating-stars">
                                 @for($s=1;$s<=5;$s++)
-                                    <i class="fas fa-star" style="color: {{ $s <= $existingReview->rating ? '#f6ad55' : '#ddd' }};"></i>
+                                    <i class="fas fa-star {{ $s <= $existingReview->rating ? 'filled' : '' }}"></i>
                                 @endfor
                             </div>
                             @if($existingReview->title)
-                                <div style="font-weight:700; margin-top:6px;">{{ $existingReview->title }}</div>
+                                <div class="font-bold mt-2">{{ $existingReview->title }}</div>
                             @endif
                             @if($existingReview->review)
-                                <div class="text-muted" style="margin-top:6px;">{{ $existingReview->review }}</div>
+                                <div class="text-muted mt-2">{{ $existingReview->review }}</div>
                             @endif
                         </div>
                     @else
                         @if(in_array($order->status, ['delivered','completed']))
-                            <form method="POST" action="{{ route('reviews.store') }}" style="display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;">
+                            <form method="POST" action="{{ route('reviews.store') }}" class="review-form">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                                 <input type="hidden" name="order_id" value="{{ $order->id }}">
                                 <input type="hidden" name="rating" id="rating-{{ $item->id }}" value="5">
-                                <div style="flex: 0 0 220px;">
-                                    <div style="font-weight:700; margin-bottom:6px;">Berikan Rating</div>
+                                <div class="review-rating-col">
+                                    <div class="rating-label">Berikan Rating</div>
                                     <div class="stars-input" data-target="#rating-{{ $item->id }}">
                                         @for($s=1;$s<=5;$s++)
-                                            <i class="fas fa-star star-clickable" data-value="{{ $s }}" style="font-size:20px; color: #f0f0f0; cursor:pointer; margin-right:4px;"></i>
+                                            <i class="fas fa-star star-clickable" data-value="{{ $s }}"></i>
                                         @endfor
                                     </div>
                                 </div>
-                                <div style="flex:1; min-width:240px;">
+                                <div class="review-input-col">
                                     <div class="form-group">
                                         <input name="title" class="form-control" placeholder="Judul ulasan (opsional)" />
                                     </div>
-                                    <div class="form-group" style="margin-top:6px;">
+                                    <div class="form-group mt-2">
                                         <textarea name="review" class="form-control" rows="2" placeholder="Tulis ulasan Anda... (opsional)"></textarea>
                                     </div>
                                 </div>
-                                <div style="flex:0 0 140px; display:flex; align-items:center;">
-                                    <button class="btn btn-primary" type="submit">Kirim Ulasan</button>
+                                <div class="review-submit-col">
+                                    <button class="btn-gradient" type="submit">Kirim Ulasan</button>
                                 </div>
                             </form>
                         @endif
@@ -409,7 +513,7 @@
 
                 {{-- Show status note for return states --}}
                 @if($order->return_status)
-                    <div style="margin-top:8px;">
+                    <div class="return-status-block">
                         <small class="text-muted">Status Retur: <strong>{{ ucfirst($order->return_status) }}</strong></small>
                         @if($order->return_reason)
                             <div><small>Alasan: {{ $order->return_reason }}</small></div>
@@ -428,7 +532,7 @@
                 <div class="section-title">
                     <i class="fas fa-clock"></i>Status Pesanan
                 </div>
-                <div class="timeline">
+                <div class="order-timeline">
     <div class="timeline-item {{ !$order->isPending() ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
@@ -523,7 +627,7 @@
         </div>
 
         <!-- Sidebar -->
-        <div>
+        <div class="order-summary-wrapper">
             <div class="order-summary">
                 <div class="section-title">
                     <i class="fas fa-receipt"></i>Ringkasan
@@ -561,7 +665,7 @@
                     <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
-                <div class="section-title mt-3">
+                <div class="section-title mt-4">
                     <i class="fas fa-store"></i>Penjual
                 </div>
                 <p>
@@ -569,7 +673,7 @@
                     <small class="text-muted">{{ $order->shop->address }}</small>
                 </p>
 
-                <a href="{{ route('buyer.shop.visit', $order->shop) }}" class="btn btn-outline-primary w-100 mt-2">
+                <a href="{{ route('buyer.shop.visit', $order->shop) }}" class="btn-gradient w-full mt-3">
                     <i class="fas fa-store me-1"></i>Kunjungi Toko
                 </a>
             </div>
@@ -614,10 +718,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const targetSelector = container.getAttribute('data-target');
         const target = document.querySelector(targetSelector);
         const stars = container.querySelectorAll('.star-clickable');
+        const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#FF8F3A';
+        const neutralColor = getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-gray').trim() || '#ECEEF3';
+        
         const setRating = (value) => {
             stars.forEach(s => {
                 const v = parseInt(s.getAttribute('data-value'));
-                s.style.color = v <= value ? '#f6ad55' : '#ddd';
+                s.style.color = v <= value ? accentColor : neutralColor;
             });
             if (target) target.value = value;
         };
@@ -631,14 +738,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const v = parseInt(this.getAttribute('data-value'));
                 stars.forEach(s => {
                     const sv = parseInt(s.getAttribute('data-value'));
-                    s.style.color = sv <= v ? '#f6ad55' : '#ddd';
+                    s.style.color = sv <= v ? accentColor : neutralColor;
                 });
             });
             star.addEventListener('mouseout', function() {
                 const current = parseInt(target ? target.value : 0) || 0;
                 stars.forEach(s => {
                     const sv = parseInt(s.getAttribute('data-value'));
-                    s.style.color = sv <= current ? '#f6ad55' : '#ddd';
+                    s.style.color = sv <= current ? accentColor : neutralColor;
                 });
             });
         });
