@@ -140,87 +140,114 @@
       }
     }
 
-    /* Hero Section */
+    /* Hero Section - Banner dengan Teks Overlay */
     .hero-section {
-      padding: 60px 5% 40px;
+      padding: 40px 5%;
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 40px;
       max-width: 1200px;
       margin: 0 auto;
-      flex-wrap: wrap;
+    }
+
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(58, 123, 255, 0.15);
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: auto;
+      min-height: 400px;
+      max-height: 550px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(58, 123, 255, 0.85) 0%, rgba(110, 203, 249, 0.75) 25%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 30px;
     }
 
     .hero-content {
-      flex: 1;
-      min-width: 300px;
+      max-width: 700px;
     }
 
     .hero-content h2 {
       font-family: var(--font-display, 'Poppins'), sans-serif;
-      color: var(--neutral-dark, #1A1F36);
-      font-size: clamp(32px, 5vw, 48px);
+      color: #ffffff;
+      font-size: clamp(32px, 5vw, 52px);
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.2;
       margin-bottom: 20px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .hero-content p {
-      color: #555;
+      color: rgba(255, 255, 255, 0.95);
       font-size: clamp(15px, 2vw, 18px);
       line-height: 1.7;
       margin-bottom: 30px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
-    a{
-        text-decoration: none;
+
+    a {
+      text-decoration: none;
     }
+
     .hero-btn {
-      padding: 12px 30px;
-      border-radius: 8px;
-      border: none;
+      padding: 14px 36px;
+      border-radius: 50px;
+      border: 2px solid white;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: clamp(14px, 1.8vw, 16px);
-      background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
-      color: white;
-      box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
+      background: white;
+      color: var(--primary, #3A7BFF);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     @media (hover: hover) {
-        .hero-btn:hover {
-          filter: brightness(1.05);
-          transform: translateY(-3px);
-          box-shadow: 0 6px 18px rgba(58, 123, 255, 0.4);
-        }
-    }
-
-    .hero-image {
-      flex: 1;
-      min-width: 300px;
-      text-align: center;
-      position: relative;
-    }
-
-    .hero-image img {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(10, 76, 140, 0.2);
-      animation: floatMain 6s ease-in-out infinite;
+      .hero-btn:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+      }
     }
 
     /* Mobile Hero adjustments */
     @media (max-width: 768px) {
       .hero-section {
-        padding: 30px 5% 20px;
-        gap: 20px;
-        flex-direction: column;
-        text-align: center;
+        padding: 20px 4%;
       }
 
-      .hero-content {
-        min-width: 100%;
+      .hero-banner {
+        border-radius: 24px;
+      }
+
+      .hero-banner img {
+        min-height: 350px;
+        max-height: 450px;
+      }
+
+      .hero-overlay {
+        padding: 30px 20px;
       }
 
       .hero-content h2 {
@@ -235,28 +262,27 @@
       }
 
       .hero-btn {
-        padding: 10px 24px;
+        padding: 12px 28px;
         font-size: 14px;
-      }
-
-      .hero-image {
-        min-width: 100%;
-        order: -1;
-      }
-
-      .hero-image img {
-        max-width: 200px;
-      }
-
-      .float-icon {
-        font-size: 28px;
       }
     }
 
     @media (max-width: 480px) {
       .hero-section {
-        padding: 20px 4% 15px;
-        gap: 15px;
+        padding: 15px 3%;
+      }
+
+      .hero-banner {
+        border-radius: 20px;
+      }
+
+      .hero-banner img {
+        min-height: 300px;
+        max-height: 400px;
+      }
+
+      .hero-overlay {
+        padding: 25px 15px;
       }
 
       .hero-content h2 {
@@ -270,16 +296,8 @@
       }
 
       .hero-btn {
-        padding: 10px 20px;
+        padding: 10px 24px;
         font-size: 13px;
-      }
-
-      .hero-image img {
-        max-width: 160px;
-      }
-
-      .float-icon {
-        font-size: 22px;
       }
     }
 
@@ -523,66 +541,7 @@
       }
     }
 
-    /* Floating decorative elements */
-    .floating-elements {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    .float-icon {
-      position: absolute;
-      font-size: 40px;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    .float-icon:nth-child(1) {
-      top: 10%;
-      left: 5%;
-      animation-delay: 0s;
-    }
-
-    .float-icon:nth-child(2) {
-      top: 15%;
-      right: 8%;
-      animation-delay: 1s;
-    }
-
-    .float-icon:nth-child(3) {
-      bottom: 20%;
-      left: 10%;
-      animation-delay: 2s;
-    }
-
-    .float-icon:nth-child(4) {
-      bottom: 15%;
-      right: 5%;
-      animation-delay: 1.5s;
-    }
-
-    /* Floating animations */
-    @keyframes floatMain {
-      0%, 100% { 
-        transform: translateY(0px) scale(1);
-      }
-      50% { 
-        transform: translateY(-20px) scale(1.02);
-      }
-    }
-
-    @keyframes float {
-      0%, 100% { 
-        transform: translateY(0px) rotate(0deg);
-        opacity: 0.7;
-      }
-      50% { 
-        transform: translateY(-25px) rotate(10deg);
-        opacity: 1;
-      }
-    }
+    /* Banner styling handled by .hero-banner */
 
     /* About Section */
     .about-section {
@@ -973,37 +932,33 @@
   <section class="section-fullscreen" id="section-hero" style="background: linear-gradient(135deg, #e8f1f8 0%, #ffffff 50%, #f0f7ff 100%);">
     <div class="section-content">
       <div class="hero-section">
-        @guest
-        <div class="hero-content js-reveal-left">
-          <h2>Platform Jual Beli Khusus Mahasiswa</h2>
-          <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
-          <a href="{{ route('register.buyer') }}" class="hero-btn btn-outline-primary btn-lg">
-            Daftar Sekarang
-          </a>
-        </div>
-        @else
-        <div class="hero-content js-reveal-left">
-          <h2>Selamat Datang di PestiMart</h2>
-          <p>Platform jual beli khusus mahasiswa. Temukan kebutuhan kampus Anda dengan mudah dan aman.</p>
-          @if(auth()->user()->role === 'buyer')
-          <a href="{{ route('buyer.home') }}" class="hero-btn btn-outline-primary btn-lg">
-            Jelajahi Produk
-          </a>
-          @else
-          <a href="{{ route('seller.dashboard') }}" class="hero-btn btn-outline-primary btn-lg">
-            Ke Dashboard
-          </a>
-          @endif
-        </div>
-        @endguest
-        <div class="hero-image js-reveal-right">
-          <div class="floating-elements">
-            <div class="float-icon js-parallax" data-parallax-speed="0.3">📦</div>
-            <div class="float-icon js-parallax" data-parallax-speed="0.5">🛒</div>
-            <div class="float-icon js-parallax" data-parallax-speed="0.4">💳</div>
-            <div class="float-icon js-parallax" data-parallax-speed="0.6">⭐</div>
+        <div class="hero-banner js-reveal">
+          <img src="{{ asset('images/landing/Banner_landing.webp') }}" alt="Banner PestiMart">
+          <div class="hero-overlay">
+            @guest
+            <div class="hero-content">
+              <h2>Platform Jual Beli Khusus Mahasiswa</h2>
+              <p>PestiMart hadir sebagai solusi praktis untuk jual beli kebutuhan kampus. Dari buku, alat tulis, hingga perlengkapan kos—semuanya ada dalam satu platform yang mudah dan aman.</p>
+              <a href="{{ route('register.buyer') }}" class="hero-btn">
+                Daftar Sekarang
+              </a>
+            </div>
+            @else
+            <div class="hero-content">
+              <h2>Selamat Datang di PestiMart</h2>
+              <p>Platform jual beli khusus mahasiswa. Temukan kebutuhan kampus Anda dengan mudah dan aman.</p>
+              @if(auth()->user()->role === 'buyer')
+              <a href="{{ route('buyer.home') }}" class="hero-btn">
+                Jelajahi Produk
+              </a>
+              @else
+              <a href="{{ route('seller.dashboard') }}" class="hero-btn">
+                Ke Dashboard
+              </a>
+              @endif
+            </div>
+            @endguest
           </div>
-          <img src="https://i.postimg.cc/yx8K3Nbg/ecommerce-isometric.jpg" alt="E-commerce Illustration" onerror="this.src='logo.png'" class="js-parallax" data-parallax-speed="0.2">
         </div>
       </div>
     </div>
