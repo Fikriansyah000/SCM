@@ -15,6 +15,8 @@ class Message extends Model
         'shop_id',
         'message',
         'is_read',
+        'context_type',
+        'context_id',
     ];
 
     protected $casts = [
@@ -34,5 +36,37 @@ class Message extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    /**
+     * Get the context model (Product or ServiceProposal)
+     */
+    public function getContextAttribute()
+    {
+        if (!$this->context_type || !$this->context_id) {
+            return null;
+        }
+
+        if ($this->relationLoaded('context')) {
+            return $this->getRelation('context');
+        }
+
+        $context = match($this->context_type) {
+            'product' => Product::with('shop')->find($this->context_id),
+            'proposal' => ServiceProposal::with(['product.shop', 'buyer', 'seller'])->find($this->context_id),
+            default => null,
+        };
+
+        $this->setRelation('context', $context);
+
+        return $context;
+    }
+
+    /**
+     * Check if message has context
+     */
+    public function hasContext(): bool
+    {
+        return !empty($this->context_type) && !empty($this->context_id);
     }
 }

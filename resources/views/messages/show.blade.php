@@ -314,15 +314,75 @@
     .send-button:active {
         transform: scale(0.95);
     }
-    
-    .back-header {
-        padding: 1rem;
-        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
+
+    /* Reply Product Card Styles - attached to message */
+    .reply-card {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(0,0,0,0.08);
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .reply-card.product {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        border-color: #7dd3fc;
+    }
+
+    .reply-card.proposal {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-color: #fcd34d;
+    }
+
+    .reply-thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: rgba(0,0,0,0.05);
         display: flex;
         align-items: center;
-        gap: 1rem;
+        justify-content: center;
     }
-    
+
+    .reply-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .reply-meta {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .reply-title {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #0f172a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .reply-subtitle {
+        font-size: 0.75rem;
+        color: #475569;
+    }
+
+    .reply-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #fff;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.45);
+    }
+
     .back-link {
         color: var(--primary, #3A7BFF);
         text-decoration: none;
@@ -331,7 +391,7 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     @media (hover: hover) {
         .back-link:hover {
             text-decoration: underline;
@@ -369,6 +429,49 @@
                 </div>
             </div>
         </div>
+
+        {{-- Context banner for proposal/product --}}
+        @if(isset($proposal) && $proposal)
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #fcd34d;">
+                @if($proposal->product && $proposal->product->image)
+                    <img src="{{ asset('storage/' . $proposal->product->image) }}" alt="{{ $proposal->product->name }}" style="width: 48px; height: 48px; border-radius: 0.5rem; object-fit: cover;">
+                @else
+                    <div style="width: 48px; height: 48px; border-radius: 0.5rem; background: #f59e0b; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-concierge-bell text-white"></i>
+                    </div>
+                @endif
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; color: #92400e; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ $proposal->product->name ?? 'Layanan' }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #b45309;">
+                        Harga: Rp{{ number_format($proposal->proposed_price ?? $proposal->offered_price ?? 0, 0, ',', '.') }}
+                        &middot; Deadline: {{ $proposal->proposed_deadline ? \Carbon\Carbon::parse($proposal->proposed_deadline)->format('d M Y') : '-' }}
+                    </div>
+                </div>
+                <span style="background: #f59e0b; color: #fff; padding: 0.25rem 0.6rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600;">
+                    Proposal #{{ $proposal->id }}
+                </span>
+            </div>
+        @elseif(isset($product) && $product)
+            <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #7dd3fc;">
+                @if($product->image)
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 48px; height: 48px; border-radius: 0.5rem; object-fit: cover;">
+                @else
+                    <div style="width: 48px; height: 48px; border-radius: 0.5rem; background: #3b82f6; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-box text-white"></i>
+                    </div>
+                @endif
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; color: #0369a1; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ $product->name }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #0284c7;">
+                        {{ $product->shop->shop_name ?? 'Toko' }} &middot; Rp{{ number_format($product->price, 0, ',', '.') }}
+                    </div>
+                </div>
+            </div>
+        @endif
         
         <!-- Messages -->
         <div class="chat-messages" id="messagesContainer">
@@ -376,10 +479,42 @@
                 @php
                     $isSent = $message->sender_id == auth()->id();
                     $initials = strtoupper(substr($isSent ? auth()->user()->name : $otherUser->name, 0, 1));
+                    $context = $message->context;
                 @endphp
                 <div class="message {{ $isSent ? 'sent' : 'received' }}">
                     <div class="message-avatar" title="{{ $isSent ? auth()->user()->name : $otherUser->name }}">{{ $initials }}</div>
                     <div class="message-content">
+                        @if($context)
+                            @php
+                                $isProposalContext = $message->context_type === 'proposal';
+                                $contextProduct = $isProposalContext ? ($context->product ?? null) : $context;
+                                $thumb = $contextProduct && $contextProduct->image ? asset('storage/' . $contextProduct->image) : null;
+                                $priceValue = $isProposalContext ? $context->getFinalPrice() : ($context->price ?? 0);
+                            @endphp
+                            <div class="reply-card {{ $message->context_type }}">
+                                <div class="reply-thumb">
+                                    @if($thumb)
+                                        <img src="{{ $thumb }}" alt="{{ $contextProduct->name ?? 'Layanan' }}">
+                                    @else
+                                        <i class="fas {{ $isProposalContext ? 'fa-concierge-bell' : 'fa-box' }} text-muted"></i>
+                                    @endif
+                                </div>
+                                <div class="reply-meta">
+                                    <div class="reply-title">{{ $contextProduct->name ?? 'Layanan Khusus' }}</div>
+                                    <div class="reply-subtitle">
+                                        Rp{{ number_format($priceValue, 0, ',', '.') }}
+                                        @if($isProposalContext && $context->getFinalDeadline())
+                                            · {{ $context->getFinalDeadline()->format('d M Y') }}
+                                        @elseif(!$isProposalContext && $contextProduct && $contextProduct->shop)
+                                            · {{ $contextProduct->shop->shop_name }}
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="reply-badge">
+                                    {{ $isProposalContext ? 'Proposal #' . $context->id : 'Produk' }}
+                                </span>
+                            </div>
+                        @endif
                         <div class="message-bubble">{{ $message->message }}</div>
                         <div class="message-time">{{ $message->created_at->format('H:i') }}</div>
                     </div>
@@ -393,6 +528,12 @@
                 @csrf
                 @if($shop)
                     <input type="hidden" name="shop_id" value="{{ $shop->id }}">
+                @endif
+                @if(isset($proposal) && $proposal)
+                    <input type="hidden" name="proposal_id" value="{{ $proposal->id }}">
+                @endif
+                @if(isset($product) && $product)
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
                 @endif
                 <div class="input-group">
                     <textarea class="message-input" name="message" placeholder="Tulis pesan..." required></textarea>

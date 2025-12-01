@@ -13,12 +13,13 @@ use App\Models\ServiceSlot;
 use App\Services\OrderNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
 class OrderController extends Controller
 {
     // Tampilkan form checkout
-    public function checkout()
+    public function checkout(Request $request)
     {
         $cart = Cart::where('user_id', auth()->id())->with('product')->get();
 
@@ -27,43 +28,76 @@ class OrderController extends Controller
         }
 
         $flashIds = session('flash_sale_ids', []);
+        $physicalItems = $cart->filter(fn($c) => ($c->product->product_type ?? 'food') !== 'service')->values();
+        $serviceItems = $cart->filter(fn($c) => ($c->product->product_type ?? 'food') === 'service')->values();
+
+        $hasPhysical = $physicalItems->isNotEmpty();
+        $hasServices = $serviceItems->isNotEmpty();
+
+        $mode = $request->query('mode');
+
+        if ($hasPhysical && $hasServices && !$mode) {
+            return redirect()->route('buyer.cart')->with('info', 'Pilih checkout produk atau layanan terlebih dahulu.');
+        }
+
+        if ($mode === 'products' && !$hasPhysical) {
+            return redirect()->route('buyer.cart')->with('error', 'Tidak ada produk fisik untuk di-checkout.');
+        }
+
+        if ($mode === 'services' && !$hasServices) {
+            return redirect()->route('buyer.cart')->with('error', 'Tidak ada layanan untuk diajukan.');
+        }
+
+        if (!$mode) {
+            $mode = $hasServices ? 'services' : 'products';
+        }
+
+        $displayCart = $mode === 'products' ? $physicalItems : $serviceItems;
+
+        if ($displayCart->isEmpty()) {
+            return redirect()->route('buyer.cart')->with('error', 'Tidak ada item untuk mode checkout ini.');
+        }
 
         $subtotal = 0;
         $discount = 0;
-        $hasServices = false;
 
-        foreach ($cart as $item) {
+        foreach ($displayCart as $item) {
             $isService = ($item->product->product_type ?? 'food') === 'service';
-            
-            // For services, use proposed_price if available
             $unitPrice = $isService && isset($item->customizations['proposed_price'])
                 ? $item->customizations['proposed_price']
                 : $item->product->price;
-                
+
             $line = $unitPrice * $item->quantity;
             $subtotal += $line;
 
-            if (in_array($item->product_id, $flashIds)) {
+            if ($mode === 'products' && in_array($item->product_id, $flashIds)) {
                 $discount += ($unitPrice * 0.10) * $item->quantity;
-            }
-            
-            if ($isService) {
-                $hasServices = true;
             }
         }
 
-        // If only services (no physical products), no shipping needed
-        $hasPhysical = $cart->contains(fn($c) => ($c->product->product_type ?? 'food') !== 'service');
-        $hasFlash = $cart->contains(fn($c) => in_array($c->product_id, $flashIds));
-        
-        $shipping = ($hasFlash || !$hasPhysical) ? 0 : 10000;
+        $shipping = 0;
+        if ($mode === 'products') {
+            $hasFlash = $displayCart->contains(fn($c) => in_array($c->product_id, $flashIds));
+            $shipping = $hasFlash ? 0 : 10000;
+        }
 
         $total = $subtotal - $discount + $shipping;
 
-        return view('buyer.checkout', compact('cart', 'subtotal', 'discount', 'shipping', 'total', 'hasServices', 'hasPhysical'));
+        return view('buyer.checkout', [
+            'cart' => $displayCart,
+            'physicalItems' => $physicalItems,
+            'serviceItems' => $serviceItems,
+            'hasPhysical' => $hasPhysical,
+            'hasServices' => $hasServices,
+            'activeMode' => $mode,
+            'subtotal' => $subtotal,
+            'discount' => $discount,
+            'shipping' => $shipping,
+            'total' => $total,
+        ]);
     }
 
-    // Simpan order dengan shipping mode
+    // Legacy endpoint - keep for backward compatibility
     public function store(Request $request)
     {
         $cart = Cart::where('user_id', auth()->id())->with('product')->get();
@@ -72,25 +106,49 @@ class OrderController extends Controller
             return redirect()->route('buyer.cart')->with('error', 'Keranjang kosong');
         }
 
-        // Check if there are physical products vs services only
         $hasPhysical = $cart->contains(fn($c) => ($c->product->product_type ?? 'food') !== 'service');
         $hasServices = $cart->contains(fn($c) => ($c->product->product_type ?? 'food') === 'service');
-        $isServiceOnly = $hasServices && !$hasPhysical;
 
-        // ========== SERVICE-ONLY ORDER: Create proposal first, no order yet ==========
-        if ($isServiceOnly) {
+        if ($hasPhysical && !$hasServices) {
+            return $this->createPhysicalOrder($request, $cart);
+        }
+
+        if ($hasServices && !$hasPhysical) {
             return $this->createServiceProposals($request, $cart);
         }
 
-        // ========== PHYSICAL PRODUCT ORDER (or mixed): Normal checkout flow ==========
-        return $this->createPhysicalOrder($request, $cart, $hasPhysical, $hasServices);
+        return redirect()->route('buyer.cart')->with('info', 'Silakan pilih Checkout Produk atau Ajukan Layanan sesuai kebutuhan.');
+    }
+
+    public function storeProducts(Request $request)
+    {
+        $cart = Cart::where('user_id', auth()->id())->with('product')->get();
+        $physicalItems = $cart->filter(fn($c) => ($c->product->product_type ?? 'food') !== 'service')->values();
+
+        if ($physicalItems->isEmpty()) {
+            return redirect()->route('buyer.cart')->with('error', 'Tidak ada produk fisik yang dapat di-checkout.');
+        }
+
+        return $this->createPhysicalOrder($request, $physicalItems);
+    }
+
+    public function storeServices(Request $request)
+    {
+        $cart = Cart::where('user_id', auth()->id())->with('product')->get();
+        $serviceItems = $cart->filter(fn($c) => ($c->product->product_type ?? 'food') === 'service')->values();
+
+        if ($serviceItems->isEmpty()) {
+            return redirect()->route('buyer.cart')->with('error', 'Tidak ada layanan yang dapat diajukan.');
+        }
+
+        return $this->createServiceProposals($request, $serviceItems);
     }
 
     /**
      * Create service proposals without creating order yet.
      * Order will be created after seller accepts and buyer pays.
      */
-    protected function createServiceProposals(Request $request, $cart)
+    protected function createServiceProposals(Request $request, Collection $cart)
     {
         $validated = $request->validate([
             'shipping_address' => 'required|string|min:10',
@@ -129,8 +187,8 @@ class OrderController extends Controller
                 $notificationService->proposalCreated($proposal);
             }
 
-            // Clear cart
-            Cart::where('user_id', auth()->id())->delete();
+            // Clear only processed entries
+            Cart::whereIn('id', $cart->pluck('id'))->delete();
 
             DB::commit();
 
@@ -147,7 +205,7 @@ class OrderController extends Controller
     /**
      * Create order for physical products (or mixed physical+service)
      */
-    protected function createPhysicalOrder(Request $request, $cart, $hasPhysical, $hasServices)
+    protected function createPhysicalOrder(Request $request, Collection $cart)
     {
         // Validation for physical orders
         $rules = [
@@ -220,11 +278,11 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create order
+            // Create order with ORD-FD prefix for products
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'shop_id' => $cart->first()->product->shop_id,
-                'order_number' => Order::generateOrderNumber(),
+                'order_number' => Order::generateOrderNumber(false), // false = product order
                 'status' => 'pending',
                 'total_amount' => $total,
                 'shipping_address' => $validated['shipping_address'],
@@ -258,8 +316,8 @@ class OrderController extends Controller
                 $item->product->decrement('stock', $item->quantity);
             }
 
-            // Clear cart
-            Cart::where('user_id', auth()->id())->delete();
+            // Clear only processed entries
+            Cart::whereIn('id', $cart->pluck('id'))->delete();
 
             // Notify seller
             Notification::create([
@@ -371,9 +429,14 @@ class OrderController extends Controller
         return back()->with('success', 'Pesanan telah selesai.');
     }
 
-    // Buyer request return (only when delivered or completed)
+    // Buyer request return (only when delivered or completed, NOT for service orders)
     public function requestReturn(Request $request, Order $order)
     {
+        // Service orders cannot be returned
+        if ($order->is_service_order) {
+            abort(403, 'Layanan jasa tidak dapat diretur.');
+        }
+        
         if ($order->user_id !== auth()->id() || !in_array($order->status, ['delivered', 'completed'])) {
             abort(403);
         }
@@ -403,6 +466,11 @@ class OrderController extends Controller
     // Buyer ships the return after seller approves
     public function shipReturn(Request $request, Order $order)
     {
+        // Service orders cannot be returned
+        if ($order->is_service_order) {
+            abort(403, 'Layanan jasa tidak dapat diretur.');
+        }
+        
         if ($order->user_id !== auth()->id() || $order->return_status !== 'approved') {
             abort(403);
         }

@@ -271,11 +271,17 @@ class Order extends Model
         ]);
     }
 
-    // Generate unique order number
-    public static function generateOrderNumber()
+    /**
+     * Generate unique order number with prefix based on order type
+     * ORD-JS-YYYYMMDD-XXXXX for service orders (jasa)
+     * ORD-FD-YYYYMMDD-XXXXX for product orders (food/product)
+     */
+    public static function generateOrderNumber(bool $isServiceOrder = false): string
     {
+        $prefix = $isServiceOrder ? 'ORD-JS' : 'ORD-FD';
+        
         do {
-            $number = 'ORD-' . date('Ymd') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            $number = $prefix . '-' . date('Ymd') . '-' . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
         } while (self::where('order_number', $number)->exists());
 
         return $number;
@@ -340,13 +346,46 @@ class Order extends Model
     {
         return match($this->service_status) {
             'pending' => 'warning',
-            'accepted', 'in_progress' => 'info',
-            'review' => 'primary',
-            'revision' => 'warning',
+            'accepted' => 'info',
+            'in_progress' => 'primary',
+            'review' => 'info',
+            'revision' => 'orange',
             'completed' => 'success',
             'cancelled' => 'danger',
             default => 'secondary'
         };
+    }
+
+    /**
+     * Fiverr-native service status flow:
+     * 1. pending     - Proposal menunggu ACC seller
+     * 2. accepted    - Seller ACC, menunggu pembayaran buyer
+     * 3. in_progress - Seller sedang mengerjakan (setelah bayar)
+     * 4. review      - Seller submit hasil, buyer review
+     * 5. revision    - Buyer minta revisi (bisa kembali ke in_progress)
+     * 6. completed   - Buyer approve atau auto-complete
+     * 7. cancelled   - Dibatalkan
+     */
+    public static function serviceStatusFlow(): array
+    {
+        return [
+            'pending' => ['label' => 'Menunggu Konfirmasi', 'hint' => 'Proposal menunggu ACC seller'],
+            'accepted' => ['label' => 'Menunggu Pembayaran', 'hint' => 'Seller ACC, menunggu pembayaran buyer'],
+            'in_progress' => ['label' => 'Dalam Pengerjaan', 'hint' => 'Seller sedang mengerjakan order'],
+            'review' => ['label' => 'Menunggu Review', 'hint' => 'Hasil dikirim, menunggu respon buyer'],
+            'revision' => ['label' => 'Revisi Diminta', 'hint' => 'Buyer meminta revisi'],
+            'completed' => ['label' => 'Selesai', 'hint' => 'Order selesai'],
+            'cancelled' => ['label' => 'Dibatalkan', 'hint' => 'Order dihentikan'],
+        ];
+    }
+
+    public function getServiceStatusStepIndex(): int
+    {
+        $flowKeys = array_keys(self::serviceStatusFlow());
+        $currentKey = $this->service_status ?? 'pending';
+        $index = array_search($currentKey, $flowKeys, true);
+
+        return $index === false ? 0 : $index;
     }
 
     public function hasPendingExtension(): bool

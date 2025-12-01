@@ -394,35 +394,40 @@
             </div>
             
             <div>
+                @php
+                    $physicalItems = $carts->filter(fn($c) => ($c->product->product_type ?? 'food') !== 'service');
+                    $serviceItems = $carts->filter(fn($c) => ($c->product->product_type ?? 'food') === 'service');
+                @endphp
+
                 <div class="cart-summary">
                     <h4>Ringkasan Pesanan</h4>
-                    
-                    <div class="summary-row">
-                        <span>Subtotal:</span>
-                        <span>Rp{{ number_format($subtotal ?? $total, 0, ',', '.') }}</span>
-                    </div>
-
-                    @if(isset($discount) && $discount > 0)
-                    <div class="summary-row">
-                        <span>Diskon:</span>
-                        <span>-Rp{{ number_format($discount, 0, ',', '.') }}</span>
-                    </div>
-                    @endif
 
                     <div class="summary-row">
-                        <span>Ongkos Kirim:</span>
-                        <span>{{ (isset($shipping) && $shipping === 0) ? 'Gratis' : (isset($shipping) ? 'Rp' . number_format($shipping,0,',','.') : 'Gratis') }}</span>
+                        <span>Total Item Produk</span>
+                        <span>{{ $physicalItems->count() }}</span>
                     </div>
-                    
+                    <div class="summary-row">
+                        <span>Total Item Layanan</span>
+                        <span>{{ $serviceItems->count() }}</span>
+                    </div>
+
                     <div class="summary-row total">
-                        <span>Total:</span>
+                        <span>Total Perkiraan</span>
                         <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
                     </div>
-                    
-                    <a href="{{ route('buyer.checkout') }}" class="btn-checkout">
-                        <i class="fas fa-arrow-right"></i>Lanjut Checkout
-                    </a>
-                    
+
+                    @if($physicalItems->isNotEmpty())
+                        <a href="{{ route('buyer.checkout', ['mode' => 'products']) }}" class="btn-checkout mb-2">
+                            <i class="fas fa-box"></i>Checkout Produk
+                        </a>
+                    @endif
+
+                    @if($serviceItems->isNotEmpty())
+                        <a href="{{ route('buyer.checkout', ['mode' => 'services']) }}" class="btn-checkout" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff;">
+                            <i class="fas fa-concierge-bell"></i>Ajukan Layanan
+                        </a>
+                    @endif
+
                     <a href="{{ route('buyer.home') }}" class="btn-continue-shopping">
                         <i class="fas fa-arrow-left"></i>Lanjut Belanja
                     </a>

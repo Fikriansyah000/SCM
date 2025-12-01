@@ -41,7 +41,7 @@ class ServiceWorkflowController extends Controller
         }
 
         // Default: show pending first, then others
-        $proposals = $query->orderByRaw("FIELD(status, 'pending', 'negotiating', 'accepted', 'in_progress', 'review', 'revision') DESC")
+        $proposals = $query->orderByRaw("FIELD(status, 'pending', 'accepted', 'in_progress', 'review', 'revision') DESC")
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
@@ -127,48 +127,15 @@ class ServiceWorkflowController extends Controller
     }
 
     /**
-     * Start working on a proposal (manual start after payment)
-     */
-    public function startWork(ServiceProposal $proposal)
-    {
-        $this->authorizeSeller($proposal);
-
-        // Can only start work if payment has been made (order exists)
-        if (!$proposal->order_id) {
-            return back()->with('error', 'Menunggu pembayaran dari pembeli terlebih dahulu.');
-        }
-
-        if (!$proposal->canStartWork()) {
-            return back()->with('error', 'Pengerjaan tidak dapat dimulai pada status ini.');
-        }
-
-        DB::transaction(function () use ($proposal) {
-            $proposal->update([
-                'status' => ServiceProposal::STATUS_IN_PROGRESS,
-                'started_at' => now(),
-            ]);
-
-            if ($proposal->order) {
-                $proposal->order->update([
-                    'service_status' => 'in_progress',
-                    'status' => 'processing',
-                ]);
-            }
-
-            $this->notificationService->workStarted($proposal);
-        });
-
-        return back()->with('success', 'Pengerjaan dimulai! Buyer telah diberi notifikasi.');
-    }
-
-    /**
      * Submit work for review
      */
     public function submitReview(Request $request, ServiceProposal $proposal)
     {
         $this->authorizeSeller($proposal);
 
-        if (!in_array($proposal->status, [ServiceProposal::STATUS_IN_PROGRESS, ServiceProposal::STATUS_REVISION])) {
+        $previousStatus = $proposal->status;
+        
+        if (!in_array($previousStatus, [ServiceProposal::STATUS_IN_PROGRESS, ServiceProposal::STATUS_REVISION])) {
             return back()->with('error', 'Tidak dapat mengirim hasil pada status ini.');
         }
 
@@ -176,7 +143,7 @@ class ServiceWorkflowController extends Controller
             'submission_notes' => 'nullable|string|max:2000',
         ]);
 
-        DB::transaction(function () use ($proposal, $validated) {
+        DB::transaction(function () use ($proposal, $validated, $previousStatus) {
             $proposal->update([
                 'status' => ServiceProposal::STATUS_REVIEW,
             ]);
@@ -184,6 +151,28 @@ class ServiceWorkflowController extends Controller
             if ($proposal->order) {
                 $proposal->order->update([
                     'service_status' => 'review',
+                ]);
+                
+                // Log appropriate event based on previous status
+                $eventType = $previousStatus === ServiceProposal::STATUS_REVISION 
+                    ? \App\Models\OrderEvent::TYPE_REVISION_DELIVERED 
+                    : \App\Models\OrderEvent::TYPE_REVIEW_SUBMITTED;
+                    
+                $eventTitle = $previousStatus === ServiceProposal::STATUS_REVISION
+                    ? 'Hasil Revisi Dikirim'
+                    : 'Hasil Pekerjaan Dikirim';
+                    
+                \App\Models\OrderEvent::create([
+                    'order_id' => $proposal->order->id,
+                    'service_proposal_id' => $proposal->id,
+                    'actor_type' => \App\Models\OrderEvent::ACTOR_SELLER,
+                    'actor_id' => auth()->id(),
+                    'event_type' => $eventType,
+                    'title' => $eventTitle,
+                    'message' => $validated['submission_notes'] ?? 'Seller telah mengirim hasil untuk direview.',
+                    'visible_to_buyer' => true,
+                    'visible_to_seller' => true,
+                    'created_at' => now(),
                 ]);
             }
 

@@ -67,6 +67,8 @@ Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->grou
      // Checkout & Orders
     Route::get('/checkout', [BuyerOrderController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [BuyerOrderController::class, 'store'])->name('checkout.store');  // ← Beda nama
+    Route::post('/checkout/products', [BuyerOrderController::class, 'storeProducts'])->name('checkout.products');
+    Route::post('/checkout/services', [BuyerOrderController::class, 'storeServices'])->name('checkout.services');
     Route::get('/orders', [BuyerOrderController::class, 'index'])->name('orders');
     Route::get('/orders/{order}', [BuyerOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/confirm-delivery', [BuyerOrderController::class, 'confirmDelivery'])->name('orders.confirm-delivery');
@@ -89,6 +91,9 @@ Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->grou
     Route::post('/services/proposals/{proposal}/revision', [ServiceOrderController::class, 'requestRevision'])->name('services.proposals.revision');
     Route::post('/services/proposals/{proposal}/complete', [ServiceOrderController::class, 'completeService'])->name('services.proposals.complete');
     Route::post('/services/proposals/{proposal}/cancel', [ServiceOrderController::class, 'cancelService'])->name('services.proposals.cancel');
+
+    // Chat shortcut
+    Route::get('/chat', [MessageController::class, 'openForBuyer'])->name('chat');
 }); 
 
 // Seller Routes
@@ -126,7 +131,6 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::get('/services/proposals/{proposal}', [ServiceWorkflowController::class, 'showProposal'])->name('services.proposals.show');
     Route::post('/services/proposals/{proposal}/accept', [ServiceWorkflowController::class, 'acceptProposal'])->name('services.proposals.accept');
     Route::post('/services/proposals/{proposal}/reject', [ServiceWorkflowController::class, 'rejectProposal'])->name('services.proposals.reject');
-    Route::post('/services/proposals/{proposal}/start', [ServiceWorkflowController::class, 'startWork'])->name('services.proposals.start');
     Route::post('/services/proposals/{proposal}/submit-review', [ServiceWorkflowController::class, 'submitReview'])->name('services.proposals.submit-review');
     Route::post('/services/proposals/{proposal}/request-extension', [ServiceWorkflowController::class, 'requestExtension'])->name('services.proposals.request-extension');
     Route::get('/services/orders', [ServiceWorkflowController::class, 'orders'])->name('services.orders');

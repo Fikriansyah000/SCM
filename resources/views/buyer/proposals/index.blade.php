@@ -61,19 +61,24 @@
         color: #166534;
     }
     
-    .status-rejected {
+    .status-rejected, .status-cancelled {
         background: #fee2e2;
         color: #991b1b;
     }
     
-    .status-negotiating {
+    .status-in-progress {
         background: #dbeafe;
         color: #0c4a6e;
     }
-    
-    .status-expired {
-        background: #f3f4f6;
-        color: #6b7280;
+
+    .status-review {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .status-revision {
+        background: #fef3c7;
+        color: #92400e;
     }
     
     .proposal-content {
@@ -332,13 +337,13 @@
             <i class="fas fa-clock"></i> Menunggu
         </a>
         <a href="{{ route('buyer.proposals', ['status' => 'accepted']) }}" class="nav-link {{ request('status') == 'accepted' ? 'active' : '' }}">
-            <i class="fas fa-check-circle"></i> Diterima
+            <i class="fas fa-check-circle"></i> Siap Bayar
+        </a>
+        <a href="{{ route('buyer.proposals', ['status' => 'in_progress']) }}" class="nav-link {{ request('status') == 'in_progress' ? 'active' : '' }}">
+            <i class="fas fa-spinner"></i> Dalam Pengerjaan
         </a>
         <a href="{{ route('buyer.proposals', ['status' => 'rejected']) }}" class="nav-link {{ request('status') == 'rejected' ? 'active' : '' }}">
             <i class="fas fa-times-circle"></i> Ditolak
-        </a>
-        <a href="{{ route('buyer.proposals', ['status' => 'negotiating']) }}" class="nav-link {{ request('status') == 'negotiating' ? 'active' : '' }}">
-            <i class="fas fa-comments"></i> Negosiasi
         </a>
     </div>
 
@@ -358,17 +363,23 @@
                             $statusClass = match($proposal->status) {
                                 'pending' => 'status-pending',
                                 'accepted' => 'status-accepted',
+                                'in_progress' => 'status-in-progress',
+                                'review' => 'status-review',
+                                'revision' => 'status-revision',
                                 'rejected' => 'status-rejected',
-                                'negotiating' => 'status-negotiating',
-                                'expired' => 'status-expired',
+                                'completed' => 'status-completed',
+                                'cancelled' => 'status-cancelled',
                                 default => 'status-pending'
                             };
                             $statusLabel = match($proposal->status) {
                                 'pending' => 'Menunggu Konfirmasi',
                                 'accepted' => 'Diterima - Siap Bayar',
+                                'in_progress' => 'Dalam Pengerjaan',
+                                'review' => 'Menunggu Review',
+                                'revision' => 'Revisi Diminta',
                                 'rejected' => 'Ditolak',
-                                'negotiating' => 'Dalam Negosiasi',
-                                'expired' => 'Kadaluarsa',
+                                'completed' => 'Selesai',
+                                'cancelled' => 'Dibatalkan',
                                 default => $proposal->status
                             };
                         @endphp
@@ -384,6 +395,26 @@
                             <div class="status-info text-success">
                                 <i class="fas fa-credit-card"></i>
                                 Silakan lakukan pembayaran
+                            </div>
+                        @elseif($proposal->status == 'in_progress')
+                            <div class="status-info text-primary">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Seller sedang mengerjakan
+                            </div>
+                        @elseif($proposal->status == 'review')
+                            <div class="status-info text-info">
+                                <i class="fas fa-eye"></i>
+                                Silakan review hasil pekerjaan
+                            </div>
+                        @elseif($proposal->status == 'revision')
+                            <div class="status-info text-warning">
+                                <i class="fas fa-redo"></i>
+                                Menunggu seller merevisi
+                            </div>
+                        @elseif($proposal->status == 'completed')
+                            <div class="status-info text-success">
+                                <i class="fas fa-check-circle"></i>
+                                Layanan selesai
                             </div>
                         @endif
                     </div>
@@ -453,21 +484,37 @@
                         @endif
                     </div>
                     <div class="proposal-actions">
-                        <a href="{{ route('buyer.proposals.show', $proposal) }}" class="btn-proposal-action">
-                            <i class="fas fa-eye"></i> Detail
-                        </a>
-                        
-                        @if($proposal->status == 'accepted')
-                            <form action="{{ route('buyer.proposals.pay', $proposal) }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn-proposal-action btn-success">
-                                    <i class="fas fa-credit-card"></i> Bayar Sekarang
-                                </button>
-                            </form>
-                        @elseif($proposal->status == 'pending')
-                            <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}" class="btn-proposal-action btn-primary">
-                                <i class="fas fa-comments"></i> Chat Seller
+                        @if(in_array($proposal->status, ['in_progress', 'review', 'revision', 'completed']))
+                            {{-- Link to service order detail for active/completed services --}}
+                            @if($proposal->order_id)
+                                <a href="{{ route('buyer.services.show', $proposal->order_id) }}" class="btn-proposal-action btn-primary">
+                                    <i class="fas fa-tasks"></i> 
+                                    @if($proposal->status == 'completed')
+                                        Lihat Riwayat
+                                    @elseif($proposal->status == 'review')
+                                        Review Hasil
+                                    @else
+                                        Lihat Progress
+                                    @endif
+                                </a>
+                            @endif
+                        @else
+                            <a href="{{ route('buyer.proposals.show', $proposal) }}" class="btn-proposal-action">
+                                <i class="fas fa-eye"></i> Detail
                             </a>
+                            
+                            @if($proposal->status == 'accepted')
+                                <form action="{{ route('buyer.proposals.pay', $proposal) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn-proposal-action btn-success">
+                                        <i class="fas fa-credit-card"></i> Bayar Sekarang
+                                    </button>
+                                </form>
+                            @elseif($proposal->status == 'pending')
+                                <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}&shop={{ $proposal->product->shop_id ?? '' }}&proposal_id={{ $proposal->id }}&product_id={{ $proposal->product_id }}" class="btn-proposal-action btn-primary">
+                                    <i class="fas fa-comments"></i> Chat Seller
+                                </a>
+                            @endif
                         @endif
                     </div>
                 </div>

@@ -16,9 +16,11 @@ class OrderEvent extends Model
     public const TYPE_PROPOSAL_ACCEPTED = 'proposal_accepted';
     public const TYPE_PROPOSAL_REJECTED = 'proposal_rejected';
     public const TYPE_PROPOSAL_NEGOTIATING = 'proposal_negotiating';
+    public const TYPE_PAYMENT_CONFIRMED = 'payment_confirmed';   // Buyer paid, order created
     public const TYPE_WORK_STARTED = 'work_started';
     public const TYPE_REVIEW_SUBMITTED = 'review_submitted';
     public const TYPE_REVISION_REQUESTED = 'revision_requested';
+    public const TYPE_REVISION_DELIVERED = 'revision_delivered'; // Seller submits after revision
     public const TYPE_COMPLETED = 'completed';
     public const TYPE_CANCELLED = 'cancelled';
     public const TYPE_EXTENSION_REQUESTED = 'extension_requested';
@@ -107,9 +109,11 @@ class OrderEvent extends Model
             self::TYPE_PROPOSAL_ACCEPTED => 'fas fa-check-circle',
             self::TYPE_PROPOSAL_REJECTED => 'fas fa-times-circle',
             self::TYPE_PROPOSAL_NEGOTIATING => 'fas fa-comments',
+            self::TYPE_PAYMENT_CONFIRMED => 'fas fa-credit-card',
             self::TYPE_WORK_STARTED => 'fas fa-play-circle',
             self::TYPE_REVIEW_SUBMITTED => 'fas fa-paper-plane',
             self::TYPE_REVISION_REQUESTED => 'fas fa-redo',
+            self::TYPE_REVISION_DELIVERED => 'fas fa-sync',
             self::TYPE_COMPLETED => 'fas fa-check-double',
             self::TYPE_CANCELLED => 'fas fa-ban',
             self::TYPE_EXTENSION_REQUESTED => 'fas fa-clock',
@@ -124,10 +128,12 @@ class OrderEvent extends Model
     {
         return match($this->event_type) {
             self::TYPE_PROPOSAL_ACCEPTED, self::TYPE_COMPLETED, 
-            self::TYPE_EXTENSION_APPROVED, self::TYPE_EXTENSION_AUTO_APPROVED => 'success',
+            self::TYPE_EXTENSION_APPROVED, self::TYPE_EXTENSION_AUTO_APPROVED,
+            self::TYPE_PAYMENT_CONFIRMED => 'success',
             self::TYPE_PROPOSAL_REJECTED, self::TYPE_CANCELLED, 
             self::TYPE_EXTENSION_REJECTED => 'danger',
-            self::TYPE_WORK_STARTED, self::TYPE_REVIEW_SUBMITTED => 'info',
+            self::TYPE_WORK_STARTED, self::TYPE_REVIEW_SUBMITTED,
+            self::TYPE_REVISION_DELIVERED => 'info',
             self::TYPE_REVISION_REQUESTED, self::TYPE_EXTENSION_REQUESTED,
             self::TYPE_PROPOSAL_NEGOTIATING => 'warning',
             default => 'secondary',

@@ -9,16 +9,16 @@ class ServiceProposal extends Model
 {
     use HasFactory;
 
-    // Status constants
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_NEGOTIATING = 'negotiating';
-    public const STATUS_ACCEPTED = 'accepted';
-    public const STATUS_REJECTED = 'rejected';
-    public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_REVIEW = 'review';
-    public const STATUS_REVISION = 'revision';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_CANCELLED = 'cancelled';
+    // Status constants - Fiverr-style simplified flow
+    // pending → accepted (waiting payment) → in_progress → review ↔ revision → completed
+    public const STATUS_PENDING = 'pending';           // Proposal menunggu ACC seller
+    public const STATUS_ACCEPTED = 'accepted';         // Seller ACC, menunggu pembayaran buyer
+    public const STATUS_IN_PROGRESS = 'in_progress';   // Sedang dikerjakan (setelah bayar)
+    public const STATUS_REVIEW = 'review';             // Seller kirim hasil, buyer review
+    public const STATUS_REVISION = 'revision';         // Buyer minta revisi
+    public const STATUS_COMPLETED = 'completed';       // Selesai
+    public const STATUS_REJECTED = 'rejected';         // Ditolak seller
+    public const STATUS_CANCELLED = 'cancelled';       // Dibatalkan
 
     protected $fillable = [
         'product_id',
@@ -126,7 +126,6 @@ class ServiceProposal extends Model
     public function isActive(): bool
     {
         return in_array($this->status, [
-            self::STATUS_ACCEPTED,
             self::STATUS_IN_PROGRESS,
             self::STATUS_REVIEW,
             self::STATUS_REVISION,
@@ -143,14 +142,19 @@ class ServiceProposal extends Model
         return $this->status === self::STATUS_CANCELLED;
     }
 
-    public function canBeAccepted(): bool
-    {
-        return in_array($this->status, [self::STATUS_PENDING, self::STATUS_NEGOTIATING]);
-    }
-
-    public function canStartWork(): bool
+    public function isAccepted(): bool
     {
         return $this->status === self::STATUS_ACCEPTED;
+    }
+
+    public function canBeAccepted(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function canBePaid(): bool
+    {
+        return $this->status === self::STATUS_ACCEPTED && !$this->order_id;
     }
 
     public function canSubmitForReview(): bool
@@ -182,13 +186,12 @@ class ServiceProposal extends Model
     {
         return match($this->status) {
             self::STATUS_PENDING => 'Menunggu Konfirmasi',
-            self::STATUS_NEGOTIATING => 'Negosiasi',
-            self::STATUS_ACCEPTED => 'Diterima',
-            self::STATUS_REJECTED => 'Ditolak',
+            self::STATUS_ACCEPTED => 'Menunggu Pembayaran',
             self::STATUS_IN_PROGRESS => 'Sedang Dikerjakan',
             self::STATUS_REVIEW => 'Menunggu Review',
             self::STATUS_REVISION => 'Revisi Diminta',
             self::STATUS_COMPLETED => 'Selesai',
+            self::STATUS_REJECTED => 'Ditolak',
             self::STATUS_CANCELLED => 'Dibatalkan',
             default => $this->status,
         };
@@ -197,10 +200,11 @@ class ServiceProposal extends Model
     public function getStatusColor(): string
     {
         return match($this->status) {
-            self::STATUS_PENDING, self::STATUS_NEGOTIATING => 'warning',
-            self::STATUS_ACCEPTED, self::STATUS_IN_PROGRESS => 'info',
-            self::STATUS_REVIEW => 'primary',
-            self::STATUS_REVISION => 'warning',
+            self::STATUS_PENDING => 'warning',
+            self::STATUS_ACCEPTED => 'info',
+            self::STATUS_IN_PROGRESS => 'primary',
+            self::STATUS_REVIEW => 'info',
+            self::STATUS_REVISION => 'orange',
             self::STATUS_COMPLETED => 'success',
             self::STATUS_REJECTED, self::STATUS_CANCELLED => 'danger',
             default => 'secondary',

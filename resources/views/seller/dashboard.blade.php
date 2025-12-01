@@ -314,6 +314,16 @@
             </div>
         </a>
 
+        <a href="{{ route('seller.services.proposals') }}?status=pending" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-value">{{ $pendingProposals ?? 0 }}</div>
+                <div class="stat-label">Proposal Pending</div>
+            </div>
+        </a>
+
         <a href="{{ route('seller.orders') }}" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon success">
@@ -377,6 +387,10 @@
             <a href="{{ route('seller.orders') }}" class="action-btn">
                 <i class="fas fa-clipboard-list"></i>
                 <span>Kelola Pesanan</span>
+            </a>
+            <a href="{{ route('seller.services.proposals') }}" class="action-btn">
+                <i class="fas fa-file-alt"></i>
+                <span>Kelola Proposal</span>
             </a>
         </div>
     </div>

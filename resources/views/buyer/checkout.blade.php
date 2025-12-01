@@ -352,7 +352,7 @@
         <i class="fas fa-shopping-cart me-2" style="color: var(--color-primary);"></i>Checkout
     </h2>
 
-    <form method="POST" action="{{ route('buyer.checkout.store') }}" class="checkout-container" id="checkoutForm">
+    <form method="POST" action="{{ $hasPhysical ? route('buyer.checkout.products') : route('buyer.checkout.services') }}" class="checkout-container" id="checkoutForm">
         @csrf
 
         <!-- Form -->

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use App\Models\ServiceProposal;
 use Illuminate\Http\Request;
 
 class SellerController extends Controller
@@ -23,6 +24,9 @@ class SellerController extends Controller
         // Count orders which have return requests (only those requested by buyer)
         $returnRequests = $shop->orders()->where('return_status', 'requested')->count();
 
+        // Count service proposals by status
+        $pendingProposals = ServiceProposal::where('seller_id', auth()->id())->where('status', 'pending')->count();
+
         // Get revenue data for the last 12 months
         $revenueData = [];
         $labels = [];
@@ -39,7 +43,7 @@ class SellerController extends Controller
             $revenueData[] = (int)$revenue;
         }
 
-        return view('seller.dashboard', compact('shop', 'totalProducts', 'totalOrders', 'totalRevenue', 'pendingOrders', 'returnRequests', 'labels', 'revenueData'));
+        return view('seller.dashboard', compact('shop', 'totalProducts', 'totalOrders', 'totalRevenue', 'pendingOrders', 'returnRequests', 'pendingProposals', 'labels', 'revenueData'));
     }
 
     public function showCreateShop()

@@ -48,19 +48,24 @@
         color: #166534;
     }
     
-    .status-rejected {
+    .status-rejected, .status-cancelled {
         background: #fee2e2;
         color: #991b1b;
     }
     
-    .status-negotiating {
+    .status-in-progress {
         background: #dbeafe;
         color: #0c4a6e;
     }
-    
-    .status-expired {
-        background: #f3f4f6;
-        color: #6b7280;
+
+    .status-review {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .status-revision {
+        background: #fef3c7;
+        color: #92400e;
     }
     
     .service-product-card {
@@ -347,17 +352,23 @@
                 $statusClass = match($proposal->status) {
                     'pending' => 'status-pending',
                     'accepted' => 'status-accepted',
+                    'in_progress' => 'status-in-progress',
+                    'review' => 'status-review',
+                    'revision' => 'status-revision',
                     'rejected' => 'status-rejected',
-                    'negotiating' => 'status-negotiating',
-                    'expired' => 'status-expired',
+                    'completed' => 'status-completed',
+                    'cancelled' => 'status-cancelled',
                     default => 'status-pending'
                 };
                 $statusLabel = match($proposal->status) {
                     'pending' => 'Menunggu Konfirmasi',
                     'accepted' => 'Diterima - Siap Bayar',
+                    'in_progress' => 'Dalam Pengerjaan',
+                    'review' => 'Menunggu Review',
+                    'revision' => 'Revisi Diminta',
                     'rejected' => 'Ditolak',
-                    'negotiating' => 'Dalam Negosiasi',
-                    'expired' => 'Kadaluarsa',
+                    'completed' => 'Selesai',
+                    'cancelled' => 'Dibatalkan',
                     default => $proposal->status
                 };
             @endphp
@@ -493,7 +504,7 @@
             </div>
             
             <!-- Actions -->
-            @if($proposal->status == 'accepted' || $proposal->status == 'pending' || $proposal->status == 'negotiating')
+            @if(in_array($proposal->status, ['accepted', 'pending']))
                 <div class="proposal-detail-card">
                     <div class="card-header">
                         <i class="fas fa-cog me-2"></i>Tindakan
@@ -509,12 +520,12 @@
                                 </form>
                             @endif
                             
-                            <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}" class="btn-action btn-primary">
+                            <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}&shop={{ $proposal->product->shop_id ?? '' }}&proposal_id={{ $proposal->id }}&product_id={{ $proposal->product_id }}" class="btn-action btn-primary">
                                 <i class="fas fa-comments"></i> Chat dengan Seller
                             </a>
                             
                             @if($proposal->product)
-                                <a href="{{ route('product.show', $proposal->product) }}" class="btn-action btn-outline">
+                                <a href="{{ route('buyer.products.show', $proposal->product) }}" class="btn-action btn-outline">
                                     <i class="fas fa-eye"></i> Lihat Layanan
                                 </a>
                             @endif
@@ -590,12 +601,36 @@
                                     </div>
                                 </div>
                             </div>
-                        @elseif($proposal->status == 'negotiating')
+                        @elseif($proposal->status == 'in_progress')
+                            <div class="timeline-item">
+                                <div class="timeline-marker active"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Dalam Pengerjaan</div>
+                                    <div class="timeline-date">Seller sedang mengerjakan layanan</div>
+                                </div>
+                            </div>
+                        @elseif($proposal->status == 'review')
                             <div class="timeline-item">
                                 <div class="timeline-marker pending"></div>
                                 <div class="timeline-content">
-                                    <div class="timeline-title">Dalam Negosiasi</div>
-                                    <div class="timeline-date">Hubungi seller untuk diskusi</div>
+                                    <div class="timeline-title">Menunggu Review</div>
+                                    <div class="timeline-date">Silakan review hasil pekerjaan</div>
+                                </div>
+                            </div>
+                        @elseif($proposal->status == 'revision')
+                            <div class="timeline-item">
+                                <div class="timeline-marker" style="background: #f59e0b; box-shadow: 0 0 0 2px #f59e0b;"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title text-warning">Revisi Diminta</div>
+                                    <div class="timeline-date">Menunggu seller melakukan revisi</div>
+                                </div>
+                            </div>
+                        @elseif($proposal->status == 'completed')
+                            <div class="timeline-item">
+                                <div class="timeline-marker" style="background: #10b981; box-shadow: 0 0 0 2px #10b981;"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title text-success">Selesai</div>
+                                    <div class="timeline-date">Layanan telah selesai</div>
                                 </div>
                             </div>
                         @endif
@@ -626,7 +661,7 @@
                     @if($proposal->seller)
                         <p class="text-muted mb-3">{{ $proposal->seller->email }}</p>
                     @endif
-                    <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}" class="btn btn-outline-primary btn-sm w-100">
+                    <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}&shop={{ $proposal->product->shop_id ?? '' }}&proposal_id={{ $proposal->id }}&product_id={{ $proposal->product_id }}" class="btn btn-outline-primary btn-sm w-100">
                         <i class="fas fa-comments me-1"></i>Chat Seller
                     </a>
                 </div>

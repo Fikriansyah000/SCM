@@ -16,13 +16,46 @@
         }
     }
 
-    .order-card,
-    .order-summary {
-        background: var(--color-white);
+    .order-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
         border-radius: var(--radius-lg);
         padding: var(--space-4);
-        box-shadow: var(--shadow-card);
-        border: 1px solid var(--color-border);
+        box-shadow: 0 4px 15px rgba(0,0,0,.05), 0 1px 3px rgba(0,0,0,.08);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .order-summary {
+        background: linear-gradient(135deg, #fefce8 0%, #fef9c3 50%, #fef08a 100%);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4);
+        box-shadow: 0 4px 15px rgba(234, 179, 8, 0.1), 0 1px 3px rgba(0,0,0,.06);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #eab308 0%, #f59e0b 50%, #d97706 100%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     @media (min-width: 768px) {
@@ -38,7 +71,7 @@
         gap: var(--space-4);
         margin-bottom: var(--space-6);
         padding-bottom: var(--space-4);
-        border-bottom: 2px solid var(--color-border);
+        border-bottom: 2px solid rgba(148, 163, 184, 0.2);
     }
 
     @media (min-width: 576px) {
@@ -52,7 +85,10 @@
     .order-number-big {
         font-size: var(--font-size-2xl);
         font-weight: 700;
-        color: var(--color-primary);
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     .status-badge-big {
@@ -63,20 +99,24 @@
         font-size: var(--font-size-sm);
     }
 
-    .status-pending { background: var(--color-warning-light); color: #856404; }
-    .status-processing { background: var(--color-info-light); color: var(--color-info); }
-    .status-shipped { background: rgba(58, 123, 255, 0.15); color: var(--color-primary); }
-    .status-delivered { background: var(--color-success-light); color: var(--color-success); }
-    .status-completed { background: var(--color-success-light); color: var(--color-success); }
+    .status-pending { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; }
+    .status-processing { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; }
+    .status-shipped { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); color: #4338ca; }
+    .status-delivered { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; }
+    .status-completed { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; }
 
     .section-title {
         font-weight: 600;
-        color: var(--color-neutral-dark);
+        color: #1e293b;
         margin-bottom: var(--space-4);
         margin-top: var(--space-6);
         display: flex;
         align-items: center;
         gap: var(--space-2);
+    }
+
+    .section-title i {
+        color: #6366f1;
     }
 
     .section-title:first-child {
@@ -86,9 +126,18 @@
     .order-item {
         display: flex;
         gap: var(--space-4);
-        padding-bottom: var(--space-4);
-        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-4);
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        margin-bottom: var(--space-3);
         flex-wrap: wrap;
+        transition: all 0.2s ease;
+    }
+
+    .order-item:hover {
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.2);
     }
 
     .order-item img {
@@ -140,22 +189,35 @@
 
     .order-timeline {
         position: relative;
-        padding-left: var(--space-8);
+        padding-left: 2.5rem;
     }
 
     .order-timeline::before {
         content: '';
         position: absolute;
-        left: 7px;
-        top: 4px;
-        bottom: 4px;
-        width: 2px;
-        background: var(--color-border);
+        left: 12px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(180deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+        border-radius: 3px;
     }
 
     .timeline-item {
         position: relative;
-        margin-bottom: var(--space-6);
+        padding: 1rem 1.25rem;
+        margin-bottom: 0.75rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
+        border-radius: .6rem;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.3);
     }
 
     .timeline-item:last-child {
@@ -164,39 +226,57 @@
 
     .timeline-dot {
         position: absolute;
-        left: calc(-1 * var(--space-8) + 4px);
-        width: 16px;
-        height: 16px;
-        background: var(--color-neutral-gray);
+        left: -2rem;
+        top: 1.25rem;
+        width: 14px;
+        height: 14px;
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
         border-radius: var(--radius-full);
         border: 3px solid var(--color-white);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 2px 6px rgba(100, 116, 139, 0.3);
+        z-index: 1;
     }
 
     .timeline-item.active .timeline-dot {
-        background: var(--color-primary);
-        box-shadow: 0 0 0 4px rgba(58, 123, 255, 0.15);
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
     }
 
     .timeline-content h4 {
         font-weight: 600;
         font-size: var(--font-size-sm);
         margin-bottom: var(--space-1);
-        color: var(--color-neutral-dark);
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .timeline-content p {
         font-size: var(--font-size-xs);
-        color: var(--color-text-muted);
+        color: #64748b;
         margin-bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .timeline-content p::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background: #cbd5e1;
+        border-radius: 50%;
     }
 
     .summary-item {
         display: flex;
         justify-content: space-between;
         margin-bottom: var(--space-4);
-        padding-bottom: var(--space-4);
-        border-bottom: 1px solid var(--color-border);
+        padding: var(--space-3);
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(254,252,232,0.8) 100%);
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(234, 179, 8, 0.15);
     }
 
     .summary-item:last-child {
@@ -208,15 +288,119 @@
         justify-content: space-between;
         font-size: var(--font-size-lg);
         font-weight: 700;
-        color: var(--color-primary);
-        padding-top: var(--space-4);
-        border-top: 2px solid var(--color-border);
+        padding: var(--space-4);
+        margin-top: var(--space-3);
+        background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%);
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+
+    .order-summary .summary-total span:last-child {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Timeline Card */
+    .timeline-card {
+        background: linear-gradient(135deg, #fafbff 0%, #f0f4ff 50%, #e8ecff 100%);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0,0,0,.06);
+        padding: var(--space-6);
+        border: 1px solid rgba(99, 102, 241, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .timeline-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .timeline-card .section-title {
+        color: #4338ca;
+    }
+
+    .timeline-card .section-title i {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Shipping Info Card */
+    .shipping-info-box {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+        border-radius: var(--radius-md);
+        padding: var(--space-4);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        margin-bottom: var(--space-3);
+    }
+
+    .shipping-info-box p {
+        margin-bottom: 0;
+    }
+
+    .shipping-info-box strong {
+        color: #475569;
     }
 
     /* Review Form */
     .review-block {
         padding: var(--space-4);
-        border-bottom: 1px dashed var(--color-border);
+        border-radius: var(--radius-lg);
+        margin-top: var(--space-3);
+        margin-bottom: var(--space-3);
+    }
+
+    .review-block-pending {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 2px solid #fbbf24;
+    }
+
+    .review-block-done {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 2px solid #10b981;
+    }
+
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+    }
+
+    .review-header-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .review-header-icon.pending {
+        background: rgba(251, 191, 36, 0.2);
+        color: #b45309;
+    }
+
+    .review-header-icon.done {
+        background: rgba(16, 185, 129, 0.2);
+        color: #065f46;
+    }
+
+    .review-header h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
     }
 
     .review-form {
@@ -256,15 +440,80 @@
     }
 
     .stars-input .fa-star {
-        font-size: 20px;
-        color: var(--color-neutral-gray);
+        font-size: 1.5rem;
+        color: #e5e7eb;
         cursor: pointer;
-        margin-right: var(--space-1);
-        transition: color var(--transition-fast);
+        margin-right: 4px;
+        transition: all 0.2s ease;
     }
 
     .stars-input .fa-star.active {
-        color: var(--color-accent);
+        color: #fbbf24;
+    }
+
+    .stars-input .fa-star:hover {
+        transform: scale(1.15);
+    }
+
+    .rating-stars-display {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .rating-stars-display .fa-star {
+        font-size: 1.25rem;
+        color: #e5e7eb;
+    }
+
+    .rating-stars-display .fa-star.filled {
+        color: #fbbf24;
+    }
+
+    .review-content-box {
+        background: white;
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        margin-top: var(--space-3);
+    }
+
+    .review-content-box .review-title {
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: var(--space-1);
+    }
+
+    .review-content-box .review-text {
+        color: var(--color-text-muted);
+        margin: 0;
+    }
+
+    .review-meta {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        margin-top: var(--space-2);
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .btn-rating-submit {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+        border: none;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .btn-rating-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
     }
 
     /* Return status */
@@ -353,9 +602,46 @@
             top: var(--space-4);
         }
     }
+
+    /* Back Button */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.25rem;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        border-radius: 999px;
+        color: #475569;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .btn-back:hover {
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        color: #1e293b;
+        transform: translateX(-4px);
+        box-shadow: 0 4px 12px rgba(100, 116, 139, 0.15);
+        text-decoration: none;
+    }
+
+    .btn-back i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-back:hover i {
+        transform: translateX(-3px);
+    }
 </style>
 
 <div class="container my-4">
+    <a href="{{ route('buyer.orders') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i>Kembali ke Pesanan
+    </a>
+
     <div class="order-detail-container">
         <!-- Main Content -->
         <div>
@@ -394,34 +680,56 @@
                         ->first();
                 @endphp
 
-                <div class="review-block">
-                    @if($existingReview)
-                        <div class="font-semibold mb-2">Ulasan Anda:</div>
-                        <div class="mt-2">
-                            <div class="rating-stars">
+                @if($existingReview)
+                    <div class="review-block review-block-done">
+                        <div class="review-header">
+                            <div class="review-header-icon done">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h5>Ulasan Anda untuk {{ $item->product->name }}</h5>
+                            </div>
+                        </div>
+                        <div class="review-content-box">
+                            <div class="rating-stars-display mb-2">
                                 @for($s=1;$s<=5;$s++)
                                     <i class="fas fa-star {{ $s <= $existingReview->rating ? 'filled' : '' }}"></i>
                                 @endfor
+                                <span class="ms-2 text-muted">({{ $existingReview->rating }}/5)</span>
                             </div>
                             @if($existingReview->title)
-                                <div class="font-bold mt-2">{{ $existingReview->title }}</div>
+                                <div class="review-title">{{ $existingReview->title }}</div>
                             @endif
                             @if($existingReview->review)
-                                <div class="text-muted mt-2">{{ $existingReview->review }}</div>
+                                <p class="review-text">{{ $existingReview->review }}</p>
                             @endif
+                            <div class="review-meta">
+                                <i class="fas fa-check-circle text-success"></i>
+                                Dikirim {{ $existingReview->created_at->format('d M Y H:i') }}
+                            </div>
                         </div>
-                    @else
-                        @if(in_array($order->status, ['delivered','completed']))
+                    </div>
+                @else
+                    @if(in_array($order->status, ['delivered','completed']))
+                        <div class="review-block review-block-pending">
+                            <div class="review-header">
+                                <div class="review-header-icon pending">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div>
+                                    <h5>Berikan Rating untuk {{ $item->product->name }}</h5>
+                                </div>
+                            </div>
                             <form method="POST" action="{{ route('reviews.store') }}" class="review-form">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                                 <input type="hidden" name="order_id" value="{{ $order->id }}">
                                 <input type="hidden" name="rating" id="rating-{{ $item->id }}" value="5">
                                 <div class="review-rating-col">
-                                    <div class="rating-label">Berikan Rating</div>
+                                    <div class="rating-label">Rating</div>
                                     <div class="stars-input" data-target="#rating-{{ $item->id }}">
                                         @for($s=1;$s<=5;$s++)
-                                            <i class="fas fa-star star-clickable" data-value="{{ $s }}"></i>
+                                            <i class="fas fa-star star-clickable active" data-value="{{ $s }}"></i>
                                         @endfor
                                     </div>
                                 </div>
@@ -430,49 +738,59 @@
                                         <input name="title" class="form-control" placeholder="Judul ulasan (opsional)" />
                                     </div>
                                     <div class="form-group mt-2">
-                                        <textarea name="review" class="form-control" rows="2" placeholder="Tulis ulasan Anda... (opsional)"></textarea>
+                                        <textarea name="review" class="form-control" rows="2" placeholder="Ceritakan pengalaman Anda dengan produk ini... (opsional)"></textarea>
                                     </div>
                                 </div>
                                 <div class="review-submit-col">
-                                    <button class="btn-gradient" type="submit">Kirim Ulasan</button>
+                                    <button class="btn-rating-submit" type="submit">
+                                        <i class="fas fa-paper-plane"></i>Kirim Ulasan
+                                    </button>
                                 </div>
                             </form>
-                        @endif
+                        </div>
                     @endif
-                </div>
+                @endif
                 @endforeach
 
                 <!-- Shipping Address -->
                 <div class="section-title">
                     <i class="fas fa-map-marker-alt"></i>Alamat Pengiriman
                 </div>
-                <p>{{ $order->shipping_address }}</p>
+                <div class="shipping-info-box">
+                    <p><i class="fas fa-home me-2" style="color: #6366f1;"></i>{{ $order->shipping_address }}</p>
+                </div>
 
                 <!-- Tracking Number -->
                 <div class="section-title">
                     <i class="fas fa-shipping-fast"></i>Informasi Pengiriman
                 </div>
-                <p>
-                    <strong>Mode:</strong> {{ $order->getShippingModeLabel() ?? ucfirst($order->shipping_mode) }}<br>
-                    <strong>Biaya Ongkir:</strong> Rp{{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}<br>
-                    <strong>Estimasi Tiba:</strong>
-                    @if($order->estimated_delivery)
-                        {{ is_string($order->estimated_delivery) ? \Carbon\Carbon::parse($order->estimated_delivery)->format('d M Y H:i') : $order->estimated_delivery->format('d M Y H:i') }}
-                    @else
-                        -
-                    @endif
-                    <br>
-                    <strong>Status Pengiriman:</strong> {{ $order->getShippingStatusLabel() ?? ucfirst($order->shipping_status) }}
-                </p>
+                <div class="shipping-info-box">
+                    <p>
+                        <i class="fas fa-box me-2" style="color: #6366f1;"></i><strong>Mode:</strong> {{ $order->getShippingModeLabel() ?? ucfirst($order->shipping_mode) }}<br>
+                        <i class="fas fa-coins me-2" style="color: #eab308;"></i><strong>Biaya Ongkir:</strong> Rp{{ number_format($order->shipping_cost ?? 0, 0, ',', '.') }}<br>
+                        <i class="fas fa-calendar-alt me-2" style="color: #10b981;"></i><strong>Estimasi Tiba:</strong>
+                        @if($order->estimated_delivery)
+                            {{ is_string($order->estimated_delivery) ? \Carbon\Carbon::parse($order->estimated_delivery)->format('d M Y H:i') : $order->estimated_delivery->format('d M Y H:i') }}
+                        @else
+                            -
+                        @endif
+                        <br>
+                        <i class="fas fa-info-circle me-2" style="color: #8b5cf6;"></i><strong>Status Pengiriman:</strong> {{ $order->getShippingStatusLabel() ?? ucfirst($order->shipping_status) }}
+                    </p>
+                </div>
 
                 @if($order->tracking_number)
                 <div class="section-title">
                     <i class="fas fa-barcode"></i>Nomor Resi
                 </div>
-                <p><strong>{{ $order->tracking_number }}</strong></p>
+                <div class="shipping-info-box">
+                    <p><i class="fas fa-qrcode me-2" style="color: #6366f1;"></i><strong>{{ $order->tracking_number }}</strong></p>
                     @if($order->live_tracking_url)
-                        <p><a href="{{ $order->live_tracking_url }}" target="_blank" class="btn btn-outline-primary btn-sm">Lacak Pengiriman</a></p>
+                        <a href="{{ $order->live_tracking_url }}" target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                            <i class="fas fa-map-marker-alt me-1"></i>Lacak Pengiriman
+                        </a>
                     @endif
+                </div>
                 @endif
 
                 <!-- Order Actions -->
@@ -528,15 +846,15 @@
             </div>
 
             <!-- Timeline -->
-            <div class="order-card">
-                <div class="section-title">
-                    <i class="fas fa-clock"></i>Status Pesanan
+            <div class="timeline-card">
+                <div class="section-title" style="margin-top: 0;">
+                    <i class="fas fa-stream"></i>Status Pesanan
                 </div>
                 <div class="order-timeline">
     <div class="timeline-item {{ !$order->isPending() ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
-            <h4>Pesanan Dibuat</h4>
+            <h4><i class="fas fa-shopping-cart" style="color: #6366f1;"></i>Pesanan Dibuat</h4>
             <p>{{ is_string($order->created_at) ? \Carbon\Carbon::parse($order->created_at)->format('d M Y H:i') : $order->created_at->format('d M Y H:i') }}</p>
         </div>
     </div>
@@ -544,7 +862,7 @@
     <div class="timeline-item {{ $order->confirmed_at ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
-            <h4>Dikonfirmasi Penjual</h4>
+            <h4><i class="fas fa-check-circle" style="color: #10b981;"></i>Dikonfirmasi Penjual</h4>
             <p>{{ $order->confirmed_at ? (is_string($order->confirmed_at) ? \Carbon\Carbon::parse($order->confirmed_at)->format('d M Y H:i') : $order->confirmed_at->format('d M Y H:i')) : 'Menunggu...' }}</p>
         </div>
     </div>
@@ -552,7 +870,7 @@
     <div class="timeline-item {{ $order->shipped_at ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
-            <h4>Dalam Pengiriman</h4>
+            <h4><i class="fas fa-truck" style="color: #3b82f6;"></i>Dalam Pengiriman</h4>
             <p>{{ $order->shipped_at ? (is_string($order->shipped_at) ? \Carbon\Carbon::parse($order->shipped_at)->format('d M Y H:i') : $order->shipped_at->format('d M Y H:i')) : 'Menunggu...' }}</p>
         </div>
     </div>
@@ -560,7 +878,7 @@
     <div class="timeline-item {{ $order->delivered_at ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
-            <h4>Diterima</h4>
+            <h4><i class="fas fa-box-open" style="color: #8b5cf6;"></i>Diterima</h4>
             <p>{{ $order->delivered_at ? (is_string($order->delivered_at) ? \Carbon\Carbon::parse($order->delivered_at)->format('d M Y H:i') : $order->delivered_at->format('d M Y H:i')) : 'Menunggu...' }}</p>
         </div>
     </div>
@@ -568,7 +886,7 @@
     <div class="timeline-item {{ $order->completed_at ? 'active' : '' }}">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
-            <h4>Selesai</h4>
+            <h4><i class="fas fa-flag-checkered" style="color: #059669;"></i>Selesai</h4>
             <p>{{ $order->completed_at ? (is_string($order->completed_at) ? \Carbon\Carbon::parse($order->completed_at)->format('d M Y H:i') : $order->completed_at->format('d M Y H:i')) : 'Menunggu...' }}</p>
         </div>
     </div>
@@ -718,13 +1036,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const targetSelector = container.getAttribute('data-target');
         const target = document.querySelector(targetSelector);
         const stars = container.querySelectorAll('.star-clickable');
-        const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#FF8F3A';
-        const neutralColor = getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-gray').trim() || '#ECEEF3';
+        const activeColor = '#fbbf24';  // Gold/yellow color
+        const inactiveColor = '#e5e7eb'; // Light gray
         
         const setRating = (value) => {
             stars.forEach(s => {
                 const v = parseInt(s.getAttribute('data-value'));
-                s.style.color = v <= value ? accentColor : neutralColor;
+                s.style.color = v <= value ? activeColor : inactiveColor;
+                s.classList.toggle('active', v <= value);
             });
             if (target) target.value = value;
         };
@@ -738,19 +1057,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const v = parseInt(this.getAttribute('data-value'));
                 stars.forEach(s => {
                     const sv = parseInt(s.getAttribute('data-value'));
-                    s.style.color = sv <= v ? accentColor : neutralColor;
+                    s.style.color = sv <= v ? activeColor : inactiveColor;
+                    s.style.transform = sv === v ? 'scale(1.15)' : 'scale(1)';
                 });
             });
             star.addEventListener('mouseout', function() {
-                const current = parseInt(target ? target.value : 0) || 0;
+                const current = parseInt(target ? target.value : 0) || 5;
                 stars.forEach(s => {
                     const sv = parseInt(s.getAttribute('data-value'));
-                    s.style.color = sv <= current ? accentColor : neutralColor;
+                    s.style.color = sv <= current ? activeColor : inactiveColor;
+                    s.style.transform = 'scale(1)';
                 });
             });
         });
 
-        // initialize default
+        // initialize default (5 stars selected by default)
         if (target) setRating(parseInt(target.value) || 5);
     });
 });

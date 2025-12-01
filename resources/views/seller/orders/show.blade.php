@@ -16,6 +16,10 @@
         .order-detail-container {
             grid-template-columns: 1fr;
         }
+
+        .status-stack {
+            align-items: flex-start;
+        }
     }
 
     .detail-card {
@@ -75,6 +79,46 @@
     .status-completed {
         background: #d1e7dd;
         color: #0f5132;
+    }
+
+    /* Service order badges */
+    .status-accepted {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-in_progress {
+        background: #bfdbfe;
+        color: #1e3a8a;
+    }
+
+    .status-review {
+        background: #ede9fe;
+        color: #5b21b6;
+    }
+
+    .status-revision {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .status-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+
+    .status-secondary-badge {
+        background: rgba(15, 23, 42, 0.07);
+        color: #475569;
+        border: 1px dashed rgba(148, 163, 184, 0.8);
+        padding: 0.5rem 1rem;
     }
 
     .order-item {
@@ -437,14 +481,26 @@
         <div>
             <!-- Order Header -->
             <div class="detail-card">
+                @php
+                    $isServiceOrder = $order->isServiceOrder();
+                    $primaryStatusKey = $isServiceOrder ? ($order->service_status ?? 'pending') : $order->status;
+                    $primaryStatusLabel = $isServiceOrder ? $order->getServiceStatusLabel() : $order->getStatusLabel();
+                @endphp
                 <div class="section-header">
                     <div>
                         <div style="font-size: 1.5rem; font-weight: 700; color: #667eea;">{{ $order->order_number }}</div>
                         <small class="text-muted">{{ $order->created_at->format('d M Y H:i') }}</small>
                     </div>
-                    <span class="status-badge status-{{ $order->status }}">
-                        {{ $order->getStatusLabel() }}
-                    </span>
+                    <div class="status-stack">
+                        <span class="status-badge status-{{ $primaryStatusKey }}">
+                            {{ $isServiceOrder ? 'Status Layanan:' : 'Status Pesanan:' }} {{ $primaryStatusLabel }}
+                        </span>
+                        @if($isServiceOrder)
+                            <span class="status-badge status-secondary-badge">
+                                Logistik: {{ $order->getStatusLabel() }}
+                            </span>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Buyer Info -->

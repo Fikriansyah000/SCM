@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Buyer;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Order;
+use App\Models\OrderEvent;
 use App\Models\OrderItem;
 use App\Models\ServiceExtension;
 use App\Models\ServiceProposal;
@@ -73,20 +74,20 @@ class ServiceOrderController extends Controller
             $finalPrice = $proposal->getFinalPrice();
             $metadata = $proposal->metadata ?? [];
 
-            // Create order
+            // Create order with ORD-JS prefix for service
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'shop_id' => $proposal->product->shop_id,
-                'order_number' => Order::generateOrderNumber(),
+                'order_number' => Order::generateOrderNumber(true), // true = service order
                 'status' => 'processing', // Langsung processing karena sudah bayar
                 'total_amount' => $finalPrice,
                 'shipping_address' => $metadata['shipping_address'] ?? '-',
                 'shipping_method' => 'service', // Tipe khusus untuk layanan
-                'shipping_mode' => 'service',
+                'shipping_mode' => 'reguler', // Use valid enum; service orders don't ship physically
                 'shipping_cost' => 0,
                 'total_weight' => 0,
                 'estimated_delivery' => null,
-                'shipping_status' => 'not_applicable',
+                'shipping_status' => 'pending', // Use valid enum value
                 'cutoff_exceeded' => false,
                 'is_service_order' => true,
                 'service_status' => 'in_progress',
@@ -110,6 +111,21 @@ class ServiceOrderController extends Controller
                 'order_item_id' => $orderItem->id,
                 'status' => ServiceProposal::STATUS_IN_PROGRESS,
                 'started_at' => now(),
+            ]);
+
+            // Log payment confirmed event for service timeline
+            OrderEvent::create([
+                'order_id' => $order->id,
+                'order_item_id' => $orderItem->id,
+                'service_proposal_id' => $proposal->id,
+                'actor_type' => OrderEvent::ACTOR_BUYER,
+                'actor_id' => auth()->id(),
+                'event_type' => OrderEvent::TYPE_PAYMENT_CONFIRMED,
+                'title' => 'Pembayaran Dikonfirmasi',
+                'message' => 'Pembayaran berhasil. Pengerjaan layanan dimulai.',
+                'visible_to_buyer' => true,
+                'visible_to_seller' => true,
+                'created_at' => now(),
             ]);
 
             // Notify seller that payment is done, work can start
@@ -271,6 +287,20 @@ class ServiceOrderController extends Controller
                 $proposal->order->update([
                     'service_status' => 'revision',
                 ]);
+                
+                // Log revision requested event for timeline
+                OrderEvent::create([
+                    'order_id' => $proposal->order->id,
+                    'service_proposal_id' => $proposal->id,
+                    'actor_type' => OrderEvent::ACTOR_BUYER,
+                    'actor_id' => auth()->id(),
+                    'event_type' => OrderEvent::TYPE_REVISION_REQUESTED,
+                    'title' => 'Revisi Diminta',
+                    'message' => $validated['revision_feedback'],
+                    'visible_to_buyer' => true,
+                    'visible_to_seller' => true,
+                    'created_at' => now(),
+                ]);
             }
 
             $this->notificationService->revisionRequested($proposal, $validated['revision_feedback']);
@@ -309,6 +339,20 @@ class ServiceOrderController extends Controller
                         'completed_at' => now(),
                     ]);
                 }
+                
+                // Log completion event for timeline
+                OrderEvent::create([
+                    'order_id' => $proposal->order->id,
+                    'service_proposal_id' => $proposal->id,
+                    'actor_type' => OrderEvent::ACTOR_BUYER,
+                    'actor_id' => auth()->id(),
+                    'event_type' => OrderEvent::TYPE_COMPLETED,
+                    'title' => 'Layanan Selesai',
+                    'message' => 'Buyer telah menyetujui hasil pekerjaan. Layanan selesai.',
+                    'visible_to_buyer' => true,
+                    'visible_to_seller' => true,
+                    'created_at' => now(),
+                ]);
             }
 
             $this->notificationService->serviceCompleted($proposal);
@@ -324,7 +368,7 @@ class ServiceOrderController extends Controller
     {
         $this->authorizeBuyerForProposal($proposal);
 
-        if (!in_array($proposal->status, [ServiceProposal::STATUS_PENDING, ServiceProposal::STATUS_NEGOTIATING, ServiceProposal::STATUS_ACCEPTED])) {
+        if (!in_array($proposal->status, [ServiceProposal::STATUS_PENDING, ServiceProposal::STATUS_ACCEPTED])) {
             return back()->with('error', 'Layanan tidak dapat dibatalkan setelah pengerjaan dimulai.');
         }
 

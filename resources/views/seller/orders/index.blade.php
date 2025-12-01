@@ -153,6 +153,31 @@
         color: #0f5132;
     }
 
+    .status-accepted {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-in_progress {
+        background: #bfdbfe;
+        color: #1e3a8a;
+    }
+
+    .status-review {
+        background: #ede9fe;
+        color: #5b21b6;
+    }
+
+    .status-revision {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
     .order-actions {
         display: flex;
         gap: 0.5rem;
@@ -288,8 +313,16 @@
                 </div>
 
                 <div>
-                    <span class="order-status status-{{ $order->status }}">
-                        {{ $order->getStatusLabel() }}
+                    @php
+                        $isServiceOrder = $order->isServiceOrder();
+                        $statusKey = $isServiceOrder ? ($order->service_status ?? 'pending') : $order->status;
+                        $statusLabel = $isServiceOrder ? $order->getServiceStatusLabel() : $order->getStatusLabel();
+                    @endphp
+                    <span class="order-status status-{{ $statusKey }}">
+                        {{ $statusLabel }}
+                        @if($isServiceOrder)
+                            <small style="display:block; font-size:0.75rem; color:#475569;">Layanan</small>
+                        @endif
                     </span>
                 </div>
 

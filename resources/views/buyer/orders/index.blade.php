@@ -77,6 +77,17 @@
         color: #842029;
     }
 
+    .service-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background: #e0e7ff;
+        color: #3730a3;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
     .order-actions {
         display: flex;
         gap: 0.5rem;
@@ -123,7 +134,12 @@
             @foreach($orders as $order)
             <div class="order-item">
                 <div class="order-info">
-                    <h5 class="order-number">{{ $order->order_number }}</h5>
+                    <h5>
+                        <span class="order-number">{{ $order->order_number }}</span>
+                        @if($order->is_service_order)
+                            <span class="service-badge"><i class="fas fa-concierge-bell me-1"></i>Layanan</span>
+                        @endif
+                    </h5>
                     <div class="order-date">
                         {{ $order->created_at->format('d M Y H:i') }}
                     </div>
@@ -133,14 +149,26 @@
                 </div>
                 
                 <div class="d-flex align-items-center gap-3">
-                    <span class="order-status status-{{ $order->status }}">
-                        {{ $order->getStatusLabel() }}
-                    </span>
+                    @if($order->is_service_order)
+                        <span class="order-status status-{{ $order->service_status ?? 'pending' }}">
+                            {{ $order->getServiceStatusLabel() }}
+                        </span>
+                    @else
+                        <span class="order-status status-{{ $order->status }}">
+                            {{ $order->getStatusLabel() }}
+                        </span>
+                    @endif
                     
                     <div class="order-actions">
-                        <a href="{{ route('buyer.orders.show', $order) }}" class="btn-view">
-                            <i class="fas fa-eye me-1"></i>Lihat
-                        </a>
+                        @if($order->is_service_order)
+                            <a href="{{ route('buyer.services.show', $order) }}" class="btn-view">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </a>
+                        @else
+                            <a href="{{ route('buyer.orders.show', $order) }}" class="btn-view">
+                                <i class="fas fa-eye me-1"></i>Lihat
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
