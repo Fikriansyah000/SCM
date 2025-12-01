@@ -5,9 +5,12 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Buyer\BuyerController;
 use App\Http\Controllers\Buyer\CartController;
 use App\Http\Controllers\Buyer\OrderController as BuyerOrderController;
+use App\Http\Controllers\Buyer\ServiceOrderController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\ProductController;
+use App\Http\Controllers\Seller\ServiceSlotController;
+use App\Http\Controllers\Seller\ServiceWorkflowController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MessageController;
@@ -72,6 +75,20 @@ Route::middleware(['auth', 'role:buyer'])->prefix('buyer')->name('buyer.')->grou
     // Returns
     Route::post('/orders/{order}/request-return', [BuyerOrderController::class, 'requestReturn'])->name('orders.request-return');
     Route::post('/orders/{order}/ship-return', [BuyerOrderController::class, 'shipReturn'])->name('orders.ship-return');
+
+    // Service Proposals (Buyer side - before order is created)
+    Route::get('/proposals', [ServiceOrderController::class, 'proposals'])->name('proposals');
+    Route::get('/proposals/{proposal}', [ServiceOrderController::class, 'showProposal'])->name('proposals.show');
+    Route::post('/proposals/{proposal}/pay', [ServiceOrderController::class, 'payProposal'])->name('proposals.pay');
+    Route::post('/proposals/{proposal}/cancel', [ServiceOrderController::class, 'cancelProposal'])->name('proposals.cancel');
+
+    // Service Workflow (Buyer side - after order is created)
+    Route::get('/services/{order}', [ServiceOrderController::class, 'show'])->name('services.show');
+    Route::post('/services/extensions/{extension}/approve', [ServiceOrderController::class, 'approveExtension'])->name('services.extensions.approve');
+    Route::post('/services/extensions/{extension}/reject', [ServiceOrderController::class, 'rejectExtension'])->name('services.extensions.reject');
+    Route::post('/services/proposals/{proposal}/revision', [ServiceOrderController::class, 'requestRevision'])->name('services.proposals.revision');
+    Route::post('/services/proposals/{proposal}/complete', [ServiceOrderController::class, 'completeService'])->name('services.proposals.complete');
+    Route::post('/services/proposals/{proposal}/cancel', [ServiceOrderController::class, 'cancelService'])->name('services.proposals.cancel');
 }); 
 
 // Seller Routes
@@ -87,6 +104,13 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     
     // Products
     Route::resource('products', ProductController::class);
+    
+    // Service Slots (for service products)
+    Route::post('/products/{product}/slots', [ServiceSlotController::class, 'store'])->name('products.slots.store');
+    Route::put('/products/{product}/slots/{slot}', [ServiceSlotController::class, 'update'])->name('products.slots.update');
+    Route::delete('/products/{product}/slots/{slot}', [ServiceSlotController::class, 'destroy'])->name('products.slots.destroy');
+    Route::post('/products/{product}/slots/{slot}/toggle', [ServiceSlotController::class, 'toggle'])->name('products.slots.toggle');
+    
      // Seller Orders
     Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders');
     Route::get('/orders/{order}', [SellerOrderController::class, 'show'])->name('orders.show');
@@ -96,6 +120,17 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::post('/orders/{order}/return/approve', [SellerOrderController::class, 'approveReturn'])->name('orders.return.approve');
     Route::post('/orders/{order}/return/reject', [SellerOrderController::class, 'rejectReturn'])->name('orders.return.reject');
     Route::post('/orders/{order}/return/confirm-received', [SellerOrderController::class, 'confirmReturnReceived'])->name('orders.return.confirm-received');
+
+    // Service Workflow (Seller side)
+    Route::get('/services/proposals', [ServiceWorkflowController::class, 'proposals'])->name('services.proposals');
+    Route::get('/services/proposals/{proposal}', [ServiceWorkflowController::class, 'showProposal'])->name('services.proposals.show');
+    Route::post('/services/proposals/{proposal}/accept', [ServiceWorkflowController::class, 'acceptProposal'])->name('services.proposals.accept');
+    Route::post('/services/proposals/{proposal}/reject', [ServiceWorkflowController::class, 'rejectProposal'])->name('services.proposals.reject');
+    Route::post('/services/proposals/{proposal}/start', [ServiceWorkflowController::class, 'startWork'])->name('services.proposals.start');
+    Route::post('/services/proposals/{proposal}/submit-review', [ServiceWorkflowController::class, 'submitReview'])->name('services.proposals.submit-review');
+    Route::post('/services/proposals/{proposal}/request-extension', [ServiceWorkflowController::class, 'requestExtension'])->name('services.proposals.request-extension');
+    Route::get('/services/orders', [ServiceWorkflowController::class, 'orders'])->name('services.orders');
+    Route::get('/services/orders/{order}', [ServiceWorkflowController::class, 'showOrder'])->name('services.orders.show');
 });
 
 // Shared Routes (Both Buyer and Seller)

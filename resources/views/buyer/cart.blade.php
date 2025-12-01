@@ -298,16 +298,53 @@
                                 <div class="cart-shop">
                                     <i class="fas fa-store me-1"></i>{{ $cart->product->shop->shop_name }}
                                 </div>
+
+                                @php
+                                    $isService = ($cart->product->product_type ?? 'food') === 'service';
+                                    $proposalDesc = $cart->customizations['proposal_description'] ?? null;
+                                    $proposedDeadline = $cart->customizations['proposed_deadline'] ?? null;
+                                    $proposedPrice = $cart->customizations['proposed_price'] ?? null;
+                                    $notes = $cart->customizations['notes'] ?? null;
+                                @endphp
+
+                                @if($isService && $proposalDesc)
+                                    <div class="service-info" style="background: #f0f4ff; border-radius: .5rem; padding: .65rem .9rem; margin: .5rem 0; font-size: .9rem;">
+                                        <div class="mb-1"><i class="fas fa-file-alt me-1" style="color: var(--color-primary);"></i>
+                                            <strong>Proposal Layanan</strong>
+                                        </div>
+                                        <div class="text-muted mb-1" style="font-size: .85rem;">
+                                            {{ Str::limit($proposalDesc, 100) }}
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-3 mt-2">
+                                            <div><i class="fas fa-calendar-check me-1" style="color: var(--color-warning);"></i>
+                                                Deadline: <strong>{{ \Carbon\Carbon::parse($proposedDeadline)->translatedFormat('d M Y') }}</strong>
+                                            </div>
+                                            <div><i class="fas fa-tag me-1" style="color: var(--color-success);"></i>
+                                                Harga: <strong>Rp{{ number_format($proposedPrice, 0, ',', '.') }}</strong>
+                                            </div>
+                                        </div>
+                                        @if($notes)
+                                            <div class="text-muted mt-1" style="font-size: .85rem;"><i class="fas fa-sticky-note me-1"></i>{{ $notes }}</div>
+                                        @endif
+                                        <div class="mt-2" style="font-size: .8rem; color: #6b7280;">
+                                            <i class="fas fa-info-circle me-1"></i>Menunggu persetujuan seller saat checkout
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <div class="cart-price">
                                     @php
                                         $isFlash = in_array($cart->product_id, session('flash_sale_ids', []));
-                                        $unitPrice = $cart->product->price;
+                                        $unitPrice = $isService && $proposedPrice ? $proposedPrice : $cart->product->price;
                                         $displayPrice = $unitPrice;
                                         if ($isFlash) {
                                             $displayPrice = round($unitPrice * 0.90);
                                         }
                                     @endphp
-                                    Rp{{ number_format($displayPrice, 0, ',', '.') }} x {{ $cart->quantity }}
+                                    Rp{{ number_format($displayPrice, 0, ',', '.') }}
+                                    @if(!$isService)
+                                        x {{ $cart->quantity }}
+                                    @endif
                                     @if($isFlash)
                                         <div class="flash-sale-tag">
                                             <i class="fas fa-bolt me-1"></i>Flash Sale: 10% off + Gratis Ongkir
@@ -316,17 +353,24 @@
                                 </div>
                             </div>                            
                             <div class="quantity-control">
-                                <form method="POST" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="button" class="quantity-btn" onclick="decreaseQty(this)">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <input type="number" name="quantity" class="quantity-input" value="{{ $cart->quantity }}" min="1" max="{{ $cart->product->stock }}" onchange="this.form.submit()">
-                                    <button type="button" class="quantity-btn" onclick="increaseQty(this)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </form>
+                                @if($isService)
+                                    {{-- For services, cannot change quantity --}}
+                                    <span class="text-muted" style="font-size:.85rem;">
+                                        <i class="fas fa-lock me-1"></i>1 layanan
+                                    </span>
+                                @else
+                                    <form method="POST" action="{{ route('buyer.cart.update', $cart->id) }}" class="d-flex align-items-center gap-2">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="button" class="quantity-btn" onclick="decreaseQty(this)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" name="quantity" class="quantity-input" value="{{ $cart->quantity }}" min="1" max="{{ $cart->product->stock }}" onchange="this.form.submit()">
+                                        <button type="button" class="quantity-btn" onclick="increaseQty(this)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                             
                             <div class="cart-actions">

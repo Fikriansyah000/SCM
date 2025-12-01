@@ -13,13 +13,32 @@ class ProductPageController extends Controller
         $product->load([
             'shop',
             'variations',
-            'serviceSlots' => function ($q) {
-                $q->where('is_active', true)->orderByRaw('COALESCE(slot_date, 0), day_of_week, start_time');
-            },
-            'reviews' => function ($q) {
-                $q->latest()->limit(10);
+            'serviceSlots' => function ($query) {
+                $query
+                    ->where('is_active', true)
+                    ->whereColumn('booked_count', '<', 'capacity')
+                    ->where(function ($slotQuery) {
+                        $slotQuery
+                            ->whereNull('slot_date')
+                            ->orWhere('slot_date', '>=', now()->toDateString());
+                    })
+                    ->orderByRaw('COALESCE(slot_date, 0), day_of_week, start_time');
             },
         ]);
+
+        $completedReviewsQuery = $product->reviews()
+            ->with('user')
+            ->whereHas('order', function ($orderQuery) {
+                $orderQuery->where('status', 'completed');
+            });
+
+        $reviewCount = (clone $completedReviewsQuery)->count();
+        $averageRating = (clone $completedReviewsQuery)->avg('rating');
+
+        $completedReviews = (clone $completedReviewsQuery)
+            ->latest()
+            ->take(10)
+            ->get();
 
         // Derived pricing with default variation if present
         $basePrice = $product->price;
@@ -30,6 +49,11 @@ class ProductPageController extends Controller
             'product' => $product,
             'displayPrice' => $displayPrice,
             'defaultVariation' => $defaultVariation,
+            'completedReviews' => $completedReviews,
+            'reviewStats' => [
+                'count' => $reviewCount,
+                'average' => $reviewCount ? round($averageRating, 1) : null,
+            ],
         ]);
     }
 }

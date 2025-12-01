@@ -48,6 +48,11 @@
                                 <i class="fas fa-history me-1"></i>Pesanan
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('buyer.proposals') || request()->routeIs('buyer.proposals.*') ? 'active' : '' }}" href="{{ route('buyer.proposals') }}">
+                                <i class="fas fa-file-alt me-1"></i>Pengajuan
+                            </a>
+                        </li>
                     @else
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('seller.dashboard') ? 'active' : '' }}" href="{{ route('seller.dashboard') }}">
@@ -163,6 +168,11 @@
                     <li class="offcanvas-nav-item">
                         <a class="offcanvas-nav-link {{ request()->routeIs('buyer.orders') ? 'active' : '' }}" href="{{ route('buyer.orders') }}">
                             <i class="fas fa-history"></i>Pesanan
+                        </a>
+                    </li>
+                    <li class="offcanvas-nav-item">
+                        <a class="offcanvas-nav-link {{ request()->routeIs('buyer.proposals') || request()->routeIs('buyer.proposals.*') ? 'active' : '' }}" href="{{ route('buyer.proposals') }}">
+                            <i class="fas fa-file-alt"></i>Pengajuan
                         </a>
                     </li>
                 @else

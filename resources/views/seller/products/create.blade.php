@@ -82,32 +82,67 @@
         color: #999;
     }
     
-    .subcategories {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.75rem;
+    .type-selector {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
     
-    .subcategory-btn {
-        padding: 0.75rem;
+    .type-btn {
+        flex: 1;
+        padding: 1.25rem;
+        border: 2px solid #ddd;
+        border-radius: 0.75rem;
         background: white;
-        border: 1px solid #ddd;
-        border-radius: 0.5rem;
         cursor: pointer;
-        font-weight: 500;
+        text-align: center;
         transition: all 0.3s ease;
-        text-align: left;
     }
     
-    .subcategory-btn:hover {
+    .type-btn:hover {
         border-color: #667eea;
         background: #f0f4ff;
     }
     
-    .subcategory-btn.selected {
-        background: #667eea;
-        color: white;
+    .type-btn.selected {
         border-color: #667eea;
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    }
+    
+    .type-btn i {
+        font-size: 2rem;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .type-btn strong {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    
+    .type-btn small {
+        color: #666;
+    }
+    
+    .service-fields {
+        display: none;
+        background: #f8f9ff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .service-fields.show {
+        display: block;
+    }
+    
+    .physical-fields {
+        display: block;
+    }
+    
+    .physical-fields.hide {
+        display: none;
     }
     
     .form-actions {
@@ -133,33 +168,22 @@
         color: white;
     }
     
-    .btn-draft {
+    .btn-cancel {
         padding: 0.75rem 2rem;
         background: white;
-        color: #667eea;
-        border: 2px solid #667eea;
+        color: #666;
+        border: 2px solid #ddd;
         border-radius: 0.5rem;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-draft:hover {
-        background: #f0f4ff;
-    }
-    
-    .radio-group {
-        display: flex;
-        gap: 2rem;
-        margin-top: 0.5rem;
-    }
-    
-    .radio-group label {
-        display: flex;
+        text-decoration: none;
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        font-weight: normal;
-        margin-bottom: 0;
+    }
+    
+    .btn-cancel:hover {
+        background: #f5f5f5;
+        color: #333;
     }
     
     .image-preview {
@@ -172,6 +196,17 @@
         border-radius: 0.5rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-check input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
 </style>
 
 <div class="container my-4">
@@ -183,6 +218,27 @@
         <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
             @csrf
             
+            <!-- Product Type Selection -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-tags me-2"></i>Jenis Produk
+                </div>
+                
+                <div class="type-selector">
+                    <div class="type-btn selected" data-type="food" onclick="selectProductType('food')">
+                        <i class="fas fa-box"></i>
+                        <strong>Produk Fisik</strong>
+                        <small>Makanan, minuman, barang fisik</small>
+                    </div>
+                    <div class="type-btn" data-type="service" onclick="selectProductType('service')">
+                        <i class="fas fa-concierge-bell"></i>
+                        <strong>Layanan / Jasa</strong>
+                        <small>Les privat, jasa print, konsultasi</small>
+                    </div>
+                </div>
+                <input type="hidden" name="product_type" id="product_type" value="{{ old('product_type', 'food') }}">
+            </div>
+            
             <!-- Product Photo -->
             <div class="form-section">
                 <div class="form-section-title">
@@ -192,8 +248,8 @@
                 <div class="form-group">
                     <div class="upload-area" onclick="document.getElementById('image').click()">
                         <i class="fas fa-image"></i>
-                        <p>Klik untuk tambah foto, tarik & lepas didukung</p>
-                        <small>(Maks. 5 foto)</small>
+                        <p>Klik untuk tambah foto</p>
+                        <small>(Maks. 2MB, format: JPG, PNG, GIF, WEBP)</small>
                     </div>
                     <input type="file" id="image" name="image" accept="image/*" style="display: none;">
                     @error('image')
@@ -209,20 +265,20 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="name" class="form-label">Nama Produk</label>
+                    <label for="name" class="form-label">Nama <span id="typeLabel">Produk</span></label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" 
                            id="name" name="name" value="{{ old('name') }}" required 
-                           placeholder="Nama produk wajib diisi">
+                           placeholder="Nama produk/layanan wajib diisi">
                     @error('name')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
                 </div>
                 
                 <div class="form-group">
-                    <label for="description" class="form-label">Deskripsi Produk</label>
+                    <label for="description" class="form-label">Deskripsi</label>
                     <textarea class="form-control @error('description') is-invalid @enderror" 
                               id="description" name="description" required 
-                              placeholder="Minimal 50 karakter. Jelaskan keunggulan, bahan, ukuran, atau spesifikasi produk.">{{ old('description') }}</textarea>
+                              placeholder="Jelaskan detail produk/layanan Anda.">{{ old('description') }}</textarea>
                     @error('description')
                         <div class="invalid-feedback d-block">{{ $message }}</div>
                     @enderror
@@ -236,15 +292,24 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="category" class="form-label">Pilih kategori produk</label>
+                    <label for="category" class="form-label">Pilih kategori</label>
                     <select class="form-control @error('category') is-invalid @enderror" 
-                            id="category" name="category" required onchange="updateSubcategories()">
+                            id="category" name="category" required>
                         <option value="">-- Pilih Kategori --</option>
                         <option value="Makanan & Minuman" {{ old('category') == 'Makanan & Minuman' ? 'selected' : '' }}>
-                            Makanan & Minuman (Makanan siap saji, minuman, bahan makanan)
+                            Makanan & Minuman
                         </option>
                         <option value="Jasa & Layanan" {{ old('category') == 'Jasa & Layanan' ? 'selected' : '' }}>
-                            Jasa & Layanan (Print, fotocopy, les privat, jasa lainnya)
+                            Jasa & Layanan
+                        </option>
+                        <option value="Buku & Alat Tulis" {{ old('category') == 'Buku & Alat Tulis' ? 'selected' : '' }}>
+                            Buku & Alat Tulis
+                        </option>
+                        <option value="Elektronik" {{ old('category') == 'Elektronik' ? 'selected' : '' }}>
+                            Elektronik
+                        </option>
+                        <option value="Lainnya" {{ old('category') == 'Lainnya' ? 'selected' : '' }}>
+                            Lainnya
                         </option>
                     </select>
                     @error('category')
@@ -253,8 +318,8 @@
                 </div>
             </div>
             
-            <!-- Price & Stock -->
-            <div class="form-section">
+            <!-- Price & Stock (Physical Products) -->
+            <div class="form-section physical-fields" id="physicalFields">
                 <div class="form-section-title">
                     <i class="fas fa-money-bill-wave me-2"></i>Harga & Stok
                 </div>
@@ -265,7 +330,7 @@
                             <label for="price" class="form-label">Harga (Rp)</label>
                             <input type="number" class="form-control @error('price') is-invalid @enderror" 
                                    id="price" name="price" value="{{ old('price') }}" required 
-                                   placeholder="Harga produk wajib diisi" step="1000" min="0">
+                                   placeholder="Harga produk" step="1000" min="0">
                             @error('price')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -275,8 +340,8 @@
                         <div class="form-group">
                             <label for="stock" class="form-label">Stok</label>
                             <input type="number" class="form-control @error('stock') is-invalid @enderror" 
-                                   id="stock" name="stock" value="{{ old('stock') }}" required 
-                                   placeholder="Stok produk wajib diisi" min="0">
+                                   id="stock" name="stock" value="{{ old('stock') }}" 
+                                   placeholder="Stok produk" min="0">
                             @error('stock')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror
@@ -285,15 +350,81 @@
                 </div>
             </div>
             
+            <!-- Service-specific Fields -->
+            <div class="form-section service-fields" id="serviceFields">
+                <div class="form-section-title">
+                    <i class="fas fa-concierge-bell me-2"></i>Detail Layanan
+                </div>
+                
+                <div class="form-group">
+                    <label for="service_price" class="form-label">Harga Layanan (Rp)</label>
+                    <input type="number" class="form-control" 
+                           id="service_price" 
+                           placeholder="Harga per sesi/layanan" step="1000" min="0">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="duration_minutes" class="form-label">Durasi (menit)</label>
+                            <input type="number" class="form-control @error('duration_minutes') is-invalid @enderror" 
+                                   id="duration_minutes" name="duration_minutes" value="{{ old('duration_minutes') }}" 
+                                   placeholder="Durasi layanan dalam menit" min="1">
+                            @error('duration_minutes')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="location_type" class="form-label">Lokasi Layanan</label>
+                            <select class="form-control @error('location_type') is-invalid @enderror" 
+                                    id="location_type" name="location_type">
+                                <option value="flexible" {{ old('location_type') == 'flexible' ? 'selected' : '' }}>Fleksibel</option>
+                                <option value="online" {{ old('location_type') == 'online' ? 'selected' : '' }}>Online</option>
+                                <option value="onsite" {{ old('location_type') == 'onsite' ? 'selected' : '' }}>Di Tempat</option>
+                            </select>
+                            @error('location_type')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="requirements" class="form-label">Persyaratan / Catatan (opsional)</label>
+                    <textarea class="form-control @error('requirements') is-invalid @enderror" 
+                              id="requirements" name="requirements" rows="2"
+                              placeholder="Misalnya: bawa laptop sendiri, minimal 2 orang, dll.">{{ old('requirements') }}</textarea>
+                    @error('requirements')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="requires_booking" name="requires_booking" value="1" 
+                               {{ old('requires_booking', true) ? 'checked' : '' }}>
+                        <label for="requires_booking">Memerlukan pemilihan jadwal/slot</label>
+                    </div>
+                    <small class="text-muted">Jika dicentang, pembeli harus memilih jadwal sebelum memesan.</small>
+                </div>
+                
+                <div class="alert alert-info mt-3" style="border-radius: .5rem;">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Setelah menyimpan layanan, Anda bisa menambahkan jadwal/slot layanan di halaman edit.
+                </div>
+            </div>
+            
             <!-- Actions -->
             <div class="form-section">
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">
-                        <i class="fas fa-arrow-right me-2"></i>Publikasikan Produk
+                        <i class="fas fa-arrow-right me-2"></i>Publikasikan
                     </button>
-                    <button type="button" class="btn-draft">
-                        <i class="fas fa-save me-2"></i>Simpan Draft
-                    </button>
+                    <a href="{{ route('seller.products.index') }}" class="btn-cancel">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </a>
                 </div>
             </div>
         </form>
@@ -301,27 +432,61 @@
 </div>
 
 <script>
-function updateSubcategories() {
-    // Tambahkan logic untuk update subcategories jika diperlukan
+function selectProductType(type) {
+    document.getElementById('product_type').value = type;
+    
+    document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('selected');
+    
+    const physicalFields = document.getElementById('physicalFields');
+    const serviceFields = document.getElementById('serviceFields');
+    const stockInput = document.getElementById('stock');
+    const priceInput = document.getElementById('price');
+    const servicePriceInput = document.getElementById('service_price');
+    const typeLabel = document.getElementById('typeLabel');
+    
+    if (type === 'service') {
+        physicalFields.classList.add('hide');
+        serviceFields.classList.add('show');
+        stockInput.removeAttribute('required');
+        typeLabel.textContent = 'Layanan';
+        
+        // Sync price fields
+        servicePriceInput.addEventListener('input', function() {
+            priceInput.value = this.value;
+        });
+    } else {
+        physicalFields.classList.remove('hide');
+        serviceFields.classList.remove('show');
+        stockInput.setAttribute('required', 'required');
+        typeLabel.textContent = 'Produk';
+    }
 }
 
-document.getElementById('image').addEventListener('change', function(e) {
-    if (e.target.files.length > 0) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const preview = document.querySelector('.image-preview');
-            if (!preview) {
-                const div = document.createElement('div');
-                div.className = 'image-preview';
-                div.innerHTML = '<img src="' + event.target.result + '" alt="Preview">';
-                document.querySelector('.upload-area').after(div);
-            } else {
-                preview.querySelector('img').src = event.target.result;
-            }
-        };
-        reader.readAsDataURL(file);
-    }
+// Initialize based on old value
+document.addEventListener('DOMContentLoaded', function() {
+    const oldType = '{{ old('product_type', 'food') }}';
+    selectProductType(oldType);
+    
+    // Image preview
+    document.getElementById('image').addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                let preview = document.querySelector('.image-preview');
+                if (!preview) {
+                    preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    document.querySelector('.upload-area').after(preview);
+                }
+                preview.innerHTML = '<img src="' + event.target.result + '" alt="Preview">';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 });
 </script>
 @endsection

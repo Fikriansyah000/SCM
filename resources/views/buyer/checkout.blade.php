@@ -374,7 +374,8 @@
                 </div>
             </div>
 
-            <!-- Mode Transportasi -->
+            @if($hasPhysical)
+            <!-- Mode Transportasi - Only for physical products -->
             <div class="checkout-card">
                 <h3 class="section-title">
                     <i class="fas fa-truck"></i>Mode Transportasi
@@ -422,6 +423,22 @@
                     </div>
                 </div>
             </div>
+            @else
+            <!-- Service Only - No shipping needed -->
+            <div class="checkout-card">
+                <h3 class="section-title">
+                    <i class="fas fa-concierge-bell"></i>Pengajuan Layanan
+                </h3>
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Catatan:</strong> Ini adalah pesanan layanan. Setelah checkout, proposal Anda akan dikirim ke seller untuk disetujui. 
+                    Pembayaran dilakukan setelah seller menyetujui proposal Anda.
+                </div>
+                <input type="hidden" name="shipping_mode" value="service">
+                <input type="hidden" name="shipping_cost" id="shipping_cost" value="0">
+                <input type="hidden" name="shipping_method" value="service">
+            </div>
+            @endif
         </div>
 
         <!-- Summary -->
@@ -483,9 +500,18 @@
                     <span id="total-amount">Rp{{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
+                @if($hasPhysical)
                 <button type="submit" class="btn-checkout" id="checkoutBtn">
                     <i class="fas fa-check"></i>Lanjutkan Pembayaran
                 </button>
+                @else
+                <button type="submit" class="btn-checkout" id="checkoutBtn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="fas fa-paper-plane"></i>Ajukan Proposal
+                </button>
+                <small class="text-muted d-block mt-2 text-center">
+                    <i class="fas fa-info-circle me-1"></i>Pembayaran setelah seller menyetujui
+                </small>
+                @endif
             </div>
         </div>
     </form>
@@ -495,6 +521,7 @@
     const subtotal = {{ $subtotal }};
     const discount = {{ $discount }};
     const flashHasDiscount = {{ $discount > 0 ? 'true' : 'false' }};
+    const hasPhysicalItems = {{ $hasPhysical ? 'true' : 'false' }};
 
     // Perkiraan jarak (dalam praktik ini dihitung dari geolocation atau database)
     const estimatedDistance = 10; // km (default)
@@ -555,6 +582,21 @@
         }
     }
 
+    if (!hasPhysicalItems) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const shippingDisplay = document.getElementById('shipping-display');
+            const totalAmountDisplay = document.getElementById('total-amount');
+            const baseTotal = subtotal - discount;
+
+            if (shippingDisplay) {
+                shippingDisplay.textContent = 'Rp0';
+            }
+            if (totalAmountDisplay) {
+                totalAmountDisplay.textContent = `Rp${baseTotal.toLocaleString('id-ID')}`;
+            }
+        });
+    }
+
     function updateShippingMode(mode, cost, inputEl) {
         document.getElementById('shipping_mode').value = mode;
         document.getElementById('shipping_cost').value = cost;
@@ -584,16 +626,20 @@
         totalAmountDisplay.textContent = `Rp${finalTotal.toLocaleString('id-ID')}`;
     }
 
-    // Load modes on page load
-    document.addEventListener('DOMContentLoaded', loadShippingModes);
+    // Load modes on page load (only if physical products exist)
+    if (hasPhysicalItems) {
+        document.addEventListener('DOMContentLoaded', loadShippingModes);
+    }
 
     // Form submission
     document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-        const selectedMode = document.querySelector('input[name="shipping_mode_select"]:checked');
-        if (!selectedMode) {
-            e.preventDefault();
-            alert('Pilih mode transportasi terlebih dahulu');
-            return false;
+        if (hasPhysicalItems) {
+            const selectedMode = document.querySelector('input[name="shipping_mode_select"]:checked');
+            if (!selectedMode) {
+                e.preventDefault();
+                alert('Pilih mode transportasi terlebih dahulu');
+                return false;
+            }
         }
     });
 </script>

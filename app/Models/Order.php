@@ -34,13 +34,17 @@ class Order extends Model
         'cutoff_time', 'notes', 'confirmed_at', 'shipped_at',
         'delivered_at', 'completed_at', 'cancelled_at',
         'return_status', 'return_reason', 'return_requested_at', 
-        'return_tracking_number', 'return_shipped_at', 'return_received_at'
+        'return_tracking_number', 'return_shipped_at', 'return_received_at',
+        // Service order fields
+        'is_service_order', 'service_due_at', 'service_status'
     ];
 
     protected $casts = [
         'cutoff_exceeded' => 'boolean',
         'shipping_cost' => 'decimal:2',
         'total_weight' => 'decimal:2',
+        'is_service_order' => 'boolean',
+        'service_due_at' => 'date',
     ];
 
     // Relationships
@@ -57,6 +61,26 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function serviceProposals()
+    {
+        return $this->hasMany(ServiceProposal::class);
+    }
+
+    public function orderEvents()
+    {
+        return $this->hasMany(OrderEvent::class)->orderBy('created_at', 'asc');
+    }
+
+    public function serviceExtensions()
+    {
+        return $this->hasMany(ServiceExtension::class);
+    }
+
+    public function pendingExtension()
+    {
+        return $this->hasOne(ServiceExtension::class)->where('status', ServiceExtension::STATUS_PENDING)->latest();
     }
 
     // Shipping Mode Methods
@@ -281,8 +305,53 @@ class Order extends Model
             'delivered' => 'Sudah Diterima',
             'completed' => 'Selesai',
             'cancelled' => 'Dibatalkan',
+            // Service statuses
+            'service_pending' => 'Proposal Menunggu',
+            'service_accepted' => 'Diterima Seller',
+            'service_in_progress' => 'Sedang Dikerjakan',
+            'service_review' => 'Menunggu Review',
+            'service_revision' => 'Revisi Diminta',
+            'service_completed' => 'Layanan Selesai',
             default => 'Unknown'
         };
+    }
+
+    // Service order helpers
+    public function isServiceOrder(): bool
+    {
+        return $this->is_service_order ?? false;
+    }
+
+    public function getServiceStatusLabel(): string
+    {
+        return match($this->service_status) {
+            'pending' => 'Menunggu Konfirmasi',
+            'accepted' => 'Diterima',
+            'in_progress' => 'Sedang Dikerjakan',
+            'review' => 'Menunggu Review',
+            'revision' => 'Revisi Diminta',
+            'completed' => 'Selesai',
+            'cancelled' => 'Dibatalkan',
+            default => $this->service_status ?? '-'
+        };
+    }
+
+    public function getServiceStatusColor(): string
+    {
+        return match($this->service_status) {
+            'pending' => 'warning',
+            'accepted', 'in_progress' => 'info',
+            'review' => 'primary',
+            'revision' => 'warning',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+            default => 'secondary'
+        };
+    }
+
+    public function hasPendingExtension(): bool
+    {
+        return $this->serviceExtensions()->where('status', ServiceExtension::STATUS_PENDING)->exists();
     }
 
     // Get shipping status label

@@ -99,6 +99,47 @@
             text-decoration: underline;
         }
     }
+
+    /* Product/Service Tabs */
+    .product-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .product-tab {
+        padding: 0.65rem 1.5rem;
+        border-radius: 999px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        border: 2px solid transparent;
+        font-size: 0.95rem;
+    }
+
+    .product-tab.active {
+        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
+        color: white;
+    }
+
+    .product-tab:not(.active) {
+        background: var(--card-bg, #FFFFFF);
+        color: var(--neutral-dark, #1A1F36);
+        border-color: #ddd;
+    }
+
+    @media (hover: hover) {
+        .product-tab:not(.active):hover {
+            border-color: var(--primary, #3A7BFF);
+            color: var(--primary, #3A7BFF);
+            text-decoration: none;
+        }
+    }
+
+    .product-tab i {
+        margin-right: 0.4rem;
+    }
     
     .categories-grid {
         display: grid;
@@ -341,6 +382,31 @@
             box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         }
     }
+
+    .product-image-link, .product-name-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .product-image-link:hover, .product-name-link:hover {
+        text-decoration: none;
+    }
+
+    .product-type-badge {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.35rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 5;
+    }
+
+    .service-badge {
+        background: linear-gradient(135deg, #1565c0, #42a5f5);
+        color: white;
+    }
     
     .product-image {
         height: 180px;
@@ -501,24 +567,32 @@
                 <i class="fas fa-th me-2"></i>Kategori
             </h3>
             <div>
-                <a href="#" class="see-all-link me-3">Lihat Semua</a>
-                <!-- Filter buttons: Semua / Makanan / Jasa -->
+                {{-- Tab filter buttons using server-side filtering --}}
                 <div style="display:inline-block;">
-                    <button class="btn btn-sm btn-outline-primary me-1" id="filter-all" onclick="filterProducts('all'); return false;">Semua</button>
-                    <button class="btn btn-sm btn-outline-primary me-1" id="filter-makanan" onclick="filterProducts('makanan'); return false;">Makanan & Minuman</button>
-                    <button class="btn btn-sm btn-outline-primary" id="filter-jasa" onclick="filterProducts('jasa'); return false;">Jasa</button>
+                    <a href="{{ route('buyer.home', ['tab' => 'all']) }}" 
+                       class="btn btn-sm {{ ($tab ?? 'all') === 'all' ? 'btn-primary' : 'btn-outline-primary' }} me-1">
+                        Semua
+                    </a>
+                    <a href="{{ route('buyer.home', ['tab' => 'products']) }}" 
+                       class="btn btn-sm {{ ($tab ?? 'all') === 'products' ? 'btn-primary' : 'btn-outline-primary' }} me-1">
+                        Produk
+                    </a>
+                    <a href="{{ route('buyer.home', ['tab' => 'services']) }}" 
+                       class="btn btn-sm {{ ($tab ?? 'all') === 'services' ? 'btn-primary' : 'btn-outline-primary' }}">
+                        Layanan
+                    </a>
                 </div>
             </div>
         </div>
         
         <div class="categories-grid">
-            <a href="#" class="category-card" onclick="filterProducts('makanan'); return false;">
+            <a href="{{ route('buyer.home', ['tab' => 'products']) }}" class="category-card">
                 <div class="category-icon">🍜</div>
-                <div class="category-name">Makanan & Minuman</div>
+                <div class="category-name">Produk</div>
             </a>
-            <a href="#" class="category-card" onclick="filterProducts('jasa'); return false;">
+            <a href="{{ route('buyer.home', ['tab' => 'services']) }}" class="category-card">
                 <div class="category-icon">🛠️</div>
-                <div class="category-name">Jasa</div>
+                <div class="category-name">Layanan</div>
             </a>
         </div>
     </div>
@@ -583,6 +657,22 @@
     
     <!-- Products Section -->
     <div class="category-section">
+        <!-- Product/Service Tabs -->
+        <div class="product-tabs">
+            <a href="{{ route('buyer.home', array_merge(request()->except('tab'), ['tab' => 'all'])) }}" 
+               class="product-tab {{ ($tab ?? 'all') === 'all' ? 'active' : '' }}">
+                <i class="fas fa-th-large"></i>Semua
+            </a>
+            <a href="{{ route('buyer.home', array_merge(request()->except('tab'), ['tab' => 'products'])) }}" 
+               class="product-tab {{ ($tab ?? 'all') === 'products' ? 'active' : '' }}">
+                <i class="fas fa-box"></i>Produk
+            </a>
+            <a href="{{ route('buyer.home', array_merge(request()->except('tab'), ['tab' => 'services'])) }}" 
+               class="product-tab {{ ($tab ?? 'all') === 'services' ? 'active' : '' }}">
+                <i class="fas fa-concierge-bell"></i>Layanan
+            </a>
+        </div>
+
         <div class="section-header">
             <h3 class="section-title">
                 @if(isset($search))
@@ -597,24 +687,27 @@
             <div class="product-grid">
                 @foreach($products as $product)
                 @php
-                    // determine coarse type for client-side filtering
-                    $prodType = 'other';
-                    if(Str::contains($product->category ?? '', 'Makan') || Str::contains($product->category ?? '', 'makan')) {
-                        $prodType = 'makanan';
-                    } elseif(Str::contains($product->category ?? '', 'Jasa') || Str::contains($product->category ?? '', 'jasa')) {
-                        $prodType = 'jasa';
-                    }
+                    $isService = ($product->product_type ?? 'food') === 'service';
                 @endphp
-                <div class="product-card" data-type="{{ $prodType }}">
-                    <div class="product-image">
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                        @else
-                            <i class="fas fa-image" style="font-size: 3rem; color: #ddd;"></i>
-                        @endif
-                    </div>
+                <div class="product-card">
+                    <a href="{{ route('buyer.products.show', $product->id) }}" class="product-image-link">
+                        <div class="product-image">
+                            @if($isService)
+                                <span class="product-type-badge service-badge">
+                                    <i class="fas fa-concierge-bell"></i> Layanan
+                                </span>
+                            @endif
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                            @else
+                                <i class="fas {{ $isService ? 'fa-concierge-bell' : 'fa-image' }}" style="font-size: 3rem; color: #ddd;"></i>
+                            @endif
+                        </div>
+                    </a>
                     <div class="product-body">
-                        <h5 class="product-name">{{ $product->name }}</h5>
+                        <a href="{{ route('buyer.products.show', $product->id) }}" class="product-name-link">
+                            <h5 class="product-name">{{ $product->name }}</h5>
+                        </a>
                         <div class="product-rating">
                             <div class="stars">
                                 <i class="fas fa-star"></i>
@@ -632,16 +725,25 @@
                         <div class="product-price">
                             Rp{{ number_format($product->price, 0, ',', '.') }}
                         </div>
-                        <div class="product-stock">
-                            <i class="fas fa-box me-1"></i>Stok: {{ $product->stock }}
-                        </div>
-                        <form method="POST" action="{{ route('buyer.cart.add', $product->id) }}" class="d-inline-block w-100">
-                            @csrf
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn-add-cart">
-                                <i class="fas fa-shopping-cart me-1"></i>Tambah Keranjang
-                            </button>
-                        </form>
+                        @if($isService)
+                            <div class="product-stock">
+                                <i class="fas fa-clock me-1"></i>{{ $product->service_profile['duration_minutes'] ?? '60' }} menit
+                            </div>
+                            <a href="{{ route('buyer.products.show', $product->id) }}" class="btn-add-cart">
+                                <i class="fas fa-calendar-check me-1"></i>Lihat & Pesan
+                            </a>
+                        @else
+                            <div class="product-stock">
+                                <i class="fas fa-box me-1"></i>Stok: {{ $product->stock }}
+                            </div>
+                            <form method="POST" action="{{ route('buyer.cart.add', $product->id) }}" class="d-inline-block w-100">
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn-add-cart">
+                                    <i class="fas fa-shopping-cart me-1"></i>Tambah Keranjang
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -666,38 +768,8 @@
     </div>
 </div>
 <script>
-function filterProducts(type) {
-    const grid = document.querySelectorAll('.product-card');
-    grid.forEach(card => {
-        const t = card.getAttribute('data-type') || 'other';
-        if (type === 'all') {
-            card.style.display = '';
-        } else if (type === 'makanan') {
-            card.style.display = (t === 'makanan') ? '' : 'none';
-        } else if (type === 'jasa') {
-            card.style.display = (t === 'jasa') ? '' : 'none';
-        }
-    });
-
-    // active state for filter buttons
-    ['all','makanan','jasa'].forEach(key => {
-        const btn = document.getElementById('filter-' + key);
-        if (!btn) return;
-        if (key === type) {
-            btn.classList.remove('btn-outline-primary');
-            btn.classList.add('btn-primary');
-        } else {
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-outline-primary');
-        }
-    });
-}
-
-// default: show all
+// Flash countdown
 document.addEventListener('DOMContentLoaded', function(){
-    filterProducts('all');
-
-    // Flash countdown
     const flashBanner = document.querySelector('.flash-banner');
     if (flashBanner) {
         const ends = flashBanner.getAttribute('data-ends');
@@ -722,7 +794,6 @@ document.addEventListener('DOMContentLoaded', function(){
             const countInterval = setInterval(updateCountdown, 1000);
         }
     }
-
 });
 </script>
 @endsection

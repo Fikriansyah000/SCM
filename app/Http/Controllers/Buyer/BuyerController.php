@@ -10,16 +10,28 @@ use Carbon\Carbon;
 
 class BuyerController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        $products = Product::with('shop')
-            ->where('status', 'available')
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $tab = $request->get('tab', 'all'); // all, products, services
 
-        // Select a few random products for FlashSale
+        $query = Product::with('shop')
+            ->where('status', 'available');
+
+        // Filter by product type
+        if ($tab === 'products') {
+            $query->where('product_type', 'food');
+        } elseif ($tab === 'services') {
+            $query->where('product_type', 'service');
+        }
+
+        $products = $query->orderBy('created_at', 'desc')
+            ->paginate(12)
+            ->appends(['tab' => $tab]); // Preserve tab on pagination
+
+        // Select a few random products for FlashSale (only physical products)
         $flashProducts = Product::with('shop')
             ->where('status', 'available')
+            ->where('product_type', 'food')
             ->inRandomOrder()
             ->limit(4)
             ->get();
@@ -34,23 +46,32 @@ class BuyerController extends Controller
             session(['flash_sale_ends_at' => $flashEnds]);
         }
 
-        return view('buyer.home', compact('products', 'flashProducts', 'flashEnds'));
+        return view('buyer.home', compact('products', 'flashProducts', 'flashEnds', 'tab'));
     }
 
     public function search(Request $request)
     {
         $search = $request->get('q');
+        $tab = $request->get('tab', 'all');
 
-        $products = Product::with('shop')
+        $query = Product::with('shop')
             ->where('status', 'available')
-            ->where(function($query) use ($search) {
-                $query->where('name', 'like', "%$search%")
-                      ->orWhere('description', 'like', "%$search%")
-                      ->orWhere('category', 'like', "%$search%");
-            })
-            ->paginate(12);
+            ->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%")
+                  ->orWhere('category', 'like', "%$search%");
+            });
 
-        return view('buyer.home', compact('products', 'search'));
+        // Filter by product type
+        if ($tab === 'products') {
+            $query->where('product_type', 'food');
+        } elseif ($tab === 'services') {
+            $query->where('product_type', 'service');
+        }
+
+        $products = $query->paginate(12)->appends(['q' => $search, 'tab' => $tab]);
+
+        return view('buyer.home', compact('products', 'search', 'tab'));
     }
 
     public function visitShop($id)

@@ -182,6 +182,36 @@
         color: #ddd;
         margin-bottom: 1rem;
     }
+
+    .product-type-badge {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.35rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        z-index: 5;
+    }
+
+    .badge-service {
+        background: linear-gradient(135deg, #1565c0, #42a5f5);
+        color: white;
+    }
+
+    .badge-product {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .product-type-icon {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
 </style>
 
 <div class="products-header">
@@ -205,8 +235,13 @@
     @if($products->count() > 0)
         <div class="products-container">
             @foreach($products as $product)
+            @php $isService = ($product->product_type ?? 'food') === 'service'; @endphp
             <div class="product-card">
                 <div class="product-image">
+                    <span class="product-type-badge {{ $isService ? 'badge-service' : 'badge-product' }}">
+                        <i class="fas {{ $isService ? 'fa-concierge-bell' : 'fa-box' }}"></i>
+                        {{ $isService ? 'Layanan' : 'Produk' }}
+                    </span>
                     @if($product->image)
                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                     @else
@@ -219,9 +254,19 @@
                     <div class="product-price">
                         Rp{{ number_format($product->price, 0, ',', '.') }}
                     </div>
-                    <div class="product-stock">
-                        <i class="fas fa-box me-1"></i>Stok: {{ $product->stock }}
-                    </div>
+                    @if($isService)
+                        <div class="product-type-icon">
+                            <i class="fas fa-clock"></i>
+                            {{ $product->service_profile['duration_minutes'] ?? '60' }} menit
+                            @if($product->requires_booking)
+                                <span style="color:#1565c0;">• Slot</span>
+                            @endif
+                        </div>
+                    @else
+                        <div class="product-stock">
+                            <i class="fas fa-box me-1"></i>Stok: {{ $product->stock }}
+                        </div>
+                    @endif
                     <div class="product-actions">
                         <button class="action-btn" title="Arsipkan">
                             <i class="fas fa-archive"></i> Arsipkan
