@@ -620,14 +620,20 @@
                     @php
                         $orig = $fp->price;
                         $discounted = round($orig * 0.90);
+                        $isFlashService = ($fp->product_type ?? 'food') === 'service';
                     @endphp
                     <div class="flash-sale-card">
-                        <a href="{{ route('buyer.shop.visit', $fp->shop->id) }}" class="card-link">
+                        <a href="{{ route('buyer.products.show', $fp->id) }}" class="card-link">
                             <div class="flash-card-media">
                                 @if($fp->image)
                                     <img src="{{ asset('storage/' . $fp->image) }}" alt="{{ $fp->name }}">
                                 @else
-                                    <i class="fas fa-image" style="font-size:2rem; color:#ddd;"></i>
+                                    <i class="fas {{ $isFlashService ? 'fa-concierge-bell' : 'fa-image' }}" style="font-size:2rem; color:{{ $isFlashService ? '#667eea' : '#ddd' }};"></i>
+                                @endif
+                                @if($isFlashService)
+                                <span style="position:absolute;top:0.35rem;left:0.35rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:0.65rem;font-weight:600;padding:0.2rem 0.4rem;border-radius:999px;">
+                                    <i class="fas fa-concierge-bell"></i> Layanan
+                                </span>
                                 @endif
                             </div>
                             <div class="flash-card-body">
@@ -641,11 +647,17 @@
                             </div>
                         </a>
                         <div class="flash-card-footer">
+                            @if($isFlashService)
+                            <a href="{{ route('buyer.products.show', $fp->id) }}" class="btn-add-cart" style="display:block;text-decoration:none;text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);">
+                                <i class="fas fa-file-signature me-1"></i>Lihat & Pesan
+                            </a>
+                            @else
                             <form method="POST" action="{{ route('buyer.cart.add', $fp->id) }}">
                                 @csrf
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn-add-cart">Tambah Keranjang</button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 @endforeach

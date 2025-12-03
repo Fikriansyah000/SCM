@@ -295,24 +295,49 @@
     @if($shop->products->count() > 0)
         <div class="product-grid">
             @foreach($shop->products as $product)
+            @php $isService = ($product->product_type ?? 'food') === 'service'; @endphp
             <div class="product-card">
-                <div class="product-image">
-                    @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                    @else
-                        <i class="fas fa-image" style="font-size: 3rem; color: #ddd;"></i>
+                <a href="{{ route('buyer.products.show', $product->id) }}" class="product-image-link" style="text-decoration:none;display:block;position:relative;">
+                    <div class="product-image">
+                        @if($product->image)
+                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                        @else
+                            @if($isService)
+                                <i class="fas fa-concierge-bell" style="font-size: 3rem; color: #667eea;"></i>
+                            @else
+                                <i class="fas fa-image" style="font-size: 3rem; color: #ddd;"></i>
+                            @endif
+                        @endif
+                    </div>
+                    @if($isService)
+                    <span style="position:absolute;top:0.5rem;left:0.5rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:0.7rem;font-weight:600;padding:0.25rem 0.5rem;border-radius:999px;display:flex;align-items:center;gap:0.25rem;">
+                        <i class="fas fa-concierge-bell"></i> Layanan
+                    </span>
                     @endif
-                </div>
+                </a>
                 <div class="product-body">
-                    <h5 class="product-name">{{ $product->name }}</h5>
+                    <a href="{{ route('buyer.products.show', $product->id) }}" style="text-decoration:none;color:inherit;">
+                        <h5 class="product-name">{{ $product->name }}</h5>
+                    </a>
                     <p class="product-description">{{ Str::limit($product->description, 50) }}</p>
+                    @if(!$isService)
                     <p class="product-stock">
                         <i class="fas fa-box me-1"></i>Stok: {{ $product->stock }}
                     </p>
+                    @else
+                    <p class="product-stock" style="color:#667eea;">
+                        <i class="fas fa-clock me-1"></i>Layanan Jasa
+                    </p>
+                    @endif
                     <div class="product-footer">
                         <div class="product-price">
                             Rp{{ number_format($product->price, 0, ',', '.') }}
                         </div>
+                        @if($isService)
+                        <a href="{{ route('buyer.products.show', $product->id) }}" class="btn-add-cart" style="text-decoration:none;text-align:center;display:block;background:linear-gradient(135deg,#667eea,#764ba2);">
+                            <i class="fas fa-file-signature me-1"></i>Lihat & Pesan
+                        </a>
+                        @else
                         <form method="POST" action="{{ route('buyer.cart.add', $product->id) }}" class="d-inline-block w-100">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
@@ -320,6 +345,7 @@
                                 <i class="fas fa-shopping-cart me-1"></i>Tambah Keranjang
                             </button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>

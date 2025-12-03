@@ -45,7 +45,7 @@ class ProductPageController extends Controller
         $defaultVariation = $product->variations->firstWhere('is_default', true);
         $displayPrice = $defaultVariation ? ($basePrice + (float)$defaultVariation->price_adjustment) : $basePrice;
 
-        return view('buyer.product-show', [
+        $viewData = [
             'product' => $product,
             'displayPrice' => $displayPrice,
             'defaultVariation' => $defaultVariation,
@@ -54,6 +54,15 @@ class ProductPageController extends Controller
                 'count' => $reviewCount,
                 'average' => $reviewCount ? round($averageRating, 1) : null,
             ],
-        ]);
+        ];
+
+        // Route to different views based on product type
+        $isService = ($product->product_type ?? 'food') === 'service';
+        
+        if ($isService) {
+            return view('buyer.products.show-service', $viewData);
+        }
+
+        return view('buyer.products.show-product', $viewData);
     }
 }

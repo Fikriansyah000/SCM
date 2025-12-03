@@ -4,21 +4,29 @@
 
 @section('content')
 <style>
+    .chat-page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
     .chat-wrapper {
         background: var(--card-bg, #FFFFFF);
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border-radius: 1.25rem;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 180px);
-        margin-bottom: 2rem;
+        height: calc(100vh - 90px);
+        min-height: 720px;
+        margin-bottom: 2.5rem;
+        border: 1px solid var(--neutral-gray, #ECEEF3);
     }
     
     .chat-header {
         background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
         color: white;
-        padding: 1.25rem 1.5rem;
+        padding: 1.25rem 1.75rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -83,9 +91,9 @@
     .message {
         display: flex;
         align-items: flex-end;
-        gap: 0.5rem;
-        margin-bottom: 0.25rem;
-        max-width: 85%;
+        gap: 0.75rem;
+        margin-bottom: 0.35rem;
+        max-width: 75%;
     }
 
     .message.sent {
@@ -99,16 +107,16 @@
     }
 
     .message-avatar {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 600;
-        font-size: 0.8rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        font-size: 0.85rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
     .message.received .message-avatar {
@@ -136,15 +144,15 @@
     }
     
     .message-bubble {
-        padding: 0.75rem 1rem;
+        padding: 0.85rem 1.15rem;
         max-width: 100%;
         word-wrap: break-word;
         word-break: break-word;
         overflow-wrap: break-word;
         white-space: pre-wrap;
-        line-height: 1.45;
+        line-height: 1.5;
         font-size: 0.95rem;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06);
     }
     
     /* Native asymmetric corners - iMessage style */
@@ -185,12 +193,82 @@
         border-radius: 1rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
+
+    /* Large desktop - full navbar width */
+    @media (min-width: 1400px) {
+        .chat-page-container {
+            max-width: 1400px;
+        }
+    }
+
+    /* Tablet landscape */
+    @media (max-width: 1200px) {
+        .chat-page-container {
+            max-width: 100%;
+            padding: 0 1rem;
+        }
+    }
     
     @media (max-width: 768px) {
+        .chat-page-container {
+            padding: 0;
+        }
+
         .chat-wrapper {
-            height: calc(100vh - 150px);
+            height: calc(100vh - 100px);
+            min-height: 520px;
             border-radius: 0;
             margin-bottom: 0;
+            border: none;
+        }
+
+        .message {
+            max-width: 85%;
+        }
+
+        .message-bubble {
+            font-size: 0.92rem;
+            padding: 0.75rem 1rem;
+        }
+        
+        .chat-header {
+            padding: 1rem 1.25rem;
+        }
+        
+        .chat-avatar {
+            width: 42px;
+            height: 42px;
+            font-size: 1rem;
+        }
+
+        .message-avatar {
+            width: 30px;
+            height: 30px;
+            font-size: 0.75rem;
+        }
+
+        .reply-card {
+            padding: 0.6rem;
+            gap: 0.6rem;
+        }
+
+        .reply-thumb {
+            width: 48px;
+            height: 48px;
+        }
+
+        .reply-title {
+            font-size: 0.82rem;
+        }
+
+        .reply-subtitle {
+            font-size: 0.72rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .chat-wrapper {
+            height: calc(100vh - 85px);
         }
 
         .message {
@@ -198,35 +276,17 @@
         }
 
         .message-bubble {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             padding: 0.7rem 0.9rem;
-        }
-        
-        .chat-header {
-            padding: 1rem;
-        }
-        
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-        }
-
-        .message-avatar {
-            width: 28px;
-            height: 28px;
-            font-size: 0.7rem;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .message-bubble {
-            font-size: 0.875rem;
-            padding: 0.65rem 0.85rem;
         }
 
         .message-avatar {
             display: none;
+        }
+
+        .reply-thumb {
+            width: 44px;
+            height: 44px;
         }
     }
     
@@ -315,16 +375,18 @@
         transform: scale(0.95);
     }
 
-    /* Reply Product Card Styles - attached to message */
+    /* Reply Product Card Styles - compact 1:1 square */
     .reply-card {
         display: flex;
+        align-items: center;
         gap: 0.75rem;
-        padding: 0.65rem 0.75rem;
+        padding: 0.6rem 0.85rem;
         border-radius: 0.75rem;
         border: 1px solid rgba(0,0,0,0.08);
         margin-bottom: 0.5rem;
         background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        max-width: 280px;
     }
 
     .reply-card.product {
@@ -338,15 +400,16 @@
     }
 
     .reply-thumb {
-        width: 44px;
-        height: 44px;
+        width: 56px;
+        height: 56px;
         border-radius: 0.5rem;
         overflow: hidden;
         flex-shrink: 0;
-        background: rgba(0,0,0,0.05);
+        background: rgba(255,255,255,0.6);
         display: flex;
         align-items: center;
         justify-content: center;
+        aspect-ratio: 1 / 1;
     }
 
     .reply-thumb img {
@@ -355,9 +418,17 @@
         object-fit: cover;
     }
 
+    .reply-thumb i {
+        font-size: 1.25rem;
+        color: #9ca3af;
+    }
+
     .reply-meta {
         flex: 1;
         min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
     }
 
     .reply-title {
@@ -367,20 +438,26 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.3;
     }
 
     .reply-subtitle {
         font-size: 0.75rem;
         color: #475569;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .reply-badge {
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         font-weight: 700;
         color: #fff;
-        padding: 0.15rem 0.55rem;
+        padding: 0.2rem 0.5rem;
         border-radius: 999px;
-        background: rgba(15, 23, 42, 0.45);
+        background: rgba(15, 23, 42, 0.5);
+        white-space: nowrap;
+        align-self: flex-start;
     }
 
     .back-link {
@@ -399,8 +476,8 @@
     }
 </style>
 
-<div class="container my-4">
-    <div class="back-header">
+<div class="chat-page-container" style="padding-top: 1.5rem; padding-bottom: 2rem;">
+    <div class="back-header" style="margin-bottom: 1rem;">
         <a href="{{ route('messages.index') }}" class="back-link">
             <i class="fas fa-arrow-left"></i>Kembali ke Pesan
         </a>
@@ -432,41 +509,41 @@
 
         {{-- Context banner for proposal/product --}}
         @if(isset($proposal) && $proposal)
-            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #fcd34d;">
-                @if($proposal->product && $proposal->product->image)
-                    <img src="{{ asset('storage/' . $proposal->product->image) }}" alt="{{ $proposal->product->name }}" style="width: 48px; height: 48px; border-radius: 0.5rem; object-fit: cover;">
-                @else
-                    <div style="width: 48px; height: 48px; border-radius: 0.5rem; background: #f59e0b; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-concierge-bell text-white"></i>
-                    </div>
-                @endif
+            <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #fcd34d;">
+                <div style="width: 56px; height: 56px; border-radius: 0.6rem; overflow: hidden; flex-shrink: 0; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center;">
+                    @if($proposal->product && $proposal->product->image)
+                        <img src="{{ asset('storage/' . $proposal->product->image) }}" alt="{{ $proposal->product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    @else
+                        <i class="fas fa-concierge-bell" style="font-size: 1.5rem; color: #f59e0b;"></i>
+                    @endif
+                </div>
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; color: #92400e; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-weight: 600; color: #92400e; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         {{ $proposal->product->name ?? 'Layanan' }}
                     </div>
-                    <div style="font-size: 0.8rem; color: #b45309;">
+                    <div style="font-size: 0.85rem; color: #b45309;">
                         Harga: Rp{{ number_format($proposal->proposed_price ?? $proposal->offered_price ?? 0, 0, ',', '.') }}
                         &middot; Deadline: {{ $proposal->proposed_deadline ? \Carbon\Carbon::parse($proposal->proposed_deadline)->format('d M Y') : '-' }}
                     </div>
                 </div>
-                <span style="background: #f59e0b; color: #fff; padding: 0.25rem 0.6rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600;">
+                <span style="background: #f59e0b; color: #fff; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap;">
                     Proposal #{{ $proposal->id }}
                 </span>
             </div>
         @elseif(isset($product) && $product)
-            <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #7dd3fc;">
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 48px; height: 48px; border-radius: 0.5rem; object-fit: cover;">
-                @else
-                    <div style="width: 48px; height: 48px; border-radius: 0.5rem; background: #3b82f6; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-box text-white"></i>
-                    </div>
-                @endif
+            <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #7dd3fc;">
+                <div style="width: 56px; height: 56px; border-radius: 0.6rem; overflow: hidden; flex-shrink: 0; background: rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center;">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    @else
+                        <i class="fas fa-box" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                    @endif
+                </div>
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; color: #0369a1; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <div style="font-weight: 600; color: #0369a1; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         {{ $product->name }}
                     </div>
-                    <div style="font-size: 0.8rem; color: #0284c7;">
+                    <div style="font-size: 0.85rem; color: #0284c7;">
                         {{ $product->shop->shop_name ?? 'Toko' }} &middot; Rp{{ number_format($product->price, 0, ',', '.') }}
                     </div>
                 </div>
