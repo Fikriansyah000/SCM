@@ -10,11 +10,12 @@
 
 :root {
     /* Primary Colors */
-    --color-primary: #3A7BFF;
-    --color-primary-dark: #2563eb;
-    --color-primary-light: #6ECBF9;
-    --gradient-primary: linear-gradient(135deg, #3A7BFF, #6ECBF9);
-    --gradient-primary-hover: linear-gradient(135deg, #6ECBF9, #3A7BFF);
+    --color-primary: #1e3a5f;
+    --color-primary-dark: #152a45;
+    --color-primary-light: #2d5a87;
+    --color-secondary: #3d6a9f;
+    --gradient-primary: linear-gradient(135deg, #1e3a5f, #2d5a87);
+    --gradient-primary-hover: linear-gradient(135deg, #2d5a87, #1e3a5f);
 
     /* Neutral Colors */
     --color-neutral-dark: #1A1F36;
@@ -49,7 +50,7 @@
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-card-hover: 0 8px 24px rgba(58, 123, 255, 0.15);
+    --shadow-card-hover: 0 8px 24px rgba(30, 58, 95, 0.15);
 
     /* Spacing Scale (based on 4px) */
     --space-1: 0.25rem;   /* 4px */
@@ -237,7 +238,7 @@ body {
     .btn-gradient:hover {
         background: var(--gradient-primary-hover);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
         color: var(--color-white);
     }
 }
@@ -609,7 +610,7 @@ body {
 .form-control-site:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.15);
 }
 
 .form-label-site {
@@ -635,7 +636,7 @@ body {
 .option-card.is-selected,
 .option-card:has(input:checked) {
     border-color: var(--color-primary);
-    background: rgba(58, 123, 255, 0.05);
+    background: rgba(30, 58, 95, 0.05);
 }
 
 @media (hover: hover) {
@@ -1028,7 +1029,7 @@ body {
 }
 
 .notification-item.unread {
-    background: rgba(58, 123, 255, 0.05);
+    background: rgba(30, 58, 95, 0.05);
     border-left: 3px solid var(--color-primary);
 }
 
@@ -1052,7 +1053,7 @@ body {
 .notification-icon.warning { background: var(--color-warning-light); color: #856404; }
 .notification-icon.danger { background: var(--color-danger-light); color: var(--color-danger); }
 .notification-icon.info { background: var(--color-info-light); color: var(--color-info); }
-.notification-icon.primary { background: rgba(58, 123, 255, 0.15); color: var(--color-primary); }
+.notification-icon.primary { background: rgba(30, 58, 95, 0.15); color: var(--color-primary); }
 
 /* ==========================================================================
    22. Info Row / Summary Row

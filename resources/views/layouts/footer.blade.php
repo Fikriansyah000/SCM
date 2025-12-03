@@ -2,9 +2,9 @@
     <div class="container">
         <div class="row mb-4">
             <div class="col-md-3 mb-4 mb-md-0">
-                <h5 class="footer-brand mb-3">
-                    <i class="fas fa-shopping-cart me-2"></i>PestiMart
-                </h5>
+                <div class="footer-brand mb-3">
+                    <img src="{{ asset('images/landing/logo-pestimart.png') }}" alt="PestiMart" class="footer-logo">
+                </div>
                 <p class="footer-text small">Platform e-commerce khusus mahasiswa untuk jual beli kebutuhan kampus dengan aman dan terpercaya.</p>
             </div>
             <div class="col-md-3 mb-4 mb-md-0">
@@ -71,10 +71,14 @@
     }
 
     .footer-brand {
-        font-family: var(--font-display, 'Poppins'), sans-serif;
-        color: white;
-        font-weight: 700;
-        font-size: clamp(16px, 2vw, 18px);
+        display: flex;
+        align-items: center;
+    }
+
+    .footer-logo {
+        height: 40px;
+        width: auto;
+        object-fit: contain;
     }
 
     .footer-heading {
@@ -104,7 +108,7 @@
     }
 
     .footer-links a:hover {
-        color: var(--color-secondary, #6ECBF9);
+        color: #7db3d8;
         transform: translateX(4px);
     }
 
@@ -122,8 +126,8 @@
 
     .footer-social .btn:hover {
         color: white;
-        background: var(--color-primary, #3A7BFF);
-        border-color: var(--color-primary, #3A7BFF);
+        background: #2d5a87;
+        border-color: #2d5a87;
         transform: translateY(-3px);
     }
 

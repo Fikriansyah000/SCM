@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
         <a class="navbar-brand" href="@auth @if(auth()->user()->role === 'buyer'){{ route('buyer.home') }}@elseif(auth()->user()->role === 'seller'){{ route('seller.dashboard') }}@else{{ route('landing') }}@endif @else{{ route('landing') }}@endauth">
-            <i class="fas fa-shopping-cart me-2"></i>PestiMart
+            <img src="{{ asset('images/landing/logo-pestimart.png') }}" alt="PestiMart" class="navbar-logo">
         </a>
         
         <!-- Mobile Menu Toggle Button -->
@@ -126,8 +126,7 @@
 <div class="offcanvas-menu" id="offcanvasMenu">
     <div class="offcanvas-header">
         <a href="@auth @if(auth()->user()->role === 'buyer'){{ route('buyer.home') }}@elseif(auth()->user()->role === 'seller'){{ route('seller.dashboard') }}@else{{ route('landing') }}@endif @else{{ route('landing') }}@endauth" class="offcanvas-brand">
-            <i class="fas fa-shopping-cart"></i>
-            <span>PestiMart</span>
+            <img src="{{ asset('images/landing/logo-pestimart.png') }}" alt="PestiMart" class="offcanvas-logo">
         </a>
         <button class="offcanvas-close" onclick="closeOffcanvasMenu()" aria-label="Close menu">
             <i class="fas fa-times"></i>
@@ -262,14 +261,15 @@
 <style>
     /* Navigation */
     .navbar {
-        background: linear-gradient(135deg, rgba(58, 123, 255, 0.95), rgba(110, 203, 249, 0.9));
-        backdrop-filter: blur(10px);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%);
+        backdrop-filter: blur(12px);
         padding: 15px 5%;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(30, 58, 95, 0.4);
         position: sticky;
         top: 0;
         z-index: 1050;
         height: 76px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     }
 
     @media (max-width: 768px) {
@@ -287,13 +287,8 @@
     }
 
     .navbar-brand {
-        font-family: var(--font-display, 'Poppins'), sans-serif;
-        color: white !important;
-        font-size: clamp(20px, 3vw, 26px);
-        font-weight: 700;
         display: flex;
         align-items: center;
-        gap: 12px;
         transition: all 0.3s ease;
     }
 
@@ -301,12 +296,28 @@
         transform: translateY(-2px);
     }
 
-    .navbar-brand i {
-        font-size: 1.3em;
+    .navbar-logo {
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    @media (max-width: 768px) {
+        .navbar-logo {
+            height: 40px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .navbar-logo {
+            height: 36px;
+        }
     }
 
     .navbar-nav {
         gap: 8px;
+        align-items: center;
     }
 
     .nav-link {
@@ -317,6 +328,8 @@
         padding: 8px 15px !important;
         border-radius: 5px;
         position: relative;
+        display: flex;
+        align-items: center;
     }
 
     .nav-link:hover {
@@ -331,27 +344,33 @@
 
     .nav-link.btn-login {
         background: white;
-        color: var(--color-primary, #3A7BFF) !important;
-        border: none;
+        color: #1e3a5f !important;
+        border: 2px solid white;
         padding: 8px 20px !important;
+        border-radius: 8px;
+        margin-right: 8px;
     }
 
     .nav-link.btn-login:hover {
         background: #f0f4f8;
         transform: translateY(-2px);
-        color: var(--color-primary, #3A7BFF) !important;
+        color: #1e3a5f !important;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
     }
 
     .nav-link.btn-register {
-        background: var(--color-accent, #FF8F3A);
+        background: linear-gradient(135deg, #FF8F3A 0%, #f5700a 100%);
         color: white !important;
         border: none;
         padding: 8px 20px !important;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(255, 143, 58, 0.3);
     }
 
     .nav-link.btn-register:hover {
-        background: #e6802f;
+        background: linear-gradient(135deg, #f5700a 0%, #e66000 100%);
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 143, 58, 0.4);
     }
 
     /* Mobile Menu Toggle */
@@ -403,13 +422,13 @@
     }
 
     .dropdown-item {
-        color: var(--color-primary, #3A7BFF);
+        color: #1e3a5f;
         transition: all 0.2s ease;
     }
 
     .dropdown-item:hover {
-        background: rgba(58, 123, 255, 0.1);
-        color: var(--color-primary, #3A7BFF);
+        background: rgba(30, 58, 95, 0.1);
+        color: #1e3a5f;
     }
 
     .dropdown-divider {
@@ -470,23 +489,21 @@
         justify-content: space-between;
         padding: 1rem 1.25rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        background: linear-gradient(135deg, var(--color-primary, #3A7BFF), var(--color-secondary, #6ECBF9));
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
         color: white;
     }
 
     .offcanvas-brand {
-        font-family: var(--font-display, 'Poppins'), sans-serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: white;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
         text-decoration: none;
     }
 
-    .offcanvas-brand:hover {
-        color: white;
+    .offcanvas-logo {
+        height: 36px;
+        width: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
 
     .offcanvas-close {
@@ -537,14 +554,14 @@
 
     .offcanvas-nav-link:hover,
     .offcanvas-nav-link.active {
-        background: rgba(58, 123, 255, 0.1);
-        color: var(--color-primary, #3A7BFF);
+        background: rgba(30, 58, 95, 0.1);
+        color: #1e3a5f;
     }
 
     .offcanvas-nav-link i {
         width: 20px;
         text-align: center;
-        color: var(--color-primary, #3A7BFF);
+        color: #1e3a5f;
     }
 
     .offcanvas-footer {

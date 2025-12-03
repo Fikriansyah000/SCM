@@ -199,53 +199,315 @@
         font-size: 0.95rem;
         opacity: 0.9;
     }
+
+    /* Flash Sale Section Styles */
+    .flash-sale-section {
+        background: linear-gradient(180deg, #fff5f5 0%, #ffffff 100%);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 2px solid #fecaca;
+        margin-bottom: 2rem;
+    }
+
+    .flash-header {
+        margin-bottom: 1rem;
+    }
+
+    .flash-section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #dc2626;
+        font-size: 1.4rem;
+    }
+
+    .flash-icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        border-radius: 50%;
+        color: white;
+        animation: flashPulse 1.5s ease-in-out infinite;
+    }
+
+    .flash-icon-wrapper i {
+        font-size: 1rem;
+    }
+
+    @keyframes flashPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+        50% { transform: scale(1.1); box-shadow: 0 0 20px 5px rgba(220, 38, 38, 0.2); }
+    }
+
+    .flash-badge {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: flashBadge 1s ease-in-out infinite;
+    }
+
+    @keyframes flashBadge {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .flash-see-all {
+        color: #dc2626 !important;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        background: #fef2f2;
+        border-radius: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .flash-see-all:hover {
+        background: #dc2626;
+        color: white !important;
+        text-decoration: none;
+    }
     
     /* Flash sale cards */
     .flash-banner {
-        border-radius: 0.75rem;
-        background: linear-gradient(90deg,#ff4d4f,#ff7675);
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 25%, #f87171 50%, #ef4444 75%, #dc2626 100%);
+        background-size: 200% 200%;
+        animation: flashGradient 3s ease infinite;
         color: white;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1.5rem;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 8px 32px rgba(220, 38, 38, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.2) inset;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .flash-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        animation: flashShine 2s linear infinite;
+    }
+
+    @keyframes flashGradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    @keyframes flashShine {
+        0% { transform: translateX(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) rotate(45deg); }
     }
 
     .flash-title {
-        font-weight: 700;
+        font-weight: 800;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 1rem;
+        gap: 0.6rem;
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 1;
+    }
+
+    .flash-title i {
+        animation: flashBolt 0.8s ease-in-out infinite;
+        font-size: 1.3rem;
+    }
+
+    @keyframes flashBolt {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.8; }
     }
 
     .flash-countdown {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-weight: 600;
-        font-size: 0.95rem;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        gap: 0.6rem;
+        font-weight: 700;
+        font-size: 1rem;
+        background: rgba(0,0,0,0.25);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .flash-countdown #flash-countdown {
+        font-family: 'Courier New', monospace;
+        font-size: 1.1rem;
+        background: rgba(255,255,255,0.2);
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.35rem;
+        letter-spacing: 2px;
     }
 
     .flash-sale-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+    }
+    
+    /* Mobile horizontal scroll for flash sale */
+    @media (max-width: 768px) {
+        .flash-sale-section {
+            position: relative;
+            overflow: visible;
+        }
+        
+        .flash-sale-grid-wrapper {
+            overflow: hidden;
+            margin: 0 -1.5rem;
+            padding: 0 1.5rem;
+        }
+        
+        .flash-sale-grid {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            animation: autoScrollFlash 25s linear infinite;
+            width: max-content;
+        }
+        
+        .flash-sale-grid:hover {
+            animation-play-state: paused;
+        }
+        
+        @keyframes autoScrollFlash {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        .flash-sale-grid .flash-sale-card {
+            flex: 0 0 280px;
+            min-width: 280px;
+            max-width: 280px;
+        }
+        
+        /* Ensure card content doesn't overflow */
+        .flash-sale-card .card-link {
+            flex-direction: column;
+        }
+        
+        .flash-sale-card .flash-card-media {
+            flex: none;
+            max-width: 100%;
+            width: 100%;
+            height: 140px;
+        }
+        
+        .flash-sale-card .flash-card-body {
+            padding: 0.75rem;
+        }
+        
+        .flash-sale-card .flash-card-footer {
+            padding: 0.5rem 0.75rem 0.75rem;
+        }
+        
+        .flash-sale-card::before {
+            top: 10px;
+            right: -30px;
+            font-size: 0.6rem;
+            padding: 0.25rem 2rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .flash-sale-grid .flash-sale-card {
+            flex: 0 0 250px;
+            min-width: 250px;
+            max-width: 250px;
+        }
+        
+        .flash-sale-card .flash-card-media {
+            height: 120px;
+        }
+        
+        .flash-sale-grid {
+            animation-duration: 20s;
+        }
+    }
+    
+    /* Scroll hint for mobile - hidden since auto scroll */
+    .scroll-hint {
+        display: none;
+    }
+    
+    /* Flash sale duplicates for infinite scroll */
+    .flash-sale-duplicates {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .flash-sale-duplicates {
+            display: contents;
+        }
+        
+        .flash-sale-grid-wrapper {
+            overflow: hidden;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .flash-sale-grid-wrapper {
+            overflow: visible;
+        }
     }
 
     .flash-sale-card {
         background: var(--card-bg, #FFFFFF);
-        border-radius: 0.85rem;
-        border: 1px solid rgba(255, 143, 58, 0.25);
-        box-shadow: 0 10px 25px rgba(255, 143, 58, 0.12);
+        border-radius: 1rem;
+        border: 2px solid #fecaca;
+        box-shadow: 0 8px 24px rgba(220, 38, 38, 0.12);
         overflow: hidden;
         display: flex;
         flex-direction: column;
         min-height: 220px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .flash-sale-card::before {
+        content: '🔥 FLASH SALE';
+        position: absolute;
+        top: 12px;
+        right: -35px;
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.3rem 2.5rem;
+        transform: rotate(45deg);
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+        letter-spacing: 0.5px;
+    }
+
+    .flash-sale-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(220, 38, 38, 0.2);
+        border-color: #f87171;
     }
 
     .flash-sale-card .card-link {
@@ -328,22 +590,20 @@
     }
 
     @media (max-width: 576px) {
-        .flash-sale-card .card-link {
-            flex-direction: column;
-        }
-
-        .flash-card-media {
-            width: 100%;
-            max-width: 100%;
-            height: 150px;
-        }
-
-        .flash-card-body {
-            padding: 1rem;
-        }
-
         .flash-card-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .flash-card-pricing .original {
+            font-size: 0.75rem;
+        }
+        
+        .flash-card-pricing .discounted {
+            font-size: 0.95rem;
+        }
+        
+        .flash-card-benefit {
+            font-size: 0.7rem;
         }
 
         .flash-card-pricing {
@@ -353,7 +613,7 @@
         }
 
         .flash-card-pricing .discounted {
-            font-size: 1.2rem;
+            font-size: 1.05rem;
         }
     }
 
@@ -598,22 +858,27 @@
     </div>
     
     <!-- Flash Sale Section -->
-    <div class="category-section">
-        <div class="section-header">
-            <h3 class="section-title">
-                <i class="fas fa-bolt me-2"></i>Flash Sale
+    <div class="category-section flash-sale-section">
+        <div class="section-header flash-header">
+            <h3 class="section-title flash-section-title">
+                <span class="flash-icon-wrapper">
+                    <i class="fas fa-bolt"></i>
+                </span>
+                Flash Sale
+                <span class="flash-badge">HOT</span>
             </h3>
-            <a href="#" class="see-all-link">Lihat Semua</a>
+            <a href="#" class="see-all-link flash-see-all">Lihat Semua <i class="fas fa-arrow-right ms-1"></i></a>
         </div>
 
         <div class="flash-banner" data-ends="{{ $flashEnds ?? session('flash_sale_ends_at') }}">
             <div class="flash-title"><i class="fas fa-bolt"></i> FLASH SALE — Terbatas!</div>
             <div class="flash-countdown">
-                <span>Waktu tersisa:</span>
+                <span>⏰ Berakhir dalam:</span>
                 <span id="flash-countdown">--:--:--</span>
             </div>
         </div>
 
+        <div class="flash-sale-grid-wrapper">
         <div class="flash-sale-grid">
             @if(!empty($flashProducts) && $flashProducts->count() > 0)
                 @foreach($flashProducts as $fp)
@@ -661,9 +926,58 @@
                         </div>
                     </div>
                 @endforeach
+                {{-- Duplicate cards for infinite scroll effect on mobile --}}
+                <div class="flash-sale-duplicates d-md-none">
+                @foreach($flashProducts as $fp)
+                    @php
+                        $orig = $fp->price;
+                        $discounted = round($orig * 0.90);
+                        $isFlashService = ($fp->product_type ?? 'food') === 'service';
+                    @endphp
+                    <div class="flash-sale-card">
+                        <a href="{{ route('buyer.products.show', $fp->id) }}" class="card-link">
+                            <div class="flash-card-media">
+                                @if($fp->image)
+                                    <img src="{{ asset('storage/' . $fp->image) }}" alt="{{ $fp->name }}">
+                                @else
+                                    <i class="fas {{ $isFlashService ? 'fa-concierge-bell' : 'fa-image' }}" style="font-size:2rem; color:{{ $isFlashService ? '#667eea' : '#ddd' }};"></i>
+                                @endif
+                                @if($isFlashService)
+                                <span style="position:absolute;top:0.35rem;left:0.35rem;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:0.65rem;font-weight:600;padding:0.2rem 0.4rem;border-radius:999px;">
+                                    <i class="fas fa-concierge-bell"></i> Layanan
+                                </span>
+                                @endif
+                            </div>
+                            <div class="flash-card-body">
+                                <div class="flash-card-title">{{ Str::limit($fp->name, 40) }}</div>
+                                <div class="flash-card-shop">{{ $fp->shop->shop_name }}</div>
+                                <div class="flash-card-pricing">
+                                    <span class="original">Rp{{ number_format($orig,0,',','.') }}</span>
+                                    <span class="discounted">Rp{{ number_format($discounted,0,',','.') }}</span>
+                                </div>
+                                <div class="flash-card-benefit">Diskon 10% • Gratis Ongkir</div>
+                            </div>
+                        </a>
+                        <div class="flash-card-footer">
+                            @if($isFlashService)
+                            <a href="{{ route('buyer.products.show', $fp->id) }}" class="btn-add-cart" style="display:block;text-decoration:none;text-align:center;background:linear-gradient(135deg,#667eea,#764ba2);">
+                                <i class="fas fa-file-signature me-1"></i>Lihat & Pesan
+                            </a>
+                            @else
+                            <form method="POST" action="{{ route('buyer.cart.add', $fp->id) }}">
+                                @csrf
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn-add-cart">Tambah Keranjang</button>
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+                </div>
             @else
                 <div class="category-card">Tidak ada flash sale saat ini</div>
             @endif
+        </div>
         </div>
     </div>
     

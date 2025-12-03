@@ -4,103 +4,215 @@
 
 @section('content')
 <style>
+    /* Proposals Header */
     .proposals-header {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%);
         color: white;
-        padding: 2rem 0;
+        padding: 2.5rem 0;
         margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .proposal-card {
-        background: white;
-        border: 1px solid #e0e0e0;
+
+    .proposals-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: headerShine 8s linear infinite;
+    }
+
+    @keyframes headerShine {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .proposals-header .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .proposals-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .proposals-header h2 i {
+        background: rgba(255,255,255,0.2);
+        padding: 0.6rem;
+        border-radius: 50%;
+        font-size: 1.2rem;
+    }
+
+    .proposals-header-subtitle {
+        margin-top: 0.5rem;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .proposals-header .btn-light {
+        background: rgba(255,255,255,0.95);
+        border: none;
+        color: #1e3a5f;
+        font-weight: 700;
+        padding: 0.65rem 1.25rem;
         border-radius: 0.75rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
         transition: all 0.3s ease;
     }
-    
-    .proposal-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+    .proposals-header .btn-light:hover {
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    
-    .proposal-header {
+
+    /* Stats Section */
+    .proposals-stats {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        gap: 1rem;
+        margin-top: 1.25rem;
+        flex-wrap: wrap;
     }
-    
-    .proposal-number {
-        font-weight: 600;
-        color: #333;
-    }
-    
-    .proposal-date {
-        font-size: 0.85rem;
-        color: #999;
-    }
-    
-    .proposal-status-badge {
-        display: inline-block;
-        padding: 0.5rem 1rem;
+
+    .stat-item {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 0.6rem 1.25rem;
         border-radius: 2rem;
         font-size: 0.85rem;
         font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Proposal Card */
+    .proposal-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        padding: 0;
+        margin-bottom: 1.25rem;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    
+    .proposal-card:hover {
+        box-shadow: 0 8px 24px rgba(30, 58, 95, 0.12);
+        transform: translateY(-2px);
+        border-color: #cbd5e1;
+    }
+
+    .proposal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 1.25rem 1.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e5e7eb;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .proposal-number {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1rem;
+    }
+    
+    .proposal-date {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .proposal-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .status-pending {
-        background: #fef3c7;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
         color: #92400e;
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
     }
     
     .status-accepted {
-        background: #dcfce7;
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
         color: #166534;
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
     }
     
     .status-rejected, .status-cancelled {
-        background: #fee2e2;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
         color: #991b1b;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
     }
     
     .status-in-progress {
-        background: #dbeafe;
-        color: #0c4a6e;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #1e40af;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
 
     .status-review {
-        background: #e0e7ff;
-        color: #3730a3;
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        color: #4338ca;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
     }
 
     .status-revision {
-        background: #fef3c7;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
         color: #92400e;
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+        color: #166534;
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
     }
     
     .proposal-content {
-        margin: 1rem 0;
+        padding: 1.25rem 1.5rem;
     }
     
     .proposal-product {
         display: flex;
         gap: 1rem;
         margin-bottom: 1rem;
+        align-items: center;
     }
     
     .proposal-product-image {
         width: 80px;
         height: 80px;
-        background: #f0f0f0;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-radius: 0.75rem;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         flex-shrink: 0;
+        border: 2px solid #e5e7eb;
     }
     
     .proposal-product-image img {
@@ -111,23 +223,27 @@
     
     .proposal-product-info {
         flex-grow: 1;
+        min-width: 0;
     }
     
     .proposal-product-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 0.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.35rem;
         font-size: 1.1rem;
     }
     
     .proposal-shop {
         font-size: 0.85rem;
-        color: #667eea;
+        color: #1e3a5f;
         margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
     }
     
     .proposal-shop i {
-        margin-right: 0.25rem;
+        color: #2d5a87;
     }
     
     .proposal-details {
@@ -135,9 +251,10 @@
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
         margin-top: 1rem;
-        padding: 1rem;
-        background: #f9fafb;
-        border-radius: 0.5rem;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
     }
     
     .detail-item {
@@ -146,64 +263,71 @@
     
     .detail-label {
         font-size: 0.75rem;
-        color: #999;
+        color: #64748b;
         text-transform: uppercase;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.35rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
     
     .detail-value {
-        font-weight: 600;
-        color: #333;
+        font-weight: 700;
+        color: #1e293b;
     }
     
     .detail-value.price {
-        color: #f59e0b;
-        font-size: 1.1rem;
+        color: #1e3a5f;
+        font-size: 1.15rem;
     }
     
     .proposal-description {
         margin-top: 1rem;
-        padding: 1rem;
-        background: #fffbeb;
-        border-radius: 0.5rem;
-        border-left: 4px solid #f59e0b;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border-radius: 0.75rem;
+        border-left: 4px solid #1e3a5f;
     }
     
     .proposal-description-label {
         font-size: 0.75rem;
-        color: #92400e;
+        color: #1e3a5f;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 700;
         margin-bottom: 0.5rem;
+        letter-spacing: 0.5px;
     }
     
     .proposal-description-text {
-        color: #333;
+        color: #334155;
         line-height: 1.6;
+        font-size: 0.95rem;
     }
     
     .proposal-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 1rem;
-        border-top: 1px solid #f0f0f0;
-        margin-top: 1rem;
+        padding: 1.25rem 1.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-top: 1px solid #e5e7eb;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
     
     .proposal-actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        flex-wrap: wrap;
     }
     
     .btn-proposal-action {
-        padding: 0.5rem 1rem;
-        border: 1px solid #667eea;
-        border-radius: 0.5rem;
+        padding: 0.65rem 1.25rem;
+        border: 2px solid #1e3a5f;
+        border-radius: 0.75rem;
         background: white;
-        color: #667eea;
+        color: #1e3a5f;
         font-size: 0.85rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
@@ -213,87 +337,189 @@
     }
     
     .btn-proposal-action:hover {
-        background: #667eea;
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
         color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+        text-decoration: none;
     }
     
     .btn-proposal-action.btn-primary {
-        background: #f59e0b;
-        border-color: #f59e0b;
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+        border-color: transparent;
         color: white;
     }
     
     .btn-proposal-action.btn-primary:hover {
-        background: #d97706;
-        border-color: #d97706;
+        background: linear-gradient(135deg, #2d5a87, #3d6a9f);
+        box-shadow: 0 6px 16px rgba(30, 58, 95, 0.35);
     }
     
     .btn-proposal-action.btn-success {
-        background: #10b981;
-        border-color: #10b981;
+        background: linear-gradient(135deg, #059669, #10b981);
+        border-color: transparent;
         color: white;
     }
     
     .btn-proposal-action.btn-success:hover {
-        background: #059669;
-        border-color: #059669;
+        background: linear-gradient(135deg, #047857, #059669);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
     }
     
+    /* Empty State */
     .empty-proposals {
         text-align: center;
-        padding: 3rem;
+        padding: 4rem 2rem;
         background: white;
-        border-radius: 0.75rem;
+        border-radius: 1rem;
+        border: 2px dashed #e5e7eb;
+    }
+
+    .empty-proposals-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
     }
     
     .empty-proposals i {
-        font-size: 3rem;
-        color: #ddd;
-        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        color: #94a3b8;
+    }
+
+    .empty-proposals h5 {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-proposals p {
+        color: #64748b;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-proposals .btn-primary {
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+        border: none;
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .empty-proposals .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
     }
     
     .status-info {
         margin-top: 0.5rem;
-        font-size: 0.85rem;
-        color: #666;
+        font-size: 0.8rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
     }
     
-    .status-info i {
-        margin-right: 0.25rem;
-    }
-    
+    /* Filter Tabs */
     .nav-tabs-proposals {
         background: white;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
+        border-radius: 1rem;
+        padding: 0.75rem;
         margin-bottom: 1.5rem;
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
     }
     
     .nav-tabs-proposals .nav-link {
         border: none;
         background: transparent;
-        color: #666;
-        padding: 0.75rem 1.25rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
+        color: #64748b;
+        padding: 0.65rem 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
         transition: all 0.3s ease;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
     }
     
     .nav-tabs-proposals .nav-link:hover {
-        background: #f3f4f6;
+        background: #f1f5f9;
+        color: #1e3a5f;
     }
     
     .nav-tabs-proposals .nav-link.active {
-        background: #f59e0b;
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
         color: white;
     }
     
     .nav-tabs-proposals .badge {
         margin-left: 0.5rem;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+        background: rgba(255,255,255,0.25);
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .proposals-header {
+            padding: 1.75rem 0;
+        }
+
+        .proposals-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .proposals-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .proposal-header,
+        .proposal-content,
+        .proposal-footer {
+            padding: 1rem;
+        }
+
+        .proposal-product-image {
+            width: 65px;
+            height: 65px;
+        }
+
+        .proposal-details {
+            grid-template-columns: repeat(2, 1fr);
+            padding: 1rem;
+        }
+
+        .proposal-actions {
+            width: 100%;
+        }
+
+        .btn-proposal-action {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-tabs-proposals {
+            gap: 0.35rem;
+            padding: 0.5rem;
+        }
+
+        .nav-tabs-proposals .nav-link {
+            padding: 0.5rem 0.85rem;
+            font-size: 0.8rem;
+        }
     }
 </style>
 
@@ -302,12 +528,27 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h2>
-                    <i class="fas fa-file-alt me-2"></i>Pengajuan Layanan Saya
+                    <i class="fas fa-file-signature"></i>
+                    Pengajuan Layanan Saya
                 </h2>
-                <p class="mb-0 mt-2 opacity-75">Kelola pengajuan layanan yang sedang menunggu persetujuan seller</p>
+                <p class="proposals-header-subtitle mb-0 mt-2">Kelola pengajuan layanan yang sedang menunggu persetujuan seller</p>
+                <div class="proposals-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>{{ $proposals->total() }} Total Pengajuan</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ $proposals->where('status', 'pending')->count() }} Menunggu</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ $proposals->where('status', 'accepted')->count() }} Diterima</span>
+                    </div>
+                </div>
             </div>
             <a href="{{ route('buyer.home') }}?tab=services" class="btn btn-light">
-                <i class="fas fa-plus me-2"></i>Cari Layanan
+                <i class="fas fa-search me-2"></i>Cari Layanan
             </a>
         </div>
     </div>
@@ -331,7 +572,7 @@
     <!-- Filter Tabs -->
     <div class="nav-tabs-proposals">
         <a href="{{ route('buyer.proposals') }}" class="nav-link {{ !request('status') ? 'active' : '' }}">
-            Semua
+            <i class="fas fa-list"></i> Semua
         </a>
         <a href="{{ route('buyer.proposals', ['status' => 'pending']) }}" class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}">
             <i class="fas fa-clock"></i> Menunggu
@@ -526,10 +767,12 @@
         </div>
     @else
         <div class="empty-proposals">
-            <i class="fas fa-file-alt d-block"></i>
+            <div class="empty-proposals-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
             <h5>Belum Ada Pengajuan Layanan</h5>
-            <p class="text-muted">Anda belum memiliki pengajuan layanan. Cari layanan yang Anda butuhkan dan ajukan proposal!</p>
-            <a href="{{ route('buyer.home') }}?tab=services" class="btn btn-primary mt-3">
+            <p>Anda belum memiliki pengajuan layanan. Cari layanan yang Anda butuhkan dan ajukan proposal!</p>
+            <a href="{{ route('buyer.home') }}?tab=services" class="btn btn-primary mt-2">
                 <i class="fas fa-search me-2"></i>Cari Layanan
             </a>
         </div>

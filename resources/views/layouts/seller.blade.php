@@ -189,7 +189,7 @@
         .sidebar-link.active {
             color: var(--color-white);
             background: var(--gradient-primary);
-            box-shadow: 0 4px 12px rgba(58, 123, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.4);
         }
         
         .sidebar-link i {
@@ -591,7 +591,7 @@
         
         .form-control:focus {
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(30, 58, 95, 0.25);
         }
         
         .alert {

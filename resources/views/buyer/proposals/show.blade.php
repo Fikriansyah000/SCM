@@ -4,26 +4,62 @@
 
 @section('content')
 <style>
+    @keyframes headerShine {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    
     .proposal-detail-header {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #3d6a9f 100%);
         color: white;
-        padding: 2rem 0;
+        padding: 2.5rem 0;
         margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .proposal-detail-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        background-size: 200% 100%;
+        animation: headerShine 3s ease-in-out infinite;
+    }
+    
+    .proposal-detail-header .container {
+        position: relative;
+        z-index: 1;
     }
     
     .proposal-detail-card {
         background: white;
-        border-radius: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(30, 58, 95, 0.1);
         margin-bottom: 1.5rem;
         overflow: hidden;
+        border: 1px solid rgba(30, 58, 95, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .proposal-detail-card:hover {
+        box-shadow: 0 8px 25px rgba(30, 58, 95, 0.15);
+        transform: translateY(-2px);
     }
     
     .proposal-detail-card .card-header {
-        background: #f9fafb;
-        border-bottom: 1px solid #e5e7eb;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e2e8f0;
         padding: 1rem 1.5rem;
         font-weight: 600;
+        color: #1e3a5f;
+    }
+    
+    .proposal-detail-card .card-header i {
+        color: #2d5a87;
     }
     
     .proposal-detail-card .card-body {
@@ -36,36 +72,42 @@
         border-radius: 2rem;
         font-size: 1rem;
         font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
     
     .status-pending {
-        background: #fef3c7;
-        color: #92400e;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #1e40af;
     }
     
     .status-accepted {
-        background: #dcfce7;
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
         color: #166534;
     }
     
     .status-rejected, .status-cancelled {
-        background: #fee2e2;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
         color: #991b1b;
     }
     
     .status-in-progress {
-        background: #dbeafe;
-        color: #0c4a6e;
-    }
-
-    .status-review {
-        background: #e0e7ff;
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
         color: #3730a3;
     }
 
-    .status-revision {
-        background: #fef3c7;
+    .status-review {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
         color: #92400e;
+    }
+
+    .status-revision {
+        background: linear-gradient(135deg, #fed7aa, #fdba74);
+        color: #9a3412;
+    }
+    
+    .status-completed {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #047857;
     }
     
     .service-product-card {
@@ -77,13 +119,14 @@
     .service-product-image {
         width: 120px;
         height: 120px;
-        background: #f0f0f0;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
         border-radius: 0.75rem;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         flex-shrink: 0;
+        border: 2px solid #e2e8f0;
     }
     
     .service-product-image img {
@@ -94,13 +137,15 @@
     
     .service-product-info h4 {
         margin-bottom: 0.5rem;
-        color: #333;
+        color: #1e3a5f;
+        font-weight: 700;
     }
     
     .service-product-shop {
-        color: #667eea;
+        color: #2d5a87;
         font-size: 0.9rem;
         margin-bottom: 0.5rem;
+        font-weight: 500;
     }
     
     .service-product-shop i {
@@ -113,8 +158,9 @@
         align-items: center;
         margin-top: 1rem;
         padding: 1rem;
-        background: #fffbeb;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        border-radius: 0.75rem;
+        border: 1px solid #bfdbfe;
     }
     
     .price-item {
@@ -123,8 +169,9 @@
     
     .price-label {
         font-size: 0.75rem;
-        color: #92400e;
+        color: #1e40af;
         text-transform: uppercase;
+        font-weight: 600;
     }
     
     .price-value {
@@ -133,12 +180,12 @@
     }
     
     .price-value.original {
-        color: #999;
+        color: #94a3b8;
         text-decoration: line-through;
     }
     
     .price-value.offered {
-        color: #f59e0b;
+        color: #1e3a5f;
     }
     
     .info-grid {
@@ -149,57 +196,62 @@
     
     .info-item {
         padding: 1rem;
-        background: #f9fafb;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 0.75rem;
+        border: 1px solid #e2e8f0;
     }
     
     .info-item-label {
         font-size: 0.75rem;
-        color: #999;
+        color: #64748b;
         text-transform: uppercase;
         margin-bottom: 0.25rem;
+        font-weight: 600;
     }
     
     .info-item-value {
         font-weight: 600;
-        color: #333;
+        color: #1e3a5f;
         font-size: 1.1rem;
     }
     
     .description-box {
         padding: 1.5rem;
-        background: #fffbeb;
-        border-radius: 0.5rem;
-        border-left: 4px solid #f59e0b;
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        border-radius: 0.75rem;
+        border-left: 4px solid #2d5a87;
     }
     
     .description-box h6 {
-        color: #92400e;
+        color: #1e3a5f;
         margin-bottom: 0.75rem;
+        font-weight: 600;
     }
     
     .notes-box {
         padding: 1.5rem;
-        background: #f0fdf4;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border-radius: 0.75rem;
         border-left: 4px solid #10b981;
     }
     
     .notes-box h6 {
         color: #166534;
         margin-bottom: 0.75rem;
+        font-weight: 600;
     }
     
     .rejection-box {
         padding: 1.5rem;
-        background: #fef2f2;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border-radius: 0.75rem;
         border-left: 4px solid #ef4444;
     }
     
     .rejection-box h6 {
         color: #991b1b;
         margin-bottom: 0.75rem;
+        font-weight: 600;
     }
     
     .action-buttons {
@@ -210,7 +262,7 @@
     
     .btn-action {
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
@@ -222,41 +274,50 @@
     }
     
     .btn-action.btn-primary {
-        background: #667eea;
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
         color: white;
+        box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
     }
     
     .btn-action.btn-primary:hover {
-        background: #5a67d8;
+        background: linear-gradient(135deg, #2d5a87, #3d6a9f);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
     }
     
     .btn-action.btn-success {
-        background: #10b981;
+        background: linear-gradient(135deg, #10b981, #059669);
         color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
     
     .btn-action.btn-success:hover {
-        background: #059669;
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
     }
     
     .btn-action.btn-outline {
         background: white;
-        color: #667eea;
-        border: 2px solid #667eea;
+        color: #1e3a5f;
+        border: 2px solid #1e3a5f;
     }
     
     .btn-action.btn-outline:hover {
-        background: #667eea;
+        background: #1e3a5f;
         color: white;
+        transform: translateY(-2px);
     }
     
     .btn-action.btn-warning {
-        background: #f59e0b;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
     }
     
     .btn-action.btn-warning:hover {
-        background: #d97706;
+        background: linear-gradient(135deg, #d97706, #b45309);
+        transform: translateY(-2px);
     }
     
     .timeline {
@@ -271,7 +332,7 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: #e5e7eb;
+        background: linear-gradient(180deg, #2d5a87, #e2e8f0);
     }
     
     .timeline-item {
@@ -289,19 +350,24 @@
         width: 1rem;
         height: 1rem;
         border-radius: 50%;
-        background: #667eea;
+        background: #2d5a87;
         border: 3px solid white;
-        box-shadow: 0 0 0 2px #667eea;
+        box-shadow: 0 0 0 2px #2d5a87;
     }
     
     .timeline-marker.pending {
-        background: #f59e0b;
-        box-shadow: 0 0 0 2px #f59e0b;
+        background: #3b82f6;
+        box-shadow: 0 0 0 2px #3b82f6;
     }
     
     .timeline-marker.completed {
         background: #10b981;
         box-shadow: 0 0 0 2px #10b981;
+    }
+    
+    .timeline-marker.active {
+        background: #8b5cf6;
+        box-shadow: 0 0 0 2px #8b5cf6;
     }
     
     .timeline-content {
@@ -310,42 +376,165 @@
     
     .timeline-title {
         font-weight: 600;
-        color: #333;
+        color: #1e3a5f;
     }
     
     .timeline-date {
         font-size: 0.85rem;
-        color: #999;
+        color: #64748b;
     }
     
     .payment-summary {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #3d6a9f 100%);
         color: white;
         padding: 2rem;
-        border-radius: 0.75rem;
+        border-radius: 1rem;
         text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(30, 58, 95, 0.3);
+    }
+    
+    .payment-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        background-size: 200% 100%;
+        animation: headerShine 3s ease-in-out infinite;
     }
     
     .payment-summary h4 {
         margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
     }
     
     .payment-summary .amount {
         font-size: 2rem;
         font-weight: 700;
         margin: 1rem 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .payment-summary p {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .payment-summary form {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .payment-summary .btn-light {
+        background: white;
+        color: #1e3a5f;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .payment-summary .btn-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    
+    .proposal-status-badge {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .back-link {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link:hover {
+        background: rgba(255,255,255,0.2);
+        color: white;
+    }
+    
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .header-title i {
+        font-size: 1.5rem;
+        opacity: 0.9;
+    }
+    
+    .seller-card-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    
+    .seller-card-avatar i {
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .seller-card-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    
+    .btn-seller-chat {
+        background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    
+    .btn-seller-chat:hover {
+        background: linear-gradient(135deg, #2d5a87, #3d6a9f);
+        color: white;
+        transform: translateY(-2px);
     }
 </style>
 
 <div class="proposal-detail-header">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <a href="{{ route('buyer.proposals') }}" class="text-white text-decoration-none mb-2 d-inline-block">
-                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Pengajuan
+                <a href="{{ route('buyer.proposals') }}" class="back-link">
+                    <i class="fas fa-arrow-left"></i>Kembali ke Daftar Pengajuan
                 </a>
-                <h2 class="mb-0">
-                    <i class="fas fa-file-alt me-2"></i>Detail Pengajuan #{{ $proposal->id }}
+                <h2 class="mb-0 header-title">
+                    <i class="fas fa-file-alt"></i>Detail Pengajuan #{{ $proposal->id }}
                 </h2>
             </div>
             @php
@@ -644,25 +833,20 @@
                     <i class="fas fa-store me-2"></i>Informasi Seller
                 </div>
                 <div class="card-body text-center">
-                    <div class="mb-3">
+                    <div class="seller-card-avatar">
                         @if($proposal->seller && $proposal->seller->avatar)
                             <img src="{{ asset('storage/' . $proposal->seller->avatar) }}" 
-                                 alt="{{ $proposal->seller->name }}"
-                                 class="rounded-circle"
-                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                 alt="{{ $proposal->seller->name }}">
                         @else
-                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
-                                 style="width: 80px; height: 80px;">
-                                <i class="fas fa-store fa-2x text-white"></i>
-                            </div>
+                            <i class="fas fa-store"></i>
                         @endif
                     </div>
-                    <h5 class="mb-1">{{ $proposal->seller->shop->name ?? $proposal->seller->name ?? 'Seller' }}</h5>
+                    <h5 class="mb-1" style="color: #1e3a5f;">{{ $proposal->seller->shop->name ?? $proposal->seller->name ?? 'Seller' }}</h5>
                     @if($proposal->seller)
                         <p class="text-muted mb-3">{{ $proposal->seller->email }}</p>
                     @endif
-                    <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}&shop={{ $proposal->product->shop_id ?? '' }}&proposal_id={{ $proposal->id }}&product_id={{ $proposal->product_id }}" class="btn btn-outline-primary btn-sm w-100">
-                        <i class="fas fa-comments me-1"></i>Chat Seller
+                    <a href="{{ route('buyer.chat') }}?seller={{ $proposal->seller_id }}&shop={{ $proposal->product->shop_id ?? '' }}&proposal_id={{ $proposal->id }}&product_id={{ $proposal->product_id }}" class="btn-seller-chat w-100">
+                        <i class="fas fa-comments"></i>Chat Seller
                     </a>
                 </div>
             </div>
