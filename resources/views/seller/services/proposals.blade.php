@@ -1,55 +1,64 @@
-@extends('layouts.app')
+@extends('layouts.seller')
 
 @section('title', 'Proposal Layanan - PestiMart')
 
+@section('page-title', 'Kelola Proposal')
+
 @section('content')
 <style>
-    /* PestiMart Theme - Blue Color Scheme */
-    .page-header {
-        background: linear-gradient(135deg, #2563eb 0%, #3A7BFF 50%, #6ECBF9 100%);
-        border-radius: 1rem;
-        padding: 1.5rem 2rem;
-        margin-bottom: 1.5rem;
-        color: white;
-        box-shadow: 0 4px 20px rgba(58, 123, 255, 0.25);
-        position: relative;
-        overflow: hidden;
-    }
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -20%;
-        width: 300px;
-        height: 300px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 50%;
-    }
-    .page-header h2 {
-        margin: 0;
-        font-weight: 700;
-        position: relative;
-        z-index: 1;
-    }
-    .page-header p {
-        margin: 0.5rem 0 0;
-        opacity: 0.9;
-        font-size: 0.95rem;
-        position: relative;
-        z-index: 1;
+    /* Filter Bar */
+    .filter-bar { 
+        display: flex; 
+        gap: var(--space-3); 
+        margin-bottom: var(--space-5); 
+        flex-wrap: wrap; 
+        align-items: center;
+        background: var(--color-white);
+        padding: var(--space-4);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-card);
     }
 
+    .filter-bar select { 
+        padding: var(--space-2) var(--space-4); 
+        border-radius: var(--radius-md); 
+        border: 1px solid var(--color-border);
+        background: var(--color-bg);
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-bar select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
+    }
+
+    .filter-count {
+        background: var(--gradient-primary);
+        color: white;
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+    }
+
+    /* Proposal Card */
     .proposal-card {
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(58, 123, 255, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1.25rem;
-        border: 1px solid rgba(58, 123, 255, 0.2);
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        padding: var(--space-5);
+        margin-bottom: var(--space-4);
+        border: 1px solid var(--color-border);
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
     }
+
     .proposal-card::before {
         content: '';
         position: absolute;
@@ -57,13 +66,12 @@
         left: 0;
         width: 5px;
         height: 100%;
-        background: linear-gradient(180deg, #3A7BFF 0%, #6ECBF9 100%);
-        border-radius: 1rem 0 0 1rem;
+        background: var(--gradient-primary);
     }
+
     .proposal-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(58, 123, 255, 0.2);
-        border-color: rgba(58, 123, 255, 0.4);
+        box-shadow: var(--shadow-card-hover);
     }
 
     .proposal-card.pending::before { background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); }
@@ -72,138 +80,154 @@
     .proposal-card.revision::before { background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); }
     .proposal-card.completed::before { background: linear-gradient(180deg, #64748b 0%, #475569 100%); }
     
-    .proposal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .proposal-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        margin-bottom: var(--space-4);
+        gap: var(--space-3);
+    }
+
     .proposal-product { 
         font-weight: 700; 
-        font-size: 1.15rem; 
-        color: #1e3a5f;
+        font-size: var(--font-size-lg); 
+        color: var(--color-neutral-dark);
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: var(--space-2);
     }
+
     .proposal-product i {
-        color: #3A7BFF;
+        color: var(--color-primary);
     }
+
     .proposal-buyer { 
-        color: #bae6fd; 
-        background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
-        padding: 0.35rem 0.75rem;
-        border-radius: 999px;
-        font-size: 0.85rem;
+        color: white; 
+        background: var(--gradient-primary);
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: var(--font-size-sm);
         font-weight: 500;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        margin-top: 0.5rem;
+        gap: var(--space-2);
+        margin-top: var(--space-2);
     }
     
-    .proposal-meta { 
-        display: flex; 
-        flex-wrap: wrap; 
-        gap: 0.75rem; 
-        margin-bottom: 1rem; 
-    }
-    .proposal-meta-item { 
-        display: flex; 
-        align-items: center; 
-        gap: 0.4rem;
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(224,242,254,0.9) 100%);
-        padding: 0.5rem 0.85rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        border: 1px solid rgba(58, 123, 255, 0.15);
-        transition: all 0.2s ease;
-    }
-    .proposal-meta-item:hover {
-        background: white;
-        box-shadow: 0 2px 8px rgba(58, 123, 255, 0.15);
-    }
-    .proposal-meta-item i { color: #3A7BFF; }
-    
-    .proposal-desc { 
-        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,249,255,0.95) 100%);
-        border-radius: 0.75rem; 
-        padding: 1rem; 
-        font-size: 0.9rem; 
-        color: #374151; 
-        margin-bottom: 1rem;
-        border: 1px solid rgba(58, 123, 255, 0.1);
-        line-height: 1.6;
-    }
-
+    /* Product Preview */
     .product-preview {
-        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,249,255,0.95) 100%);
-        border: 1px solid rgba(58, 123, 255, 0.2);
-        border-radius: 0.75rem;
-        padding: 0.85rem;
-        margin-bottom: 1rem;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--space-3);
+        margin-bottom: var(--space-4);
         display: flex;
         align-items: center;
-        gap: 1rem;
-        transition: all 0.2s ease;
+        gap: var(--space-4);
     }
-    .product-preview:hover {
-        box-shadow: 0 4px 12px rgba(58, 123, 255, 0.1);
-    }
+
     .product-preview-img {
-        width: 70px;
-        height: 70px;
-        border-radius: 0.6rem;
+        width: 64px;
+        height: 64px;
+        border-radius: var(--radius-md);
         overflow: hidden;
-        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        background: var(--color-white);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
     }
+
     .product-preview-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+
     .product-preview-img i {
         font-size: 1.5rem;
-        color: #3A7BFF;
+        color: var(--color-primary);
+    }
+
+    /* Meta Items */
+    .proposal-meta { 
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: var(--space-3); 
+        margin-bottom: var(--space-4); 
+    }
+
+    .proposal-meta-item { 
+        display: flex; 
+        align-items: center; 
+        gap: var(--space-2);
+        background: var(--color-bg);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-sm);
+        border: 1px solid var(--color-border);
+    }
+
+    .proposal-meta-item i { 
+        color: var(--color-primary); 
     }
     
+    .proposal-desc { 
+        background: var(--color-bg);
+        border-radius: var(--radius-md); 
+        padding: var(--space-4); 
+        font-size: var(--font-size-sm); 
+        color: var(--color-text-muted); 
+        margin-bottom: var(--space-4);
+        border: 1px solid var(--color-border);
+        line-height: 1.6;
+    }
+
+    /* Status Badge */
     .status-badge { 
-        padding: 0.4rem 0.9rem; 
-        border-radius: 999px; 
-        font-size: 0.8rem; 
+        padding: var(--space-2) var(--space-3); 
+        border-radius: var(--radius-full); 
+        font-size: var(--font-size-xs); 
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: var(--space-1);
+        white-space: nowrap;
     }
-    .status-pending { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; }
-    .status-accepted { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46; }
-    .status-in_progress { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; }
-    .status-review { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); color: #3730a3; }
-    .status-revision { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; }
-    .status-completed { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); color: #475569; }
-    .status-rejected, .status-cancelled { background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); color: #991b1b; }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-accepted { background: #d1fae5; color: #065f46; }
+    .status-in_progress { background: #dbeafe; color: #1e40af; }
+    .status-review { background: #ede9fe; color: #5b21b6; }
+    .status-revision { background: #ffedd5; color: #c2410c; }
+    .status-completed { background: #e2e8f0; color: #475569; }
+    .status-rejected, .status-cancelled { background: #fee2e2; color: #b91c1c; }
     
+    /* Action Buttons */
     .btn-action {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--font-size-sm);
+        border-radius: var(--radius-md);
+        font-weight: 600;
         transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: var(--space-2);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
     }
+
     .btn-action:hover {
         transform: translateY(-2px);
     }
 
     .btn-detail {
-        background: linear-gradient(135deg, #3A7BFF 0%, #2563eb 100%);
+        background: var(--gradient-primary);
         color: white;
-        border: none;
     }
+
     .btn-detail:hover {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(58, 123, 255, 0.3);
     }
@@ -211,10 +235,9 @@
     .btn-chat {
         background: linear-gradient(135deg, #6ECBF9 0%, #38bdf8 100%);
         color: white;
-        border: none;
     }
+
     .btn-chat:hover {
-        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(110, 203, 249, 0.3);
     }
@@ -222,10 +245,9 @@
     .btn-accept {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
-        border: none;
     }
+
     .btn-accept:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
@@ -233,115 +255,121 @@
     .btn-reject {
         background: transparent;
         color: #ef4444;
-        border: 2px solid #ef4444;
+        border: 2px solid #ef4444 !important;
     }
+
     .btn-reject:hover {
         background: #ef4444;
         color: white;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
     .btn-submit {
         background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
         color: white;
-        border: none;
     }
+
     .btn-submit:hover {
-        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
         color: white;
         box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
-    .filter-bar { 
-        display: flex; 
-        gap: 1rem; 
-        margin-bottom: 1.5rem; 
-        flex-wrap: wrap; 
-        align-items: center;
-        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,249,255,0.9) 100%);
-        padding: 1rem 1.25rem;
-        border-radius: 0.75rem;
-        border: 1px solid rgba(58, 123, 255, 0.15);
-    }
-    .filter-bar select { 
-        padding: 0.5rem 1rem; 
-        border-radius: 0.5rem; 
-        border: 1px solid rgba(58, 123, 255, 0.3);
-        background: white;
-        color: #1e3a5f;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .filter-bar select:focus {
-        outline: none;
-        border-color: #3A7BFF;
-        box-shadow: 0 0 0 3px rgba(58, 123, 255, 0.15);
-    }
-    .filter-bar .filter-count {
-        background: linear-gradient(135deg, #3A7BFF 0%, #6ECBF9 100%);
-        color: white;
-        padding: 0.4rem 0.85rem;
-        border-radius: 999px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        border-radius: 1rem;
-        border: 2px dashed rgba(58, 123, 255, 0.3);
-    }
-    .empty-state i {
-        font-size: 4rem;
-        color: #bae6fd;
-        margin-bottom: 1rem;
-    }
-    .empty-state p {
-        color: #2563eb;
-        font-size: 1.1rem;
-    }
-
     .waiting-badge {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        background: #fef3c7;
         color: #92400e;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 0.85rem;
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-sm);
         font-weight: 500;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: var(--space-2);
         animation: pulse 2s infinite;
     }
+
     @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.7; }
     }
+
+    .empty-state {
+        text-align: center;
+        padding: var(--space-10);
+        background: var(--color-white);
+        border-radius: var(--radius-lg);
+        border: 2px dashed var(--color-border);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--color-border);
+        margin-bottom: var(--space-4);
+    }
+
+    .empty-state p {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-lg);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 767.98px) {
+        .proposal-header {
+            flex-direction: column;
+        }
+
+        .proposal-product {
+            font-size: var(--font-size-base);
+        }
+
+        .proposal-meta {
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .proposal-meta-item {
+            width: 100%;
+        }
+
+        .product-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .d-flex.gap-2 {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .filter-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-bar select {
+            width: 100%;
+        }
+    }
 </style>
 
-<div class="container my-4">
-    <div class="page-header">
-        <h2><i class="fas fa-file-contract me-2"></i>Proposal Layanan</h2>
-        <p>Kelola semua proposal layanan dari buyer</p>
-    </div>
-
-    <div class="filter-bar">
-        <form method="GET" class="d-flex gap-2">
-            <select name="status" onchange="this.form.submit()">
-                <option value="">📋 Semua Status</option>
-                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>⏳ Pending</option>
-                <option value="accepted" {{ request('status') === 'accepted' ? 'selected' : '' }}>✅ Diterima</option>
-                <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>🔧 Dikerjakan</option>
-                <option value="review" {{ request('status') === 'review' ? 'selected' : '' }}>👁️ Review</option>
-                <option value="revision" {{ request('status') === 'revision' ? 'selected' : '' }}>🔄 Revisi</option>
-                <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>🏁 Selesai</option>
-            </select>
-        </form>
-        <span class="filter-count"><i class="fas fa-list me-1"></i>{{ $proposals->total() }} proposal</span>
-    </div>
+<div class="filter-bar">
+    <form method="GET" class="d-flex gap-2 flex-grow-1">
+        <select name="status" onchange="this.form.submit()">
+            <option value="">📋 Semua Status</option>
+            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>⏳ Pending</option>
+            <option value="accepted" {{ request('status') === 'accepted' ? 'selected' : '' }}>✅ Diterima</option>
+            <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>🔧 Dikerjakan</option>
+            <option value="review" {{ request('status') === 'review' ? 'selected' : '' }}>👁️ Review</option>
+            <option value="revision" {{ request('status') === 'revision' ? 'selected' : '' }}>🔄 Revisi</option>
+            <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>🏁 Selesai</option>
+        </select>
+    </form>
+    <span class="filter-count"><i class="fas fa-list me-1"></i>{{ $proposals->total() }} proposal</span>
+</div>
 
     @forelse($proposals as $proposal)
         <div class="proposal-card {{ $proposal->status }}">
@@ -419,7 +447,7 @@
                     <i class="fas fa-eye"></i>Detail
                 </a>
 
-                <a href="{{ route('messages.show', [
+                <a href="{{ route('seller.messages.show', [
                     'user' => $proposal->buyer_id,
                     'shop_id' => $proposal->product->shop_id ?? '',
                     'proposal_id' => $proposal->id,
@@ -466,7 +494,6 @@
     <div class="mt-4">
         {{ $proposals->withQueryString()->links() }}
     </div>
-</div>
 
 {{-- Reject Modals for each proposal --}}
 @foreach($proposals as $proposal)

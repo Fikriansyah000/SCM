@@ -108,6 +108,7 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::put('/shop', [SellerController::class, 'updateShop'])->name('shop.update');
     
     // Products
+    Route::post('/products/{product}/archive', [ProductController::class, 'toggleArchive'])->name('products.archive');
     Route::resource('products', ProductController::class);
     
     // Service Slots (for service products)
@@ -135,6 +136,23 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->g
     Route::post('/services/proposals/{proposal}/request-extension', [ServiceWorkflowController::class, 'requestExtension'])->name('services.proposals.request-extension');
     Route::get('/services/orders', [ServiceWorkflowController::class, 'orders'])->name('services.orders');
     Route::get('/services/orders/{order}', [ServiceWorkflowController::class, 'showOrder'])->name('services.orders.show');
+    
+    // Seller Profile (uses seller layout)
+    Route::get('/profile', [ProfileController::class, 'showSeller'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'editSeller'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    
+    // Seller Notifications (uses seller layout)
+    Route::get('/notifications', [NotificationController::class, 'indexSeller'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::delete('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('notifications.delete-all');
+    
+    // Seller Messages (uses seller layout)
+    Route::get('/messages', [MessageController::class, 'indexSeller'])->name('messages.index');
+    Route::get('/messages/{user}', [MessageController::class, 'showSeller'])->name('messages.show');
+    Route::post('/messages/{user}', [MessageController::class, 'send'])->name('messages.send');
 });
 
 // Shared Routes (Both Buyer and Seller)

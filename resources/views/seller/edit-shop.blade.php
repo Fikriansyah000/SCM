@@ -121,6 +121,103 @@
         background: #f0f4ff;
         text-decoration: none;
     }
+
+    /* ========== Mobile Responsive ========== */
+    @media (max-width: 991.98px) {
+        .edit-shop-container {
+            padding: 1.5rem;
+        }
+        .image-preview {
+            max-width: 250px;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .container.my-4 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        .edit-shop-container {
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+        }
+        .edit-shop-container h2 {
+            font-size: 1.35rem;
+            margin-bottom: 1.25rem;
+        }
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+        .form-section-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .upload-area {
+            padding: 1.5rem 1rem;
+        }
+        .upload-area i {
+            font-size: 1.75rem;
+        }
+        .upload-area p {
+            font-size: 0.9rem;
+        }
+        .image-preview {
+            max-width: 200px;
+        }
+        /* Stack buttons vertically on mobile */
+        .form-section:last-child {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .btn-submit, .btn-cancel {
+            width: 100%;
+            margin-left: 0;
+            text-align: center;
+            display: inline-flex;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .container.my-4 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            margin-top: 1rem !important;
+            margin-bottom: 1rem !important;
+        }
+        .edit-shop-container {
+            padding: 1rem;
+        }
+        .edit-shop-container h2 {
+            font-size: 1.2rem;
+        }
+        .form-section-title {
+            font-size: 0.95rem;
+        }
+        .form-control {
+            padding: 0.65rem;
+            font-size: 0.95rem;
+        }
+        .upload-area {
+            padding: 1.25rem 0.75rem;
+        }
+        .upload-area i {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .btn-submit, .btn-cancel {
+            padding: 0.7rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        .image-preview {
+            max-width: 100%;
+        }
+    }
 </style>
 
 <div class="container my-4">

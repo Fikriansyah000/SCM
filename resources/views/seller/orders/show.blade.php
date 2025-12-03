@@ -1,14 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.seller')
 
 @section('title', 'Detail Pesanan - PestiMart Seller')
+@section('page-title', 'Detail Pesanan')
 
 @section('content')
 <style>
     .order-detail-container {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: 2rem;
-        max-width: 1200px;
+        gap: 1.5rem;
+        max-width: 1100px;
         margin: 0 auto;
     }
 
@@ -22,11 +23,31 @@
         }
     }
 
+    /* Modern Glass Card */
     .detail-card {
-        background: var(--card-bg, #FFFFFF);
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 1.75rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        position: relative;
+        overflow: hidden;
+    }
+    .detail-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary, #3A7BFF) 0%, #6366f1 50%, var(--color-primary, #3A7BFF) 100%);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0%, 100% { background-position: 200% 0; }
+        50% { background-position: 0% 0; }
     }
 
     .section-header {
@@ -34,76 +55,103 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--neutral-gray, #ECEEF3);
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
         flex-wrap: wrap;
         gap: 1rem;
     }
 
     .section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--neutral-dark, #1A1F36);
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
+    .section-title i {
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
+    .order-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
+
+    .order-date {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+    }
+
+    /* Status Badges */
     .status-badge {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        border-radius: 2rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.25rem;
+        border-radius: 12px;
         font-weight: 600;
+        font-size: 0.85rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .status-pending {
-        background: #fff3cd;
-        color: #856404;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
     }
 
     .status-processing {
-        background: #d1ecf1;
-        color: #0c5460;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
     }
 
     .status-shipped {
-        background: #cfe2ff;
-        color: #084298;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        color: #4338ca;
     }
 
     .status-delivered {
-        background: #d1e7dd;
-        color: #0f5132;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
     }
 
     .status-completed {
-        background: #d1e7dd;
-        color: #0f5132;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
     }
 
     /* Service order badges */
     .status-accepted {
-        background: #dbeafe;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
         color: #1d4ed8;
     }
 
     .status-in_progress {
-        background: #bfdbfe;
-        color: #1e3a8a;
+        background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+        color: #3730a3;
     }
 
     .status-review {
-        background: #ede9fe;
-        color: #5b21b6;
+        background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+        color: #6d28d9;
     }
 
     .status-revision {
-        background: #fff7ed;
+        background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
         color: #c2410c;
     }
 
     .status-cancelled {
-        background: #fee2e2;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
         color: #b91c1c;
     }
 
@@ -115,27 +163,32 @@
     }
 
     .status-secondary-badge {
-        background: rgba(15, 23, 42, 0.07);
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
         color: #475569;
-        border: 1px dashed rgba(148, 163, 184, 0.8);
+        border: 1px dashed rgba(148, 163, 184, 0.6);
         padding: 0.5rem 1rem;
+        font-size: 0.8rem;
     }
 
+    /* Order Items */
     .order-item {
         display: flex;
         gap: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
-        margin-bottom: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    }
+    .order-item:last-child {
+        border-bottom: none;
     }
 
     .order-item img {
-        width: 80px;
-        height: 80px;
-        background: var(--neutral-gray, #ECEEF3);
-        border-radius: 0.4rem;
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 12px;
         object-fit: cover;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .item-details {
@@ -146,30 +199,33 @@
     .item-name {
         font-weight: 600;
         margin-bottom: 0.25rem;
+        color: #1e293b;
     }
 
     .item-qty {
-        font-size: 0.85rem;
-        color: #999;
+        font-size: 0.82rem;
+        color: #94a3b8;
     }
 
     .item-price {
-        color: var(--primary, #3A7BFF);
-        font-weight: 600;
+        color: var(--color-primary, #3A7BFF);
+        font-weight: 700;
     }
 
+    /* Buyer Info Card */
     .buyer-info {
-        background: var(--neutral-gray, #ECEEF3);
-        padding: 1rem;
-        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 1.25rem;
+        border-radius: 14px;
         margin-bottom: 1rem;
+        border: 1px solid rgba(226, 232, 240, 0.6);
     }
 
     .info-row {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.75rem;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         flex-wrap: wrap;
         gap: 0.5rem;
     }
@@ -179,9 +235,16 @@
     }
 
     .info-label {
-        color: #999;
+        color: #94a3b8;
+        font-weight: 500;
     }
 
+    .info-value {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    /* Action Buttons */
     .action-buttons {
         display: flex;
         flex-direction: column;
@@ -190,27 +253,27 @@
     }
 
     .btn-action {
-        padding: 0.875rem;
-        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
+        padding: 0.875rem 1.25rem;
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
         color: white;
         border: none;
-        border-radius: 0.5rem;
+        border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
     }
 
     @media (hover: hover) {
         .btn-action:hover {
-            filter: brightness(1.05);
-            transform: translateY(-1px);
-            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
             color: white;
         }
     }
@@ -221,39 +284,47 @@
     }
 
     .btn-back {
-        background: #999;
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        box-shadow: 0 4px 14px rgba(100, 116, 139, 0.3);
     }
 
     @media (hover: hover) {
         .btn-back:hover {
-            background: #777;
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
         }
     }
 
+    /* Form Styles */
     .form-group {
         margin-bottom: 1rem;
     }
 
     .form-label {
         display: block;
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 0.5rem;
+        color: #1e293b;
     }
 
     .form-control {
         width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 0.4rem;
+        padding: 0.75rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
         font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background: #f8fafc;
     }
 
     .form-control:focus {
-        border-color: var(--primary, #3A7BFF);
-        box-shadow: 0 0 0 0.2rem rgba(58, 123, 255, 0.25);
+        border-color: var(--color-primary, #3A7BFF);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
         outline: none;
+        background: white;
     }
 
+    /* Modal */
     .modal {
         display: none;
         position: fixed;
@@ -262,6 +333,7 @@
         right: 0;
         bottom: 0;
         background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
         z-index: 999;
         align-items: center;
         justify-content: center;
@@ -273,23 +345,30 @@
     }
 
     .modal-content {
-        background: var(--card-bg, #FFFFFF);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
         padding: 2rem;
-        border-radius: 0.75rem;
-        width: clamp(320px, 95vw, 420px);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        border-radius: 20px;
+        width: clamp(320px, 95vw, 440px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        border: 1px solid rgba(226, 232, 240, 0.8);
     }
 
     .modal-header {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
-        color: var(--neutral-dark, #1A1F36);
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .modal-header i {
+        color: var(--color-primary, #3A7BFF);
     }
 
     .modal-buttons {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-top: 1.5rem;
     }
 
@@ -297,76 +376,81 @@
         flex: 1;
         padding: 0.75rem;
         border: none;
-        border-radius: 0.4rem;
+        border-radius: 10px;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.2s ease;
     }
 
     .btn-confirm {
-        background: linear-gradient(135deg, var(--primary, #3A7BFF), var(--secondary, #6ECBF9));
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
         color: white;
+        box-shadow: 0 3px 12px rgba(99, 102, 241, 0.25);
     }
 
     .btn-cancel {
-        background: var(--neutral-gray, #ECEEF3);
-        color: var(--neutral-dark, #1A1F36);
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        color: #64748b;
     }
 
     /* Return Section Styles */
     .return-section {
-        background: linear-gradient(135deg, rgba(255, 143, 58, 0.1) 0%, rgba(255, 143, 58, 0.2) 100%);
-        border-left: 4px solid var(--accent, #FF8F3A);
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.15) 100%);
+        border-left: 4px solid #f59e0b;
         padding: 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 14px;
         margin: 1.5rem 0;
     }
 
     .return-status-badge {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
         padding: 0.5rem 1rem;
-        border-radius: 2rem;
+        border-radius: 10px;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-bottom: 1rem;
     }
 
     .return-status-requested {
-        background: #fff3cd;
-        color: #856404;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
     }
 
     .return-status-approved {
-        background: #d1ecf1;
-        color: #0c5460;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
     }
 
     .return-status-shipped {
-        background: #cfe2ff;
-        color: #084298;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        color: #4338ca;
     }
 
     .return-status-received {
-        background: #d1e7dd;
-        color: #0f5132;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
     }
 
     .return-status-rejected {
-        background: #f8d7da;
-        color: #842029;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
     }
 
     .return-info {
-        background: var(--card-bg, #FFFFFF);
-        padding: 1rem;
-        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1.25rem;
+        border-radius: 12px;
         margin-bottom: 1rem;
+        border: 1px solid rgba(226, 232, 240, 0.6);
     }
 
     .return-info-item {
         display: flex;
         justify-content: space-between;
         padding: 0.75rem 0;
-        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
         flex-wrap: wrap;
         gap: 0.5rem;
     }
@@ -377,17 +461,18 @@
 
     .return-info-label {
         font-weight: 600;
-        color: #666;
+        color: #64748b;
     }
 
     .return-info-value {
-        color: var(--neutral-dark, #1A1F36);
+        color: #1e293b;
+        font-weight: 500;
     }
 
     .return-timeline {
         margin-top: 1rem;
         padding-top: 1rem;
-        border-top: 1px solid rgba(255, 143, 58, 0.3);
+        border-top: 1px solid rgba(245, 158, 11, 0.25);
     }
 
     .return-timeline-item {
@@ -399,10 +484,11 @@
     .return-timeline-dot {
         width: 12px;
         height: 12px;
-        background: var(--accent, #FF8F3A);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         border-radius: 50%;
         margin-top: 0.4rem;
         flex-shrink: 0;
+        box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
     }
 
     .return-timeline-content {
@@ -411,11 +497,11 @@
 
     .return-timeline-label {
         font-weight: 600;
-        color: var(--neutral-dark, #1A1F36);
+        color: #1e293b;
     }
 
     .return-timeline-date {
-        color: #999;
+        color: #94a3b8;
         font-size: 0.8rem;
     }
 
@@ -427,33 +513,104 @@
     }
 
     .btn-approve {
-        background: #28a745 !important;
-    }
-
-    @media (hover: hover) {
-        .btn-approve:hover {
-            background: #218838 !important;
-        }
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
     }
 
     .btn-reject {
-        background: #dc3545 !important;
-    }
-
-    @media (hover: hover) {
-        .btn-reject:hover {
-            background: #c82333 !important;
-        }
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3) !important;
     }
 
     .btn-confirm-return {
-        background: var(--primary, #3A7BFF) !important;
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%) !important;
     }
 
-    @media (hover: hover) {
-        .btn-confirm-return:hover {
-            filter: brightness(1.1);
-        }
+    /* Back Button Modern */
+    .btn-back-top {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.35rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 12px;
+        color: var(--color-primary, #3A7BFF);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .btn-back-top:hover {
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
+        color: white;
+        border-color: transparent;
+        transform: translateX(-4px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+    }
+    .btn-back-top i {
+        transition: transform 0.25s ease;
+    }
+    .btn-back-top:hover i {
+        transform: translateX(-3px);
+    }
+
+    /* Summary Card */
+    .summary-card {
+        position: sticky;
+        top: 1rem;
+    }
+    .summary-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .summary-title i {
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        font-size: 0.9rem;
+    }
+    .summary-row:last-of-type {
+        border-bottom: none;
+    }
+    .summary-label {
+        color: #64748b;
+    }
+    .summary-value {
+        font-weight: 600;
+        color: #1e293b;
+    }
+    .summary-total {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid rgba(99, 102, 241, 0.2);
+    }
+    .summary-total .summary-label {
+        font-weight: 600;
+        color: var(--color-primary, #3A7BFF);
+    }
+    .summary-total .summary-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--color-primary, #3A7BFF) 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
 
     @media (max-width: 768px) {
@@ -462,42 +619,139 @@
         }
         
         .detail-card {
-            padding: 1rem;
+            padding: 1.25rem;
+            border-radius: 16px;
         }
         
         .return-section {
             padding: 1rem;
         }
+
+        .order-number {
+            font-size: 1.25rem;
+        }
+
+        .summary-card {
+            position: static;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .btn-back-top {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        .detail-card {
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .order-number {
+            font-size: 1.1rem;
+        }
+        .order-date {
+            font-size: 0.8rem;
+        }
+        .status-stack {
+            width: 100%;
+        }
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 0.35rem 0.75rem;
+        }
+        .section-title {
+            font-size: 0.95rem;
+        }
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+        .info-label {
+            min-width: auto;
+        }
+        .summary-card {
+            padding: 1rem;
+        }
+        .summary-card h4 {
+            font-size: 1rem;
+        }
+        .product-card {
+            padding: 0.75rem;
+        }
+        .product-image {
+            width: 60px;
+            height: 60px;
+        }
+        .product-name {
+            font-size: 0.9rem;
+        }
+        .product-meta {
+            font-size: 0.8rem;
+        }
+        .product-price {
+            font-size: 0.95rem;
+        }
+        .summary-row {
+            font-size: 0.9rem;
+        }
+        .summary-row.total {
+            font-size: 1rem;
+        }
+        .modal-content {
+            padding: 1rem;
+        }
+        .modal-content h3 {
+            font-size: 1.1rem;
+        }
+        .return-section {
+            padding: 0.875rem;
+        }
+        .return-info-item {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .action-buttons {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
-<div class="container my-4">
-    <a href="{{ route('seller.orders') }}" class="btn btn-outline-primary mb-3">
-        <i class="fas fa-arrow-left me-2"></i>Kembali
-    </a>
+<a href="{{ route('seller.orders') }}" class="btn-back-top">
+    <i class="fas fa-arrow-left"></i>Kembali
+</a>
 
-    <div class="order-detail-container">
-        <!-- Main Content -->
-        <div>
-            <!-- Order Header -->
-            <div class="detail-card">
-                @php
-                    $isServiceOrder = $order->isServiceOrder();
-                    $primaryStatusKey = $isServiceOrder ? ($order->service_status ?? 'pending') : $order->status;
-                    $primaryStatusLabel = $isServiceOrder ? $order->getServiceStatusLabel() : $order->getStatusLabel();
-                @endphp
-                <div class="section-header">
-                    <div>
-                        <div style="font-size: 1.5rem; font-weight: 700; color: #667eea;">{{ $order->order_number }}</div>
-                        <small class="text-muted">{{ $order->created_at->format('d M Y H:i') }}</small>
-                    </div>
-                    <div class="status-stack">
-                        <span class="status-badge status-{{ $primaryStatusKey }}">
-                            {{ $isServiceOrder ? 'Status Layanan:' : 'Status Pesanan:' }} {{ $primaryStatusLabel }}
-                        </span>
-                        @if($isServiceOrder)
-                            <span class="status-badge status-secondary-badge">
-                                Logistik: {{ $order->getStatusLabel() }}
+<div class="order-detail-container">
+    <!-- Main Content -->
+    <div>
+        <!-- Order Header -->
+        <div class="detail-card">
+            @php
+                $isServiceOrder = $order->isServiceOrder();
+                $primaryStatusKey = $isServiceOrder ? ($order->service_status ?? 'pending') : $order->status;
+                $primaryStatusLabel = $isServiceOrder ? $order->getServiceStatusLabel() : $order->getStatusLabel();
+            @endphp
+            <div class="section-header">
+                <div>
+                    <div class="order-number">{{ $order->order_number }}</div>
+                    <div class="order-date"><i class="far fa-calendar-alt me-1"></i>{{ $order->created_at->format('d M Y H:i') }}</div>
+                </div>
+                <div class="status-stack">
+                    <span class="status-badge status-{{ $primaryStatusKey }}">
+                        {{ $isServiceOrder ? 'Status Layanan:' : 'Status Pesanan:' }} {{ $primaryStatusLabel }}
+                    </span>
+                    @if($isServiceOrder)
+                        <span class="status-badge status-secondary-badge">
+                            Logistik: {{ $order->getStatusLabel() }}
                             </span>
                         @endif
                     </div>

@@ -63,6 +63,23 @@ class MessageController extends Controller
         return view('messages.index', compact('conversations'));
     }
 
+    // List all conversations for seller (uses seller layout)
+    public function indexSeller()
+    {
+        $conversations = Message::where('sender_id', auth()->id())
+            ->orWhere('receiver_id', auth()->id())
+            ->with(['sender', 'receiver', 'shop'])
+            ->latest()
+            ->get()
+            ->unique(function ($item) {
+                return $item->sender_id == auth()->id() 
+                    ? ($item->shop_id ? 'shop_' . $item->shop_id : 'user_' . $item->receiver_id)
+                    : ($item->shop_id ? 'shop_' . $item->shop_id : 'user_' . $item->sender_id);
+            });
+
+        return view('seller.messages.index', compact('conversations'));
+    }
+
     // Show chat with a user (generic or shop-specific)
     public function show($userId)
     {
@@ -157,6 +174,89 @@ class MessageController extends Controller
         }
 
         return view('messages.show', compact('messages', 'otherUser', 'shop', 'proposal', 'product'));
+    }
+
+    // Show chat with a user for seller (uses seller layout)
+    public function showSeller($userId)
+    {
+        $otherUser = User::findOrFail($userId);
+        $userId = (int) $userId;
+        $shopId = request('shop_id');
+        $shop = null;
+
+        // If a shop_id is provided, load and verify ownership (either participant can be owner).
+        if ($shopId) {
+            $shop = Shop::findOrFail($shopId);
+            if ($shop->user_id !== $otherUser->id && $shop->user_id !== auth()->id()) {
+                Log::warning('Shop mismatch in MessageController@showSeller', [
+                    'auth_id' => auth()->id(),
+                    'other_user_id' => $otherUser->id,
+                    'shop_id' => $shop->id,
+                    'shop_owner_id' => $shop->user_id,
+                    'url' => request()->fullUrl(),
+                ]);
+                abort(403, 'Shop mismatch');
+            }
+        } else {
+            // No shop specified: attempt to find the most recent shop-scoped conversation
+            $recentShopId = Message::where(function($q) use ($userId) {
+                    $q->where('sender_id', auth()->id())->where('receiver_id', $userId);
+                })->orWhere(function($q) use ($userId) {
+                    $q->where('sender_id', $userId)->where('receiver_id', auth()->id());
+                })->whereNotNull('shop_id')
+                ->orderBy('created_at', 'desc')
+                ->value('shop_id');
+
+            if ($recentShopId) {
+                $shop = Shop::find($recentShopId);
+                if (!($shop && ($shop->user_id === $otherUser->id || $shop->user_id === auth()->id()))) {
+                    $shop = null;
+                } else {
+                    $shopId = $recentShopId;
+                }
+            }
+        }
+
+        // Get messages between user and $userId, optionally filtered by shop
+        $query = Message::where(function($q) use ($userId) {
+            $q->where('sender_id', auth()->id())
+              ->where('receiver_id', $userId);
+        })->orWhere(function($q) use ($userId) {
+            $q->where('sender_id', $userId)
+              ->where('receiver_id', auth()->id());
+        });
+
+        if ($shopId) {
+            $query->where('shop_id', $shopId);
+        }
+
+        $messages = $query->orderBy('created_at', 'asc')->get();
+
+        // Mark as read
+        Message::where('sender_id', $userId)
+            ->where('receiver_id', auth()->id())
+            ->where('is_read', false)
+            ->when($shopId, fn($q) => $q->where('shop_id', $shopId))
+            ->update(['is_read' => true]);
+
+        // Load optional proposal/product context
+        $proposal = null;
+        $product = null;
+        $proposalId = request('proposal_id');
+        $productId = request('product_id');
+        if ($proposalId) {
+            $proposal = ServiceProposal::with(['product.shop', 'buyer', 'seller'])->find($proposalId);
+            if ($proposal && !in_array($otherUser->id, [$proposal->buyer_id, $proposal->seller_id])) {
+                $proposal = null;
+            }
+            if ($proposal) {
+                $product = $proposal->product;
+            }
+        } elseif ($productId) {
+            $product = Product::with('shop')->find($productId);
+        }
+
+        return view('seller.messages.show', compact('messages', 'otherUser', 'shop', 'proposal', 'product'));
     }
 
     // Send a message

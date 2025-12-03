@@ -23,6 +23,21 @@ class NotificationController extends Controller
         return view('notifications.index', compact('notifications'));
     }
 
+    // Lihat notifikasi untuk seller (uses seller layout)
+    public function indexSeller()
+    {
+        $notifications = Notification::where('user_id', auth()->id())
+            ->latest()
+            ->paginate(15);
+
+        $notifications->getCollection()->transform(function ($notification) {
+            $notification->action_url = $this->resolveNotificationLink($notification);
+            return $notification;
+        });
+
+        return view('seller.notifications.index', compact('notifications'));
+    }
+
     // Tandai satu notifikasi sebagai sudah dibaca
     public function read(Notification $notification)
     {

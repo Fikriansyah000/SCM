@@ -108,6 +108,75 @@
         text-decoration: none;
         color: white;
     }
+
+    /* ========== Mobile Responsive ========== */
+    @media (max-width: 991.98px) {
+        .create-shop-container {
+            padding: 1.5rem;
+        }
+        .shop-card {
+            max-width: 100%;
+        }
+        .shop-card-body {
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .create-shop-container {
+            min-height: auto;
+            padding: 1rem;
+        }
+        .shop-card-body {
+            padding: 1.5rem;
+        }
+        .shop-card-title {
+            font-size: 1.5rem;
+        }
+        .shop-card-subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .upload-area {
+            padding: 1.5rem 1rem;
+        }
+        .upload-area i {
+            font-size: 1.75rem;
+        }
+        .upload-area p {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .create-shop-container {
+            padding: 0.75rem;
+        }
+        .shop-card-body {
+            padding: 1.25rem;
+        }
+        .shop-card-title {
+            font-size: 1.35rem;
+        }
+        .form-control {
+            padding: 0.65rem;
+            font-size: 0.95rem;
+        }
+        .btn-submit {
+            padding: 0.85rem;
+            font-size: 0.95rem;
+        }
+        .upload-area {
+            padding: 1.25rem 0.75rem;
+        }
+        .upload-area i {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+    }
 </style>
 
 <div class="create-shop-container">

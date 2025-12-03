@@ -17,9 +17,22 @@ class ProductController extends Controller
             return redirect()->route('seller.shop.create');
         }
 
-        $products = $shop->products()->latest()->paginate(12);
+        $filter = request('filter', 'active');
 
-        return view('seller.products.index', compact('products'));
+        $productsQuery = $shop->products()->latest();
+
+        if ($filter === 'archived') {
+            $productsQuery->where('status', 'unavailable');
+        } elseif ($filter === 'all') {
+            // keep all statuses
+        } else {
+            $productsQuery->where('status', 'available');
+            $filter = 'active';
+        }
+
+        $products = $productsQuery->paginate(12)->appends(['filter' => $filter]);
+
+        return view('seller.products.index', compact('products', 'filter'));
     }
 
     public function create()
@@ -166,6 +179,21 @@ class ProductController extends Controller
         $product->delete();
 
         return back()->with('success', 'Produk berhasil dihapus!');
+    }
+
+    public function toggleArchive($id)
+    {
+        $shop = auth()->user()->shop;
+        $product = Product::where('shop_id', $shop->id)->findOrFail($id);
+
+        $product->status = $product->status === 'available' ? 'unavailable' : 'available';
+        $product->save();
+
+        $message = $product->status === 'available'
+            ? 'Produk dipulihkan dan kembali tampil untuk pembeli.'
+            : 'Produk berhasil diarsipkan.';
+
+        return back()->with('success', $message);
     }
 
     // ========== SERVICE SLOT MANAGEMENT ==========

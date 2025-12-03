@@ -1,228 +1,394 @@
-@extends('layouts.app')
+@extends('layouts.seller')
 
 @section('title', 'Buat Produk Baru - PestiMart')
+@section('page-title', 'Tambah Produk')
 
 @section('content')
 <style>
     .product-form-container {
-        background: white;
-        border-radius: 0.75rem;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
         padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        position: relative;
+        overflow: hidden;
     }
-    
+    .product-form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary, #6366f1) 50%, var(--color-primary) 100%);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0%, 100% { background-position: 200% 0; }
+        50% { background-position: 0% 0; }
+    }
     .form-section {
         margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 16px;
+        border: 1px solid rgba(226, 232, 240, 0.5);
+        transition: all 0.3s ease;
     }
-    
+    .form-section:hover {
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
     .form-section-title {
         font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #f0f0f0;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid transparent;
+        border-image: linear-gradient(90deg, var(--color-primary), var(--color-secondary, #6366f1)) 1;
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
-    
+    .form-section-title i {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary, #6366f1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.2rem;
+    }
     .form-group {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
     }
-    
     .form-label {
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 0.5rem;
         display: block;
-        color: #333;
+        color: var(--color-text);
+        font-size: 0.9rem;
+        letter-spacing: -0.01em;
     }
-    
     .form-control {
         width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 0.5rem;
+        padding: 0.875rem 1rem;
+        border: 2px solid rgba(226, 232, 240, 0.8);
+        border-radius: 12px;
         font-family: inherit;
+        font-size: 0.95rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(255, 255, 255, 0.8);
     }
-    
+    .form-control:hover {
+        border-color: rgba(99, 102, 241, 0.3);
+    }
     .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        outline: none;
+        background: white;
     }
-    
     textarea.form-control {
         resize: vertical;
-        min-height: 100px;
+        min-height: 120px;
     }
-    
     .upload-area {
-        border: 2px dashed #ddd;
-        border-radius: 0.75rem;
-        padding: 2rem;
+        border: 2px dashed rgba(99, 102, 241, 0.3);
+        border-radius: 16px;
+        padding: 2.5rem 1.5rem;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        background: #f8f9fa;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%);
+        position: relative;
+        overflow: hidden;
     }
-    
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
     .upload-area:hover {
-        border-color: #667eea;
-        background: #f0f4ff;
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
     }
-    
+    .upload-area:hover::before {
+        opacity: 1;
+    }
     .upload-area i {
-        font-size: 2rem;
-        color: #667eea;
-        margin-bottom: 1rem;
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary, #6366f1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
+        display: block;
     }
-    
     .upload-area p {
-        margin-bottom: 0.5rem;
-        color: #666;
+        margin-bottom: 0.25rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 1rem;
     }
-    
     .upload-area small {
-        color: #999;
+        color: var(--color-text-muted);
+        font-size: 0.85rem;
     }
-    
     .type-selector {
         display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        gap: 1.25rem;
+        margin-bottom: 0;
     }
-    
     .type-btn {
         flex: 1;
-        padding: 1.25rem;
-        border: 2px solid #ddd;
-        border-radius: 0.75rem;
-        background: white;
+        padding: 1.75rem 1.25rem;
+        border: 2px solid rgba(226, 232, 240, 0.8);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.7);
         cursor: pointer;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
     }
-    
+    .type-btn::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 14px;
+        padding: 2px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-secondary, #6366f1));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
     .type-btn:hover {
-        border-color: #667eea;
-        background: #f0f4ff;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
-    
+    .type-btn:hover::before {
+        opacity: 0.5;
+    }
     .type-btn.selected {
-        border-color: #667eea;
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border-color: transparent;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
     }
-    
+    .type-btn.selected::before {
+        opacity: 1;
+    }
     .type-btn i {
-        font-size: 2rem;
-        color: #667eea;
-        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary, #6366f1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.75rem;
         display: block;
     }
-    
     .type-btn strong {
         display: block;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.35rem;
+        color: var(--color-text);
+        font-size: 1.05rem;
     }
-    
     .type-btn small {
-        color: #666;
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-xs);
     }
-    
     .service-fields {
         display: none;
-        background: #f8f9ff;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.04) 100%);
         padding: 1.5rem;
-        border-radius: 0.75rem;
-        margin-top: 1rem;
+        border-radius: 16px;
+        margin-top: 0.75rem;
+        border: 1px solid rgba(99, 102, 241, 0.15);
     }
-    
     .service-fields.show {
         display: block;
+        animation: slideDown 0.3s ease;
     }
-    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     .physical-fields {
         display: block;
     }
-    
     .physical-fields.hide {
         display: none;
     }
-    
     .form-actions {
         display: flex;
         gap: 1rem;
-        margin-top: 2rem;
+        margin-top: 0;
+        flex-wrap: wrap;
+        padding-top: 0.5rem;
     }
-    
-    .btn-submit {
-        padding: 0.75rem 2rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.3s ease;
+    .form-actions .btn-primary-solid {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
     }
-    
-    .btn-submit:hover {
+    .form-actions .btn-primary-solid:hover {
         transform: translateY(-2px);
-        text-decoration: none;
-        color: white;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
     }
-    
     .btn-cancel {
-        padding: 0.75rem 2rem;
-        background: white;
-        color: #666;
-        border: 2px solid #ddd;
-        border-radius: 0.5rem;
+        padding: 1rem 1.75rem;
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--color-text-secondary);
+        border: 2px solid rgba(226, 232, 240, 0.8);
+        border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
+        gap: 0.5rem;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
     .btn-cancel:hover {
-        background: #f5f5f5;
-        color: #333;
+        background: rgba(248, 250, 252, 1);
+        color: var(--color-text);
+        border-color: rgba(203, 213, 225, 1);
+        transform: translateY(-2px);
     }
-    
     .image-preview {
         margin-top: 1rem;
-        max-width: 200px;
+        max-width: 220px;
     }
-    
     .image-preview img {
         width: 100%;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border: 3px solid white;
     }
-
     .form-check {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 10px;
+        border: 1px solid rgba(226, 232, 240, 0.5);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .form-check:hover {
+        background: rgba(255, 255, 255, 0.9);
+    }
+    .form-check input[type="checkbox"] {
+        width: 1.35rem;
+        height: 1.35rem;
+        accent-color: var(--color-primary);
+        cursor: pointer;
+    }
+    .form-check label {
+        cursor: pointer;
+        font-weight: 500;
+    }
+    .alert-info {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        color: #1e40af;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+        .product-form-container {
+            padding: 1.25rem;
+            border-radius: 16px;
+        }
+        .form-section {
+            padding: 1rem;
+        }
+        .type-selector {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .type-btn {
+            padding: 1.25rem 1rem;
+        }
+        .form-actions {
+            flex-direction: column;
+        }
+        .form-actions .btn-primary-solid, 
+        .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
     }
 
-    .form-check input[type="checkbox"] {
-        width: 1.25rem;
-        height: 1.25rem;
+    @media (max-width: 575.98px) {
+        .product-form-container {
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        .form-section {
+            padding: 0.875rem;
+            border-radius: 10px;
+        }
+        .form-section-title {
+            font-size: 0.95rem;
+        }
+        .form-group label {
+            font-size: 0.9rem;
+        }
+        .form-control {
+            padding: 0.65rem 0.75rem;
+            font-size: 0.9rem;
+        }
+        .upload-area {
+            padding: 1.25rem;
+        }
+        .upload-area i {
+            font-size: 1.75rem;
+        }
+        .upload-area p {
+            font-size: 0.9rem;
+        }
+        .type-btn {
+            padding: 1rem 0.875rem;
+        }
+        .type-btn strong {
+            font-size: 0.9rem;
+        }
+        .type-btn small {
+            font-size: 0.75rem;
+        }
+        .type-btn i {
+            font-size: 1.25rem;
+        }
+        .form-actions .btn-primary-solid,
+        .btn-cancel {
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+        }
     }
 </style>
 
-<div class="container my-4">
-    <div class="product-form-container">
-        <h2 class="mb-4">
-            <i class="fas fa-plus-circle me-2"></i>Buat Produk Baru
-        </h2>
+<div class="product-form-container">
+    <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
+        @csrf
         
-        <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
-            @csrf
-            
-            <!-- Product Type Selection -->
-            <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fas fa-tags me-2"></i>Jenis Produk
-                </div>
+        <!-- Product Type Selection -->
+        <div class="form-section">
+            <div class="form-section-title">
+                <i class="fas fa-tags"></i> Jenis Produk
+            </div>
                 
                 <div class="type-selector">
                     <div class="type-btn selected" data-type="food" onclick="selectProductType('food')">
@@ -416,19 +582,18 @@
                 </div>
             </div>
             
-            <!-- Actions -->
-            <div class="form-section">
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-arrow-right me-2"></i>Publikasikan
-                    </button>
-                    <a href="{{ route('seller.products.index') }}" class="btn-cancel">
-                        <i class="fas fa-times me-2"></i>Batal
-                    </a>
-                </div>
+        <!-- Actions -->
+        <div class="form-section">
+            <div class="form-actions">
+                <button type="submit" class="btn-primary-solid">
+                    <i class="fas fa-check"></i> Publikasikan
+                </button>
+                <a href="{{ route('seller.products.index') }}" class="btn-cancel">
+                    <i class="fas fa-times"></i> Batal
+                </a>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 <script>

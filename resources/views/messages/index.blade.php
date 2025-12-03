@@ -4,31 +4,62 @@
 
 @section('content')
 <style>
+    :root {
+        --msg-primary: #6366f1;
+        --msg-secondary: #8b5cf6;
+    }
+
     .messages-page-container {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 0 1rem;
+        padding: 1.5rem 1rem 3rem;
     }
 
-    .messages-header {
-        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
-        color: white;
-        padding: 2.5rem 0;
-        margin-bottom: 2rem;
+    .page-header {
+        margin-bottom: 1.5rem;
     }
 
-    .messages-header h2 {
+    .page-title {
         font-size: 1.75rem;
-        font-weight: 700;
-        margin: 0;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--msg-primary) 0%, var(--msg-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .page-title i {
+        font-size: 1.5rem;
     }
     
     .messages-container {
-        background: var(--card-bg, #FFFFFF);
-        border-radius: 1rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
         overflow: hidden;
-        border: 1px solid var(--neutral-gray, #ECEEF3);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        position: relative;
+    }
+
+    .messages-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--msg-primary) 0%, var(--msg-secondary) 50%, var(--msg-primary) 100%);
+        background-size: 200% 100%;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0%, 100% { background-position: 200% 0; }
+        50% { background-position: 0% 0; }
     }
     
     .conversation-list {
@@ -39,14 +70,15 @@
     
     .conversation-item {
         padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid var(--neutral-gray, #ECEEF3);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.6);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         display: flex;
         align-items: center;
         color: inherit;
         gap: 1.25rem;
+        position: relative;
     }
     
     .conversation-item:last-child {
@@ -55,9 +87,26 @@
     
     @media (hover: hover) {
         .conversation-item:hover {
-            background: linear-gradient(90deg, rgba(58,123,255,0.05) 0%, transparent 100%);
-            padding-left: 2rem;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
+            transform: translateX(6px);
         }
+    }
+
+    .conversation-item::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 0;
+        background: linear-gradient(180deg, var(--msg-primary), var(--msg-secondary));
+        border-radius: 0 4px 4px 0;
+        transition: height 0.25s ease;
+    }
+
+    .conversation-item:hover::after {
+        height: 60%;
     }
     
     .conversation-avatar-wrapper {
@@ -67,23 +116,33 @@
     }
     
     .conversation-avatar {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary, #3A7BFF) 0%, var(--secondary, #6ECBF9) 100%);
+        width: 58px;
+        height: 58px;
+        background: linear-gradient(135deg, var(--msg-primary) 0%, var(--msg-secondary) 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 700;
-        font-size: 1.35rem;
+        font-size: 1.3rem;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(58, 123, 255, 0.25);
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        transition: all 0.25s ease;
+    }
+
+    .conversation-item:hover .conversation-avatar {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     }
 
     .conversation-avatar.shop {
-        background: linear-gradient(135deg, var(--accent, #FF8F3A) 0%, #FFB366 100%);
-        box-shadow: 0 4px 12px rgba(255, 143, 58, 0.25);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+    }
+
+    .conversation-item:hover .conversation-avatar.shop {
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
     }
     
     .conversation-content {
@@ -104,7 +163,7 @@
     
     .conversation-name {
         font-weight: 600;
-        color: var(--neutral-dark, #1A1F36);
+        color: #1e293b;
         font-size: 1.05rem;
         white-space: nowrap;
         overflow: hidden;
@@ -112,19 +171,20 @@
     }
     
     .conversation-time {
-        color: #9ca3af;
-        font-size: 0.85rem;
+        color: #94a3b8;
+        font-size: 0.82rem;
         text-align: right;
         white-space: nowrap;
         flex-shrink: 0;
+        font-weight: 500;
     }
     
     .conversation-message {
-        color: #6b7280;
-        font-size: 0.95rem;
+        color: #64748b;
+        font-size: 0.92rem;
         word-break: break-word;
         overflow-wrap: break-word;
-        line-height: 1.4;
+        line-height: 1.45;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -136,15 +196,16 @@
     .conversation-type-badge {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.3rem 0.75rem;
-        background: linear-gradient(135deg, rgba(58, 123, 255, 0.1) 0%, rgba(110, 203, 249, 0.1) 100%);
-        color: var(--primary, #3A7BFF);
+        gap: 0.4rem;
+        padding: 0.35rem 0.85rem;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.08) 100%);
+        color: #b45309;
         border-radius: 999px;
         font-size: 0.75rem;
         font-weight: 600;
-        margin-top: 0.35rem;
+        margin-top: 0.4rem;
         width: fit-content;
+        border: 1px solid rgba(245, 158, 11, 0.2);
     }
     
     .empty-messages {
@@ -154,19 +215,24 @@
     
     .empty-messages i {
         font-size: 4rem;
-        color: #d1d5db;
+        background: linear-gradient(135deg, var(--msg-primary) 0%, var(--msg-secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         margin-bottom: 1.5rem;
         display: block;
+        opacity: 0.6;
     }
 
     .empty-messages h4 {
-        color: var(--neutral-dark, #1A1F36);
+        color: #1e293b;
         margin-bottom: 0.75rem;
         font-size: 1.25rem;
+        font-weight: 700;
     }
 
     .empty-messages p {
-        color: #6b7280;
+        color: #64748b;
         font-size: 1rem;
     }
 
@@ -179,18 +245,16 @@
 
     /* Mobile */
     @media (max-width: 768px) {
-        .messages-header {
-            padding: 1.5rem 0;
-            margin-bottom: 1rem;
+        .messages-page-container {
+            padding: 1rem;
         }
 
-        .messages-header h2 {
-            font-size: 1.4rem;
+        .page-title {
+            font-size: 1.5rem;
         }
 
         .messages-container {
-            border-radius: 0.75rem;
-            margin: 0 -0.5rem;
+            border-radius: 16px;
         }
 
         .conversation-item {
@@ -209,18 +273,18 @@
         }
 
         .conversation-message {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .conversation-time {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
     }
 
     /* Small mobile */
     @media (max-width: 480px) {
-        .messages-header {
-            padding: 1.25rem 0;
+        .page-title {
+            font-size: 1.35rem;
         }
 
         .conversation-item {
@@ -229,8 +293,8 @@
         }
 
         .conversation-avatar {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             font-size: 1.05rem;
         }
 
@@ -244,20 +308,18 @@
         }
 
         .conversation-time {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
         }
     }
 </style>
 
-<div class="messages-header">
-    <div class="messages-page-container">
-        <h2>
-            <i class="fas fa-envelope me-2"></i>Pesan
+<div class="messages-page-container">
+    <div class="page-header">
+        <h2 class="page-title">
+            <i class="fas fa-envelope"></i>Pesan
         </h2>
     </div>
-</div>
 
-<div class="messages-page-container" style="padding-bottom: 3rem;">
     <div class="messages-container">
         @if($conversations->count() > 0)
             <div class="conversation-list">

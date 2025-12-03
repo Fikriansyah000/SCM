@@ -12,9 +12,19 @@ class ProfileController extends Controller
         return view('profile.show');
     }
 
+    public function showSeller()
+    {
+        return view('seller.profile.show');
+    }
+
     public function edit()
     {
         return view('profile.edit');
+    }
+
+    public function editSeller()
+    {
+        return view('seller.profile.edit');
     }
 
     public function update(Request $request)
@@ -35,6 +45,10 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
+        // Redirect based on user role
+        if ($user->role === 'seller') {
+            return redirect()->route('seller.profile.show')->with('success', 'Profile updated successfully!');
+        }
         return redirect()->route('profile.show')->with('success', 'Profile updated successfully!');
     }
 
